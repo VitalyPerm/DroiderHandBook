@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "934970137205",
+    "firebase_url": "https://droiderhandbook-default-rtdb.firebaseio.com",
     "project_id": "droiderhandbook",
     "storage_bucket": "droiderhandbook.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "934970137205-5svcu4026o55degr2qnbqmq50p21gh0h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.elvitalya.droiderhandbook",
+            "certificate_hash": "b5b3753e1869bcf783fc7fea08a8d38411744a4c"
+          }
+        },
         {
           "client_id": "934970137205-mautblnoo3h7obpb5dhma753a6sa70j3.apps.googleusercontent.com",
           "client_type": 3
