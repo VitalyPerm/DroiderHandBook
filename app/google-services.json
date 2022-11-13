@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "934970137205",
+    "project_id": "droiderhandbook",
+    "storage_bucket": "droiderhandbook.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:934970137205:android:bceb231c868de123a4763c",
+        "android_client_info": {
+          "package_name": "com.elvitalya.droiderhandbook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "934970137205-mautblnoo3h7obpb5dhma753a6sa70j3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdEhN9RT-svUngmADKptKjVnVrN_WJRo8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "934970137205-mautblnoo3h7obpb5dhma753a6sa70j3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
