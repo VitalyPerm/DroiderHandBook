@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -20,27 +19,31 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.elvitalya.droiderhandbook.data.Test
 import com.elvitalya.droiderhandbook.data.TestDetails
+import com.elvitalya.droiderhandbook.ui.SignInScreen
 
 @Composable
 fun MainNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = "profile"
+    startDestination: String
 ) {
     NavHost(
         modifier = modifier,
         navController = navController,
         startDestination = startDestination
     ) {
-        composable("profile") {
+        composable(Screens.Main.route) {
             MainScreen(
-                onNavigateToFriends = { navController.navigate("friendsList/${it}") },
+                onNavigateToDetails = { navController.navigate(Screens.Details.createRoute(it)) },
             )
         }
+
+        composable(Screens.Registration.route) {
+            SignInScreen(onNavigateToMain = { navController.navigate(Screens.Main.route) })
+        }
         composable(
-            "friendslist/{title}",
+            Screens.Details.route,
             arguments = listOf(navArgument("title") { type = NavType.StringType })
         ) {
             DetailScreen(
@@ -105,7 +108,7 @@ fun DetailItem(
 
 @Composable
 fun MainScreen(
-    onNavigateToFriends: (String) -> Unit,
+    onNavigateToDetails: (String) -> Unit,
     viewModel: GlobalViewModel = viewModel(),
 ) {
 
@@ -122,7 +125,7 @@ fun MainScreen(
                 Text(
                     text = it.title ?: "empty", modifier = Modifier
                         .padding(16.dp)
-                        .clickable { onNavigateToFriends(it.title ?: "") }
+                        .clickable { onNavigateToDetails(it.title ?: "") }
                 )
             }
         }
