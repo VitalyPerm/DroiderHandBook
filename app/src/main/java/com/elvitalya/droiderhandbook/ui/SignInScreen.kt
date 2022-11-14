@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.elvitalya.droiderhandbook.ui.main.MainActivity.Companion.TAG
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.ktx.auth
@@ -17,9 +18,7 @@ import com.google.firebase.ktx.Firebase
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignInScreen(
-    onNavigateToMain: () -> Unit,
-) {
+fun SignInScreen(onSuccess: () -> Unit) {
 
     var email by remember { mutableStateOf("") }
 
@@ -69,7 +68,7 @@ fun SignInScreen(
                                 loading = false
                                 Log.d(TAG, "SignInScreen: isSuccessful = ${it.isSuccessful}")
                                 if (it.isSuccessful) {
-                                    onNavigateToMain()
+                                    onSuccess()
                                 }
                             }
                             .addOnSuccessListener {
@@ -80,7 +79,7 @@ fun SignInScreen(
                                     Firebase.auth.signInWithEmailAndPassword(email, pass)
                                         .addOnCompleteListener {
                                             loading = false
-                                            if (it.isSuccessful) onNavigateToMain()
+                                            if (it.isSuccessful) onSuccess()
                                         }
                                         .addOnSuccessListener {
                                             Log.d(TAG, "SignInScreen: success! ${it.user?.email}")
