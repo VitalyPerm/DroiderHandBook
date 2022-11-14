@@ -13,7 +13,9 @@ import com.elvitalya.droiderhandbook.ui.signin.SignInScreen
 import com.elvitalya.droiderhandbook.ui.theme.DroiderHandBookTheme
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     companion object {
         const val TAG = "check___"
