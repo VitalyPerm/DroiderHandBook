@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -31,23 +30,29 @@ import com.elvitalya.droiderhandbook.ui.test.TestScreen
 @Composable
 fun MainNavHost() {
     val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = currentDestination?.route ?: "") }
+            )
+        },
         bottomBar = {
             BottomNavigation {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry?.destination
+
                 bottomNavigationItems.forEach { screen ->
                     BottomNavigationItem(
                         icon = {
                             val image = when (screen) {
-                                Screen.Favorite -> Icons.Filled.Favorite
-                                Screen.Search -> Icons.Filled.Search
-                                Screen.Sections -> Icons.Filled.List
-                                Screen.Test -> Icons.Filled.Book
+                                BottomNavigationScreen.Favorite -> Icons.Filled.Favorite
+                                BottomNavigationScreen.Search -> Icons.Filled.Search
+                                BottomNavigationScreen.Sections -> Icons.Filled.List
+                                BottomNavigationScreen.Test -> Icons.Filled.Book
                             }
                             Icon(image, contentDescription = null)
                         },
-                        label = { Text(stringResource(screen.resourceId)) },
+                        //     label = { Text(stringResource(screen.resourceId)) },
                         selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                         onClick = {
                             navController.navigate(screen.route) {
@@ -74,27 +79,27 @@ fun MainNavHost() {
     ) { innerPadding ->
         NavHost(
             navController,
-            startDestination = Screen.Sections.route,
+            startDestination = BottomNavigationScreen.Sections.route,
             Modifier.padding(innerPadding)
         ) {
-            composable(Screen.Sections.route) { SectionsScreen(navController) }
-            composable(Screen.Favorite.route) { FavoriteScreen(navController) }
-            composable(Screen.Search.route) { SearchScreen(navController) }
-            composable(Screen.Test.route) { TestScreen(navController) }
+            composable(BottomNavigationScreen.Sections.route) { SectionsScreen(navController) }
+            composable(BottomNavigationScreen.Favorite.route) { FavoriteScreen(navController) }
+            composable(BottomNavigationScreen.Search.route) { SearchScreen(navController) }
+            composable(BottomNavigationScreen.Test.route) { TestScreen(navController) }
         }
     }
 }
 
 val bottomNavigationItems = listOf(
-    Screen.Sections,
-    Screen.Favorite,
-    Screen.Search,
-    Screen.Test
+    BottomNavigationScreen.Sections,
+    BottomNavigationScreen.Favorite,
+    BottomNavigationScreen.Search,
+    BottomNavigationScreen.Test
 )
 
-sealed class Screen(val route: String, @StringRes val resourceId: Int) {
-    object Sections : Screen("sections", R.string.sections)
-    object Favorite : Screen("favorite", R.string.favorite)
-    object Search : Screen("search", R.string.search)
-    object Test : Screen("test", R.string.test)
+sealed class BottomNavigationScreen(val route: String, @StringRes val resourceId: Int) {
+    object Sections : BottomNavigationScreen("sections", R.string.sections)
+    object Favorite : BottomNavigationScreen("favorite", R.string.favorite)
+    object Search : BottomNavigationScreen("search", R.string.search)
+    object Test : BottomNavigationScreen("test", R.string.test)
 }
