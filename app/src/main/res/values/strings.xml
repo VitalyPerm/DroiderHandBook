@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">DroiderHandBook</string>
+    <string name="sections">Разделы</string>
+    <string name="favorite">Избранное</string>
+    <string name="search">Поиск</string>
+    <string name="test">Проверь себя</string>
 </resources>
