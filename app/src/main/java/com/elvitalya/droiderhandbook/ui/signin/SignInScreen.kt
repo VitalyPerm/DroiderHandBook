@@ -1,4 +1,4 @@
-package com.elvitalya.droiderhandbook.ui
+package com.elvitalya.droiderhandbook.ui.signin
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
@@ -10,7 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.elvitalya.droiderhandbook.ui.main.MainActivity.Companion.TAG
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.ktx.auth
