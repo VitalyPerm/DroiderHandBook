@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 @Singleton
 class DataRepository @Inject constructor(
@@ -18,7 +20,7 @@ class DataRepository @Inject constructor(
 ) {
     fun getQuestions(): Flow<List<QuestionEntity>> = questionsDao.getQuestionsFlow()
 
-    fun loadQuestions() {
+    fun loadQuestionsOld() {
         Log.d(TAG, "getQuestions: loadQuestions called")
         FireBaseHelper.questions
             .get()
@@ -31,5 +33,28 @@ class DataRepository @Inject constructor(
                     }
                 }
             }
+    }
+
+    suspend fun loadQuestions() {
+        val firebaseQuestions = fetchQuestionsFromFirebase()
+        firebaseQuestions.mapNotNull { it.mapToEntity() }.forEach {
+            questionsDao.addQuestion(it)
+        }
+    }
+
+    private suspend fun fetchQuestionsFromFirebase(): List<FirebaseQuestion> {
+        return suspendCoroutine { continuation ->
+            FireBaseHelper.questions
+                .get()
+                .addOnSuccessListener { snapShot ->
+                    val response: List<FirebaseQuestion> =
+                        snapShot.documents.mapNotNull { documentSnapshot -> documentSnapshot?.toObject() }
+                    continuation.resume(response)
+                }
+                .addOnFailureListener {
+                    Log.d(TAG, "fetchQuestionsFromFirebase: ${it.message}")
+                    continuation.resume(emptyList())
+                }
+        }
     }
 }
