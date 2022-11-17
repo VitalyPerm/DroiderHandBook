@@ -20,8 +20,6 @@ class SectionsViewModel @Inject constructor(
     private val dataRepository: DataRepository
 ) : ViewModel() {
 
-    val sectionsList = MutableStateFlow<List<String>>(emptyList())
-
     val javaQuestions = MutableStateFlow<List<QuestionEntity>>(emptyList())
     val kotlinQuestions = MutableStateFlow<List<QuestionEntity>>(emptyList())
     val basicQuestions = MutableStateFlow<List<QuestionEntity>>(emptyList())

@@ -1,10 +1,10 @@
 package com.elvitalya.droiderhandbook.ui.sections
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,7 +16,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,8 +32,6 @@ fun SectionsScreen(
     onQuestionClick: () -> Unit
 ) {
 
-    val sections by vm.sectionsList.collectAsState()
-
     val javaQuestions by vm.javaQuestions.collectAsState()
     val androidQuestions by vm.androidQuestions.collectAsState()
     val kotlinQuestions by vm.kotlinQuestions.collectAsState()
@@ -39,7 +39,7 @@ fun SectionsScreen(
 
     val loading by vm.loading.collectAsState()
 
-    var selectedSection by remember { mutableStateOf<Sections?>(null) }
+    var expandedSections by remember { mutableStateOf(SectionScreenContentVisibility()) }
 
 
     LaunchedEffect(key1 = Unit) {
@@ -57,12 +57,16 @@ fun SectionsScreen(
                 kotlinQuestions = kotlinQuestions,
                 androidQuestions = androidQuestions,
                 basicQuestions = basicQuestions,
-                onSectionSelected = {
-                    selectedSection =
-                        if (it == selectedSection) null else it
-                },
                 onQuestionClick = onQuestionClick,
-                selectedSection = selectedSection
+                expandedSections = expandedSections,
+                onSectionClick = {
+                    expandedSections = when (it) {
+                        Sections.Java -> expandedSections.copy(java = expandedSections.java.not())
+                        Sections.Kotlin -> expandedSections.copy(kotlin = expandedSections.kotlin.not())
+                        Sections.Android -> expandedSections.copy(android = expandedSections.android.not())
+                        Sections.Basic -> expandedSections.copy(basic = expandedSections.basic.not())
+                    }
+                }
             )
         } else {
             CircularProgressIndicator(
@@ -81,64 +85,72 @@ private fun Content(
     androidQuestions: List<QuestionEntity>,
     basicQuestions: List<QuestionEntity>,
     onQuestionClick: () -> Unit,
-    onSectionSelected: (Sections) -> Unit,
-    selectedSection: Sections?
+    expandedSections: SectionScreenContentVisibility,
+    onSectionClick: (Sections) -> Unit
 ) {
-    Column(
+
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        when (selectedSection) {
-            null -> {
-                Sections.values().forEach { section ->
-                    SectionItem(
-                        section = section,
-                        questions = when (section) {
-                            Sections.Java -> javaQuestions
-                            Sections.Kotlin -> kotlinQuestions
-                            Sections.Android -> androidQuestions
-                            Sections.Basic -> basicQuestions
-                        },
-                        onQuestionClick = onQuestionClick,
-                        onSectionSelected = onSectionSelected,
-                        selectedSection = selectedSection
-                    )
-                }
-            }
-            Sections.Java -> {
-                SectionItem(
-                    section = Sections.Java,
-                    questions = javaQuestions,
-                    onQuestionClick = onQuestionClick,
-                    onSectionSelected = onSectionSelected,
-                    selectedSection = selectedSection
+        item {
+            SectionTitle(
+                section = Sections.Java,
+                onSectionClick = onSectionClick
+            )
+        }
+
+        items(javaQuestions) {
+            AnimatedVisibility(visible = expandedSections.java) {
+                SectionContentItem(
+                    questionEntity = it,
+                    onQuestionClick = onQuestionClick
                 )
             }
-            Sections.Kotlin -> {
-                SectionItem(
-                    section = Sections.Kotlin,
-                    questions = kotlinQuestions,
-                    onQuestionClick = onQuestionClick,
-                    onSectionSelected = onSectionSelected,
-                    selectedSection = selectedSection
+        }
+
+        item {
+            SectionTitle(
+                section = Sections.Kotlin,
+                onSectionClick = onSectionClick
+            )
+        }
+
+        items(kotlinQuestions) {
+            AnimatedVisibility(visible = expandedSections.kotlin) {
+                SectionContentItem(
+                    questionEntity = it,
+                    onQuestionClick = onQuestionClick
                 )
             }
-            Sections.Android -> {
-                SectionItem(
-                    section = Sections.Android,
-                    questions = androidQuestions,
-                    onQuestionClick = onQuestionClick,
-                    onSectionSelected = onSectionSelected,
-                    selectedSection = selectedSection
+        }
+
+        item {
+            SectionTitle(
+                section = Sections.Android,
+                onSectionClick = onSectionClick
+            )
+        }
+        items(androidQuestions) {
+            AnimatedVisibility(visible = expandedSections.android) {
+                SectionContentItem(
+                    questionEntity = it,
+                    onQuestionClick = onQuestionClick
                 )
             }
-            Sections.Basic -> {
-                SectionItem(
-                    section = Sections.Basic,
-                    questions = basicQuestions,
-                    onQuestionClick = onQuestionClick,
-                    onSectionSelected = onSectionSelected,
-                    selectedSection = selectedSection
+        }
+
+        item {
+            SectionTitle(
+                section = Sections.Basic,
+                onSectionClick = onSectionClick
+            )
+        }
+        items(basicQuestions) {
+            AnimatedVisibility(visible = expandedSections.basic) {
+                SectionContentItem(
+                    questionEntity = it,
+                    onQuestionClick = onQuestionClick
                 )
             }
         }
@@ -146,12 +158,9 @@ private fun Content(
 }
 
 @Composable
-private fun SectionItem(
+fun SectionTitle(
     section: Sections,
-    questions: List<QuestionEntity>,
-    onQuestionClick: () -> Unit,
-    onSectionSelected: (Sections) -> Unit,
-    selectedSection: Sections?
+    onSectionClick: (Sections) -> Unit
 ) {
     Text(
         text = section.name,
@@ -163,49 +172,55 @@ private fun SectionItem(
                 RoundedCornerShape(16.dp)
             )
             .clip(RoundedCornerShape(16.dp))
-            .clickable(indication = null, interactionSource = MutableInteractionSource()) {
-                onSectionSelected(section)
-            }
+            .clickable { onSectionClick(section) }
             .padding(16.dp),
         fontSize = 28.sp,
         textAlign = TextAlign.Center,
         color = MaterialTheme.colorScheme.onTertiary
     )
-    if (selectedSection == section) {
-        LazyColumn(
+}
+
+@Composable
+fun SectionContentItem(
+    questionEntity: QuestionEntity,
+    onQuestionClick: () -> Unit,
+) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp)
+            .border(
+                BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary),
+                RoundedCornerShape(16.dp)
+            )
+            .clip(RoundedCornerShape(16.dp))
+            .clickable { onQuestionClick() }
+
+    ) {
+        Text(
+            text = questionEntity.title,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-        ) {
-            items(questions) { question ->
-
-                val text =
-                    question.text.run { if (length > 50) this else this.substring(0, 50) }
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onQuestionClick() }
-                        .padding(4.dp)
-                        .border(
-                            BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary),
-                            RoundedCornerShape(16.dp)
-                        )
-                ) {
-                    Text(
-                        text = question.title ?: "", modifier = Modifier
-                            .padding(8.dp)
-                    )
-                    Text(
-                        text = text,
-                        modifier = Modifier
-                            .padding(8.dp)
-                    )
-
-                }
-            }
-        }
+                .padding(8.dp),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = questionEntity.text,
+            modifier = Modifier
+                .padding(8.dp),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
 
     }
-
 }
+
+data class SectionScreenContentVisibility(
+    val kotlin: Boolean = false,
+    val java: Boolean = false,
+    val android: Boolean = false,
+    val basic: Boolean = false,
+)
