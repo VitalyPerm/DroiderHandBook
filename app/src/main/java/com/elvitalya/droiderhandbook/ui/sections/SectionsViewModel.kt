@@ -27,6 +27,17 @@ class SectionsViewModel @Inject constructor(
 
     val loading = MutableStateFlow(true)
 
+
+    fun reloadQuestions() {
+        viewModelScope.launch {
+            try {
+                dataRepository.loadQuestions()
+            } catch (e: Exception) {
+                Log.d(TAG, "getQuestions: error ${e.message}")
+            }
+        }
+    }
+
     fun getQuestions() {
         viewModelScope.launch {
             try {

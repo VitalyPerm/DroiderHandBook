@@ -1,6 +1,5 @@
 package com.elvitalya.droiderhandbook.ui.main
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -9,18 +8,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -29,17 +23,18 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.elvitalya.droiderhandbook.R
 import com.elvitalya.droiderhandbook.ui.favorite.FavoriteScreen
-import com.elvitalya.droiderhandbook.ui.main.MainActivity.Companion.TAG
 import com.elvitalya.droiderhandbook.ui.questiondetail.QuestionDetailsScreen
 import com.elvitalya.droiderhandbook.ui.search.SearchScreen
 import com.elvitalya.droiderhandbook.ui.sections.SectionsScreen
+import com.elvitalya.droiderhandbook.ui.sections.SectionsViewModel
 import com.elvitalya.droiderhandbook.ui.test.TestScreen
 import com.elvitalya.droiderhandbook.ui.theme.ColorsScreen
-import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainNavHost() {
+fun MainNavHost(
+    sectionsViewModel: SectionsViewModel = viewModel()
+) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -49,7 +44,11 @@ fun MainNavHost() {
             TopAppBar(
                 title = {
                     Text(
-                        text = stringResource(id = BottomNavigationScreen.getTitle(currentDestination?.route)),
+                        text = stringResource(
+                            id = BottomNavigationScreen.getTitle(
+                                currentDestination?.route
+                            )
+                        ),
                         modifier = Modifier
                             .clickable(enabled = currentDestination?.route == BottomNavigationScreen.Sections.route) {
                                 navController.navigate(Destinations.ColorsScreen.route)
@@ -59,7 +58,20 @@ fun MainNavHost() {
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.tertiary
-                )
+                ),
+                actions = {
+                    if (currentDestination?.route == BottomNavigationScreen.Sections.route) {
+                        IconButton(onClick = {
+                            sectionsViewModel.reloadQuestions()
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.Refresh,
+                                null,
+                                tint = MaterialTheme.colorScheme.onTertiary
+                            )
+                        }
+                    }
+                }
             )
         },
         bottomBar = {
@@ -115,7 +127,7 @@ fun MainNavHost() {
         ) {
             composable(BottomNavigationScreen.Sections.route) {
                 SectionsScreen(navController) {
-                  //  navController.navigate(Destinations.QuestionDetail.route)
+                    //  navController.navigate(Destinations.QuestionDetail.route)
                 }
             }
             composable(BottomNavigationScreen.Favorite.route) { FavoriteScreen(navController) }
