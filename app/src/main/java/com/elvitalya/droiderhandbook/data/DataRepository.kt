@@ -6,7 +6,9 @@ import com.elvitalya.droiderhandbook.data.model.FirebaseQuestion
 import com.elvitalya.droiderhandbook.data.model.QuestionEntity
 import com.elvitalya.droiderhandbook.ui.main.MainActivity.Companion.TAG
 import com.elvitalya.droiderhandbook.utils.FireBaseHelper
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -54,6 +56,36 @@ class DataRepository @Inject constructor(
                 .addOnFailureListener {
                     Log.d(TAG, "fetchQuestionsFromFirebase: ${it.message}")
                     continuation.resume(emptyList())
+                }
+        }
+    }
+
+    suspend fun login(
+        email: String,
+        pass: String
+    ): String? {
+        return suspendCoroutine { continuation ->
+            Firebase.auth.signInWithEmailAndPassword(email, pass)
+                .addOnSuccessListener {
+                    continuation.resume(null)
+                }
+                .addOnFailureListener {
+                    continuation.resume(it.message ?: "Неизвестная ошибка")
+                }
+        }
+    }
+
+    suspend fun registration(
+        email: String,
+        pass: String
+    ): String? {
+        return suspendCoroutine { continuation ->
+            Firebase.auth.createUserWithEmailAndPassword(email, pass)
+                .addOnSuccessListener {
+                    continuation.resume(null)
+                }
+                .addOnFailureListener {
+                    continuation.resume(it.message ?: "Неизвестная ошибка")
                 }
         }
     }

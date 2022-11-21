@@ -32,9 +32,7 @@ class MainActivity : ComponentActivity() {
                     animationSpec = tween(3000)
                 ) { registered ->
                     if (registered) MainNavHost()
-                    else SignInScreen {
-                        isRegistered = true
-                    }
+                    else SignInScreen(onSuccess = {})
                 }
             }
         }
