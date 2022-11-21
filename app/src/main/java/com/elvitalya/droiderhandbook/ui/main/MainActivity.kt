@@ -29,10 +29,10 @@ class MainActivity : ComponentActivity() {
             DroiderHandBookTheme {
                 Crossfade(
                     targetState = isRegistered,
-                    animationSpec = tween(3000)
+                    animationSpec = tween(1000)
                 ) { registered ->
                     if (registered) MainNavHost()
-                    else SignInScreen(onSuccess = {})
+                    else SignInScreen(onSuccess = { isRegistered = true })
                 }
             }
         }

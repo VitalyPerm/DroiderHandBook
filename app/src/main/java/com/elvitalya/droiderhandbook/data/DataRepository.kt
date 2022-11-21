@@ -15,6 +15,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import com.elvitalya.droiderhandbook.utils.Result
 
 @Singleton
 class DataRepository @Inject constructor(
@@ -63,14 +64,14 @@ class DataRepository @Inject constructor(
     suspend fun login(
         email: String,
         pass: String
-    ): String? {
+    ): Result {
         return suspendCoroutine { continuation ->
             Firebase.auth.signInWithEmailAndPassword(email, pass)
                 .addOnSuccessListener {
-                    continuation.resume(null)
+                    continuation.resume(Result.Success)
                 }
                 .addOnFailureListener {
-                    continuation.resume(it.message ?: "Неизвестная ошибка")
+                    continuation.resume(Result.Error(it.message ?: "Неизвестная ошибка"))
                 }
         }
     }
@@ -78,14 +79,14 @@ class DataRepository @Inject constructor(
     suspend fun registration(
         email: String,
         pass: String
-    ): String? {
+    ): Result {
         return suspendCoroutine { continuation ->
             Firebase.auth.createUserWithEmailAndPassword(email, pass)
                 .addOnSuccessListener {
-                    continuation.resume(null)
+                    continuation.resume(Result.Success)
                 }
                 .addOnFailureListener {
-                    continuation.resume(it.message ?: "Неизвестная ошибка")
+                    continuation.resume(Result.Error(it.message ?: "Неизвестная ошибка"))
                 }
         }
     }

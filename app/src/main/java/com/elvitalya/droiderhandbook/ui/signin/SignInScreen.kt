@@ -1,8 +1,9 @@
 package com.elvitalya.droiderhandbook.ui.signin
 
-import android.util.Log
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -26,12 +27,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.elvitalya.droiderhandbook.ui.main.MainActivity
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
-@OptIn(ExperimentalMaterial3Api::class)
+
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SignInScreen(
     onSuccess: () -> Unit,
@@ -46,19 +44,34 @@ fun SignInScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.tertiary)
     ) { loginSelected ->
-        when (loginSelected) {
-            SignInScreenAuthMethod.UNSELECTED -> {
-                LoginOrRegisterOption { authMethod ->
-                    viewModel.onAuthMethodSelected(authMethod)
+        AnimatedContent(targetState = screenState.loading) { loading ->
+            if (loading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(), contentAlignment = Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(100.dp),
+                        color = MaterialTheme.colorScheme.onTertiary
+                    )
                 }
-            }
-            else -> {
-                LoginOrRegisterInput(
-                    screenState = screenState,
-                    onEmailInputChanged = viewModel::onEmailInputChanged,
-                    onPassInputChanged = viewModel::onPassInputChanged,
-                    onClickArrow = viewModel::onClickArrow
-                )
+            } else {
+                when (loginSelected) {
+                    SignInScreenAuthMethod.UNSELECTED -> {
+                        LoginOrRegisterOption { authMethod ->
+                            viewModel.onAuthMethodSelected(authMethod)
+                        }
+                    }
+                    else -> {
+                        LoginOrRegisterInput(
+                            screenState = screenState,
+                            onEmailInputChanged = viewModel::onEmailInputChanged,
+                            onPassInputChanged = viewModel::onPassInputChanged,
+                            onClickArrow = { viewModel.onClickArrow(onSuccess) }
+                        )
+                    }
+                }
             }
         }
     }

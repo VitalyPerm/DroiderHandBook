@@ -1,10 +1,9 @@
 package com.elvitalya.droiderhandbook.ui.signin
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elvitalya.droiderhandbook.data.DataRepository
-import com.elvitalya.droiderhandbook.ui.main.MainActivity.Companion.TAG
+import com.elvitalya.droiderhandbook.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -41,23 +40,23 @@ class SignInViewModel @Inject constructor(
         screenState.value = screenState.value.copy(pass = pass)
     }
 
-    fun onClickArrow() {
+    fun onClickArrow(onSuccess: () -> Unit) {
         viewModelScope.launch {
             val email = screenState.value.email
             val pass = screenState.value.pass
             if (screenState.value.authMethod == SignInScreenAuthMethod.LOGIN) {
-                val response = repository.login(email, pass)
-                if (response == null) {
-                    Log.d(TAG, "onClickArrow: login success")
-                } else {
-                    Log.d(TAG, "onClickArrow: login error $response")
+                screenState.value = screenState.value.copy(loading = true)
+                when (val response = repository.login(email, pass)) {
+                    is Result.Error -> screenState.value =
+                        screenState.value.copy(loading = false, errorMessage = response.message)
+                    is Result.Success -> onSuccess()
                 }
             } else {
-                val response = repository.registration(email, pass)
-                if (response == null) {
-                    Log.d(TAG, "onClickArrow: login registration")
-                } else {
-                    Log.d(TAG, "onClickArrow: login registration $response")
+                screenState.value = screenState.value.copy(loading = true)
+                when (val response = repository.registration(email, pass)) {
+                    is Result.Error -> screenState.value =
+                        screenState.value.copy(loading = false, errorMessage = response.message)
+                    is Result.Success -> onSuccess()
                 }
             }
         }
