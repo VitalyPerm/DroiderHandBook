@@ -22,11 +22,13 @@ import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.elvitalya.droiderhandbook.R
 
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -59,12 +61,12 @@ fun SignInScreen(
             } else {
                 when (loginSelected) {
                     SignInScreenAuthMethod.UNSELECTED -> {
-                        LoginOrRegisterOption { authMethod ->
+                        LoginOrRegisterChooserScreen { authMethod ->
                             viewModel.onAuthMethodSelected(authMethod)
                         }
                     }
                     else -> {
-                        LoginOrRegisterInput(
+                        InputScreen(
                             screenState = screenState,
                             onEmailInputChanged = viewModel::onEmailInputChanged,
                             onPassInputChanged = viewModel::onPassInputChanged,
@@ -75,18 +77,21 @@ fun SignInScreen(
             }
         }
     }
-
-
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LoginOrRegisterInput(
+private fun InputScreen(
     screenState: SignInScreenState,
     onEmailInputChanged: (String) -> Unit,
     onPassInputChanged: (String) -> Unit,
     onClickArrow: () -> Unit
 ) {
+
+    val title = stringResource(
+        id = if (screenState.authMethod == SignInScreenAuthMethod.LOGIN)
+            R.string.sign_in else R.string.registration
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -99,7 +104,7 @@ private fun LoginOrRegisterInput(
             horizontalAlignment = CenterHorizontally
         ) {
             Text(
-                text = if (screenState.authMethod == SignInScreenAuthMethod.LOGIN) "Вход" else "Регистрация",
+                text = title,
                 modifier = Modifier
                     .padding(top = 24.dp)
                     .background(MaterialTheme.colorScheme.onTertiary, RoundedCornerShape(16.dp))
@@ -110,110 +115,134 @@ private fun LoginOrRegisterInput(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            AnimatedVisibility(screenState.errorMessage.isNotBlank()) {
-                Text(
-                    text = screenState.errorMessage,
-                    modifier = Modifier
-                        .padding(top = 24.dp)
-                        .background(MaterialTheme.colorScheme.onTertiary, RoundedCornerShape(16.dp))
-                        .padding(24.dp),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.Red
-                )
-            }
+            ErrorCard(message = screenState.errorMessage)
         }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .background(
-                    MaterialTheme.colorScheme.onTertiary,
-                    RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
-                ),
-            verticalAlignment = CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column(
-                modifier = Modifier,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                TextField(
-                    value = screenState.email,
-                    onValueChange = { onEmailInputChanged(it) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    label = {
-                        Text(
-                            text = "Почта",
-                            color = Color.Black
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(0.65f)
-                        .padding(8.dp)
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                TextField(
-                    value = screenState.pass,
-                    onValueChange = { onPassInputChanged(it) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    label = {
-                        Text(
-                            text = "Пароль",
-                            color = Color.Black
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(0.65f)
-                        .padding(8.dp)
-                )
-
-            }
-            IconButton(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .background(MaterialTheme.colorScheme.tertiary, CircleShape)
-                    .align(CenterVertically),
-                onClick = onClickArrow
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ArrowForward,
-                    contentDescription = null
-                )
-            }
-        }
-
+        LoginPassInput(
+            email = screenState.email,
+            onEmailInputChanged = onEmailInputChanged,
+            pass = screenState.pass,
+            onPassInputChanged = onPassInputChanged,
+            onClickArrow = onClickArrow
+        )
     }
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LoginOrRegisterOption(
+fun LoginPassInput(
+    email: String,
+    onEmailInputChanged: (String) -> Unit,
+    pass: String,
+    onPassInputChanged: (String) -> Unit,
+    onClickArrow: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(0.85f)
+            .background(
+                MaterialTheme.colorScheme.onTertiary,
+                RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
+            ),
+        verticalAlignment = CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(
+            modifier = Modifier,
+            horizontalAlignment = CenterHorizontally
+        ) {
+            TextField(
+                value = email,
+                onValueChange = { onEmailInputChanged(it) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                label = {
+                    Text(
+                        text = stringResource(id = R.string.email),
+                        color = Color.Black
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .padding(8.dp)
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            TextField(
+                value = pass,
+                onValueChange = { onPassInputChanged(it) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                label = {
+                    Text(
+                        text = stringResource(id = R.string.pass),
+                        color = Color.Black
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .padding(8.dp)
+            )
+
+        }
+        IconButton(
+            modifier = Modifier
+                .padding(16.dp)
+                .background(MaterialTheme.colorScheme.tertiary, CircleShape)
+                .align(CenterVertically),
+            onClick = onClickArrow
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowForward,
+                contentDescription = null
+            )
+        }
+    }
+}
+
+
+@Composable
+private fun ErrorCard(message: String) {
+    AnimatedVisibility(message.isNotBlank()) {
+        Text(
+            text = message,
+            modifier = Modifier
+                .padding(top = 24.dp)
+                .padding(16.dp)
+                .background(MaterialTheme.colorScheme.onTertiary, RoundedCornerShape(16.dp))
+                .padding(24.dp),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Medium,
+            color = Color.Red
+        )
+    }
+}
+
+@Composable
+private fun LoginOrRegisterChooserScreen(
     onAuthMethodSelected: (SignInScreenAuthMethod) -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Center
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth(0.7f)
                 .background(MaterialTheme.colorScheme.onTertiary, RoundedCornerShape(16.dp))
                 .padding(vertical = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = CenterHorizontally
         ) {
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(16.dp))
                     .background(MaterialTheme.colorScheme.tertiary)
                     .clickable { onAuthMethodSelected(SignInScreenAuthMethod.LOGIN) },
-                contentAlignment = Alignment.Center
+                contentAlignment = Center
             ) {
                 Text(
-                    text = "Вход",
+                    text = stringResource(id = R.string.sign_in),
                     modifier = Modifier
                         .padding(8.dp)
                         .padding(horizontal = 24.dp),
@@ -228,10 +257,10 @@ private fun LoginOrRegisterOption(
                     .clip(RoundedCornerShape(16.dp))
                     .background(MaterialTheme.colorScheme.tertiary)
                     .clickable { onAuthMethodSelected(SignInScreenAuthMethod.REGISTRATION) },
-                contentAlignment = Alignment.Center
+                contentAlignment = Center
             ) {
                 Text(
-                    text = "Регистрация",
+                    text = stringResource(id = R.string.registration),
                     modifier = Modifier
                         .padding(8.dp)
                         .padding(horizontal = 24.dp),

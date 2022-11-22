@@ -46,13 +46,22 @@ class SectionsViewModel @Inject constructor(
                     if (questions.isEmpty()) dataRepository.loadQuestions()
                     else {
                         javaQuestions.value =
-                            questions.filter { question -> question.id in FireBaseHelper.javaQuestionsIds }
+                            questions.filter { question ->
+                                question.id.toString().startsWith(FireBaseHelper.javaQuestionsIds)
+                            }
                         kotlinQuestions.value =
-                            questions.filter { question -> question.id in FireBaseHelper.kotlinQuestionsIds }
+                            questions.filter { question ->
+                                question.id.toString().startsWith(FireBaseHelper.kotlinQuestionsIds)
+                            }
                         basicQuestions.value =
-                            questions.filter { question -> question.id in FireBaseHelper.basicQuestionsIds }
+                            questions.filter { question ->
+                                question.id.toString().startsWith(FireBaseHelper.basicQuestionsIds)
+                            }
                         androidQuestions.value =
-                            questions.filter { question -> question.id in FireBaseHelper.androidQuestionsIds }
+                            questions.filter { question ->
+                                question.id.toString()
+                                    .startsWith(FireBaseHelper.androidQuestionsIds)
+                            }
                         loading.value = false
                     }
                 }

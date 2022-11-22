@@ -44,15 +44,15 @@ class SignInViewModel @Inject constructor(
         viewModelScope.launch {
             val email = screenState.value.email
             val pass = screenState.value.pass
+            screenState.value = screenState.value.copy(loading = true)
+
             if (screenState.value.authMethod == SignInScreenAuthMethod.LOGIN) {
-                screenState.value = screenState.value.copy(loading = true)
                 when (val response = repository.login(email, pass)) {
                     is Result.Error -> screenState.value =
                         screenState.value.copy(loading = false, errorMessage = response.message)
                     is Result.Success -> onSuccess()
                 }
             } else {
-                screenState.value = screenState.value.copy(loading = true)
                 when (val response = repository.registration(email, pass)) {
                     is Result.Error -> screenState.value =
                         screenState.value.copy(loading = false, errorMessage = response.message)

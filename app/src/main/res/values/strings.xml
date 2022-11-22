@@ -7,4 +7,12 @@
     <string name="reg_or_auth">Регистрация</string>
     <string name="question_details">Подробно</string>
     <string name="empty_string"> </string>
+    <string name="success">Успешно</string>
+
+
+    <!--  SignInOrReg  -->
+    <string name="sign_in">Вход</string>
+    <string name="registration">Регистрация</string>
+    <string name="email">Почта</string>
+    <string name="pass">Пароль</string>
 </resources>

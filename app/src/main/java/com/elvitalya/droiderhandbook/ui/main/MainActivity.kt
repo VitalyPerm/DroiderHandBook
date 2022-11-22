@@ -1,6 +1,7 @@
 package com.elvitalya.droiderhandbook.ui.main
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.Crossfade
@@ -9,6 +10,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import com.elvitalya.droiderhandbook.R
 import com.elvitalya.droiderhandbook.ui.signin.SignInScreen
 import com.elvitalya.droiderhandbook.ui.theme.DroiderHandBookTheme
 import com.google.firebase.auth.ktx.auth
@@ -24,6 +27,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val context = LocalContext.current
             var isRegistered by remember { mutableStateOf(false) }
             isRegistered = Firebase.auth.currentUser != null
             DroiderHandBookTheme {
@@ -32,7 +36,13 @@ class MainActivity : ComponentActivity() {
                     animationSpec = tween(1000)
                 ) { registered ->
                     if (registered) MainNavHost()
-                    else SignInScreen(onSuccess = { isRegistered = true })
+                    else SignInScreen(
+                        onSuccess = {
+                            isRegistered = true
+                            Toast.makeText(context, getString(R.string.success), Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    )
                 }
             }
         }
