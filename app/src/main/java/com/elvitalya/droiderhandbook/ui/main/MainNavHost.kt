@@ -1,6 +1,7 @@
 package com.elvitalya.droiderhandbook.ui.main
 
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,8 +11,7 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -25,6 +25,7 @@ import com.elvitalya.droiderhandbook.R
 import com.elvitalya.droiderhandbook.ui.favorite.FavoriteScreen
 import com.elvitalya.droiderhandbook.ui.questiondetail.QuestionDetailsScreen
 import com.elvitalya.droiderhandbook.ui.search.SearchScreen
+import com.elvitalya.droiderhandbook.ui.sections.ReloadQuestionsAlertDialog
 import com.elvitalya.droiderhandbook.ui.sections.SectionsScreen
 import com.elvitalya.droiderhandbook.ui.sections.SectionsViewModel
 import com.elvitalya.droiderhandbook.ui.test.TestScreen
@@ -39,6 +40,8 @@ fun MainNavHost(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
+    var reloadQuestionsAlertDialogState by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -50,6 +53,7 @@ fun MainNavHost(
                             )
                         ),
                         modifier = Modifier
+                            // костыль что б глянуть палитру
                             .clickable(enabled = currentDestination?.route == BottomNavigationScreen.Sections.route) {
                                 navController.navigate(Destinations.ColorsScreen.route)
                             },
@@ -60,9 +64,9 @@ fun MainNavHost(
                     containerColor = MaterialTheme.colorScheme.tertiary
                 ),
                 actions = {
-                    if (currentDestination?.route == BottomNavigationScreen.Sections.route) {
+                    AnimatedVisibility(currentDestination?.route == BottomNavigationScreen.Sections.route) {
                         IconButton(onClick = {
-                            sectionsViewModel.reloadQuestions()
+                            reloadQuestionsAlertDialogState = true
                         }) {
                             Icon(
                                 imageVector = Icons.Filled.Refresh,
@@ -137,6 +141,15 @@ fun MainNavHost(
             composable(Destinations.ColorsScreen.route) { ColorsScreen() }
         }
     }
+
+    ReloadQuestionsAlertDialog(
+        state = reloadQuestionsAlertDialogState,
+        onYesClick = {
+            reloadQuestionsAlertDialogState = false
+            sectionsViewModel.reloadQuestions()
+        },
+        onNoClick = { reloadQuestionsAlertDialogState = false }
+    )
 }
 
 val bottomNavigationItems = listOf(

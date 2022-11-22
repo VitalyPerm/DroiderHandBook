@@ -31,9 +31,11 @@ class SectionsViewModel @Inject constructor(
     fun reloadQuestions() {
         viewModelScope.launch {
             try {
+                loading.value = true
                 dataRepository.loadQuestions()
+                loading.value = false
             } catch (e: Exception) {
-                Log.d(TAG, "getQuestions: error ${e.message}")
+                loading.value = false
             }
         }
     }
@@ -43,7 +45,7 @@ class SectionsViewModel @Inject constructor(
             try {
                 loading.value = true
                 dataRepository.getQuestions().collect { questions ->
-                    if (questions.isEmpty()) dataRepository.loadQuestions()
+                    if (questions.isEmpty()) reloadQuestions()
                     else {
                         javaQuestions.value =
                             questions.filter { question ->

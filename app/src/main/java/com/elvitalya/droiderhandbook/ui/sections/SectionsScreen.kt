@@ -1,6 +1,8 @@
 package com.elvitalya.droiderhandbook.ui.sections
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,9 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.elvitalya.droiderhandbook.data.model.QuestionEntity
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SectionsScreen(
     navController: NavHostController,
@@ -51,29 +52,31 @@ fun SectionsScreen(
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        if (loading.not()) {
-            Content(
-                javaQuestions = javaQuestions,
-                kotlinQuestions = kotlinQuestions,
-                androidQuestions = androidQuestions,
-                basicQuestions = basicQuestions,
-                onQuestionClick = onQuestionClick,
-                expandedSections = expandedSections,
-                onSectionClick = {
-                    expandedSections = when (it) {
-                        Sections.Java -> expandedSections.copy(java = expandedSections.java.not())
-                        Sections.Kotlin -> expandedSections.copy(kotlin = expandedSections.kotlin.not())
-                        Sections.Android -> expandedSections.copy(android = expandedSections.android.not())
-                        Sections.Basic -> expandedSections.copy(basic = expandedSections.basic.not())
+        AnimatedContent(targetState = loading) { loading ->
+            if (loading.not()) {
+                Content(
+                    javaQuestions = javaQuestions,
+                    kotlinQuestions = kotlinQuestions,
+                    androidQuestions = androidQuestions,
+                    basicQuestions = basicQuestions,
+                    onQuestionClick = onQuestionClick,
+                    expandedSections = expandedSections,
+                    onSectionClick = {
+                        expandedSections = when (it) {
+                            Sections.Java -> expandedSections.copy(java = expandedSections.java.not())
+                            Sections.Kotlin -> expandedSections.copy(kotlin = expandedSections.kotlin.not())
+                            Sections.Android -> expandedSections.copy(android = expandedSections.android.not())
+                            Sections.Basic -> expandedSections.copy(basic = expandedSections.basic.not())
+                        }
                     }
-                }
-            )
-        } else {
-            CircularProgressIndicator(
-                color = MaterialTheme.colorScheme.tertiary,
-                modifier = Modifier
-                    .size(150.dp)
-            )
+                )
+            } else {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.tertiary,
+                    modifier = Modifier
+                        .size(100.dp)
+                )
+            }
         }
     }
 }
@@ -215,6 +218,60 @@ fun SectionContentItem(
             overflow = TextOverflow.Ellipsis
         )
 
+    }
+}
+
+@Composable
+fun ReloadQuestionsAlertDialog(
+    state: Boolean,
+    onYesClick: () -> Unit,
+    onNoClick: () -> Unit
+) {
+    AnimatedVisibility(visible = state) {
+        AlertDialog(
+            title = {
+                Text(
+                    text = "Хотите обновить список вопросов?",
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Start
+                )
+            },
+            shape = RoundedCornerShape(8.dp),
+            onDismissRequest = onNoClick,
+            confirmButton = {
+                TextButton(onClick = onYesClick) {
+                    Text(
+                        text = "Да",
+                        fontSize = 24.sp,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .background(
+                                MaterialTheme.colorScheme.tertiary,
+                                RoundedCornerShape(16.dp)
+                            )
+                            .padding(8.dp),
+                        color = MaterialTheme.colorScheme.onTertiary
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = onNoClick) {
+                    Text(
+                        text = "Нет",
+                        fontSize = 24.sp,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .background(
+                                MaterialTheme.colorScheme.tertiary,
+                                RoundedCornerShape(16.dp)
+                            )
+                            .padding(8.dp),
+                        color = MaterialTheme.colorScheme.onTertiary
+                    )
+                }
+            }
+        )
     }
 }
 

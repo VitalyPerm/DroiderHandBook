@@ -23,22 +23,8 @@ class DataRepository @Inject constructor(
 ) {
     fun getQuestions(): Flow<List<QuestionEntity>> = questionsDao.getQuestionsFlow()
 
-    fun loadQuestionsOld() {
-        Log.d(TAG, "getQuestions: loadQuestions called")
-        FireBaseHelper.questions
-            .get()
-            .addOnSuccessListener { snapShot ->
-                val response: List<FirebaseQuestion> =
-                    snapShot.documents.mapNotNull { documentSnapshot -> documentSnapshot?.toObject() }
-                runBlocking {
-                    response.mapNotNull { it.mapToEntity() }.forEach {
-                        questionsDao.addQuestion(it)
-                    }
-                }
-            }
-    }
-
     suspend fun loadQuestions() {
+        deleteAll()
         val firebaseQuestions = fetchQuestionsFromFirebase()
         firebaseQuestions.mapNotNull { it.mapToEntity() }.forEach {
             questionsDao.addQuestion(it)
@@ -90,4 +76,6 @@ class DataRepository @Inject constructor(
                 }
         }
     }
+
+    private suspend fun deleteAll() = questionsDao.deleteAll()
 }

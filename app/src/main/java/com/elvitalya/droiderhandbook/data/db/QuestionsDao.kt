@@ -21,4 +21,7 @@ interface QuestionsDao {
 
     @Delete
     suspend fun deleteQuestion(note: QuestionEntity)
+
+    @Query("DELETE FROM questionentity")
+    suspend fun deleteAll()
 }
