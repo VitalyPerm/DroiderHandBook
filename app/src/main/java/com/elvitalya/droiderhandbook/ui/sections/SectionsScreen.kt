@@ -24,13 +24,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.elvitalya.droiderhandbook.data.model.QuestionEntity
+import com.elvitalya.droiderhandbook.ui.GlobalViewModel
+import com.elvitalya.droiderhandbook.ui.main.Destinations
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SectionsScreen(
     navController: NavHostController,
-    vm: SectionsViewModel = hiltViewModel(),
-    onQuestionClick: () -> Unit
+    vm: GlobalViewModel = hiltViewModel()
 ) {
 
     val javaQuestions by vm.javaQuestions.collectAsState()
@@ -59,7 +60,11 @@ fun SectionsScreen(
                     kotlinQuestions = kotlinQuestions,
                     androidQuestions = androidQuestions,
                     basicQuestions = basicQuestions,
-                    onQuestionClick = onQuestionClick,
+                    onQuestionClick = { questionId ->
+                        navController.navigate(
+                            Destinations.QuestionDetail.createRoute(questionId)
+                        )
+                    },
                     expandedSections = expandedSections,
                     onSectionClick = {
                         expandedSections = when (it) {
@@ -87,7 +92,7 @@ private fun Content(
     kotlinQuestions: List<QuestionEntity>,
     androidQuestions: List<QuestionEntity>,
     basicQuestions: List<QuestionEntity>,
-    onQuestionClick: () -> Unit,
+    onQuestionClick: (Int) -> Unit,
     expandedSections: SectionScreenContentVisibility,
     onSectionClick: (Sections) -> Unit
 ) {
@@ -186,7 +191,7 @@ fun SectionTitle(
 @Composable
 fun SectionContentItem(
     questionEntity: QuestionEntity,
-    onQuestionClick: () -> Unit,
+    onQuestionClick: (Int) -> Unit,
 ) {
 
     Column(
@@ -198,7 +203,7 @@ fun SectionContentItem(
                 RoundedCornerShape(16.dp)
             )
             .clip(RoundedCornerShape(16.dp))
-            .clickable { onQuestionClick() }
+            .clickable { onQuestionClick(questionEntity.id) }
 
     ) {
         Text(

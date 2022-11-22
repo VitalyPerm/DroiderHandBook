@@ -1,5 +1,6 @@
 package com.elvitalya.droiderhandbook.ui.questiondetail
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -11,8 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.elvitalya.droiderhandbook.ui.main.MainActivity.Companion.TAG
 
 @Composable
-fun QuestionDetailsScreen() {
-
+fun QuestionDetailsScreen(id: Int) {
+    Log.d(TAG, "QuestionDetailsScreen: id is $id")
 }

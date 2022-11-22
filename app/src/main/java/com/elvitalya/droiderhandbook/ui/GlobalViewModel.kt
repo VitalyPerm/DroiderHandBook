@@ -1,4 +1,4 @@
-package com.elvitalya.droiderhandbook.ui.sections
+package com.elvitalya.droiderhandbook.ui
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -8,15 +8,12 @@ import com.elvitalya.droiderhandbook.data.model.QuestionEntity
 import com.elvitalya.droiderhandbook.ui.main.MainActivity.Companion.TAG
 import com.elvitalya.droiderhandbook.utils.FireBaseHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SectionsViewModel @Inject constructor(
+class GlobalViewModel @Inject constructor(
     private val dataRepository: DataRepository
 ) : ViewModel() {
 
