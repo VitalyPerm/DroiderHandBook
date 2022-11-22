@@ -1,4 +1,4 @@
-package com.elvitalya.droiderhandbook.utils
+package com.elvitalya.droiderhandbook.navigation
 
 object NavConstants {
     const val QUESTION = "question"

@@ -1,6 +1,5 @@
 package com.elvitalya.droiderhandbook.ui.main
 
-import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -24,6 +23,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.elvitalya.droiderhandbook.R
+import com.elvitalya.droiderhandbook.navigation.BottomNavigationScreen
+import com.elvitalya.droiderhandbook.navigation.Destinations
 import com.elvitalya.droiderhandbook.ui.favorite.FavoriteScreen
 import com.elvitalya.droiderhandbook.ui.questiondetail.QuestionDetailsScreen
 import com.elvitalya.droiderhandbook.ui.search.SearchScreen
@@ -32,7 +33,7 @@ import com.elvitalya.droiderhandbook.ui.sections.SectionsScreen
 import com.elvitalya.droiderhandbook.ui.GlobalViewModel
 import com.elvitalya.droiderhandbook.ui.test.TestScreen
 import com.elvitalya.droiderhandbook.ui.theme.ColorsScreen
-import com.elvitalya.droiderhandbook.utils.NavConstants
+import com.elvitalya.droiderhandbook.navigation.NavConstants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,7 +77,6 @@ fun MainNavHost(
         BottomNavigation(
             backgroundColor = MaterialTheme.colorScheme.tertiary,
         ) {
-
             bottomNavigationItems.forEach { screen ->
                 val selected =
                     currentDestination?.hierarchy?.any { it.route == screen.route } == true
@@ -100,7 +100,7 @@ fun MainNavHost(
                             saveState = true
                         }
                         // Avoid multiple copies of the same destination when
-                        // reselecting the same item
+                        // re-selecting the same item
                         launchSingleTop = true
                         // Restore state when reselecting a previously selected item
                         restoreState = true
@@ -140,33 +140,13 @@ fun MainNavHost(
     }, onNoClick = { reloadQuestionsAlertDialogState = false })
 }
 
-val bottomNavigationItems = listOf(
+private val bottomNavigationItems = listOf(
     BottomNavigationScreen.Sections,
     BottomNavigationScreen.Favorite,
     BottomNavigationScreen.Search,
     BottomNavigationScreen.Test
 )
 
-sealed class BottomNavigationScreen(val route: String, @StringRes val resourceId: Int) {
-    object Sections : BottomNavigationScreen(NavConstants.SECTIONS, R.string.sections)
-    object Favorite : BottomNavigationScreen(NavConstants.FAVORITE, R.string.favorite)
-    object Search : BottomNavigationScreen(NavConstants.SEARCH, R.string.search)
-    object Test : BottomNavigationScreen(NavConstants.TEST, R.string.test)
-}
-
-sealed class Destinations(val route: String, @StringRes val resourceId: Int) {
-    object QuestionDetail : Destinations(
-        route = "${NavConstants.QUESTION}/{${NavConstants.QUESTION_ID}}",
-        resourceId = R.string.details
-    ) {
-        fun createRoute(id: Int) = "${NavConstants.QUESTION}/$id"
-    }
-
-    object ColorsScreen : Destinations(
-        route = NavConstants.COLORS,
-        resourceId = R.string.colors
-    )
-}
 
 private fun getTopAppBarTitle(route: String?): Int = when (route) {
     BottomNavigationScreen.Favorite.route -> BottomNavigationScreen.Favorite.resourceId
