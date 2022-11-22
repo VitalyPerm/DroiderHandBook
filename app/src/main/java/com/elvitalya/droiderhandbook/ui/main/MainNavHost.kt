@@ -49,11 +49,10 @@ fun MainNavHost(
         TopAppBar(title = {
             Text(
                 text = stringResource(
-                    id = BottomNavigationScreen.getTitle(
+                    id = getTopAppBarTitle(
                         currentDestination?.route
                     )
                 ), modifier = Modifier
-                    // костыль что б глянуть палитру
                     .clickable(enabled = currentDestination?.route == BottomNavigationScreen.Sections.route) {
                         navController.navigate(Destinations.ColorsScreen.route)
                     }, color = MaterialTheme.colorScheme.onTertiary
@@ -153,22 +152,28 @@ sealed class BottomNavigationScreen(val route: String, @StringRes val resourceId
     object Favorite : BottomNavigationScreen(NavConstants.FAVORITE, R.string.favorite)
     object Search : BottomNavigationScreen(NavConstants.SEARCH, R.string.search)
     object Test : BottomNavigationScreen(NavConstants.TEST, R.string.test)
-
-    companion object {
-        fun getTitle(route: String?): Int = when (route) {
-            Favorite.route -> Favorite.resourceId
-            Search.route -> Search.resourceId
-            Sections.route -> Sections.resourceId
-            Test.route -> Test.resourceId
-            else -> R.string.empty_string
-        }
-    }
 }
 
-sealed class Destinations(val route: String) {
-    object QuestionDetail : Destinations("${NavConstants.QUESTION}/{${NavConstants.QUESTION_ID}}") {
+sealed class Destinations(val route: String, @StringRes val resourceId: Int) {
+    object QuestionDetail : Destinations(
+        route = "${NavConstants.QUESTION}/{${NavConstants.QUESTION_ID}}",
+        resourceId = R.string.details
+    ) {
         fun createRoute(id: Int) = "${NavConstants.QUESTION}/$id"
     }
 
-    object ColorsScreen : Destinations(NavConstants.COLORS)
+    object ColorsScreen : Destinations(
+        route = NavConstants.COLORS,
+        resourceId = R.string.colors
+    )
+}
+
+private fun getTopAppBarTitle(route: String?): Int = when (route) {
+    BottomNavigationScreen.Favorite.route -> BottomNavigationScreen.Favorite.resourceId
+    BottomNavigationScreen.Search.route -> BottomNavigationScreen.Search.resourceId
+    BottomNavigationScreen.Sections.route -> BottomNavigationScreen.Sections.resourceId
+    BottomNavigationScreen.Test.route -> BottomNavigationScreen.Test.resourceId
+    Destinations.QuestionDetail.route -> Destinations.QuestionDetail.resourceId
+    Destinations.ColorsScreen.route -> Destinations.ColorsScreen.resourceId
+    else -> R.string.empty_string
 }

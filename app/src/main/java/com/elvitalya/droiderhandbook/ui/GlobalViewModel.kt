@@ -22,7 +22,21 @@ class GlobalViewModel @Inject constructor(
     val basicQuestions = MutableStateFlow<List<QuestionEntity>>(emptyList())
     val androidQuestions = MutableStateFlow<List<QuestionEntity>>(emptyList())
 
+
+    val detailQuestion = MutableStateFlow<QuestionEntity?>(null)
+
     val loading = MutableStateFlow(true)
+
+    fun getQuestionById(id: Int) {
+        viewModelScope.launch {
+            try {
+                val question = dataRepository.getQuestionById(id)
+                detailQuestion.value = question
+            } catch (e: Exception) {
+
+            }
+        }
+    }
 
 
     fun reloadQuestions() {

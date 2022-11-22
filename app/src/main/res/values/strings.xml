@@ -8,6 +8,8 @@
     <string name="question_details">Подробно</string>
     <string name="empty_string"> </string>
     <string name="success">Успешно</string>
+    <string name="details">Подробно</string>
+    <string name="colors">Палитра</string>
 
 
     <!--  SignInOrReg  -->

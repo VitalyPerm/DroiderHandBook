@@ -78,4 +78,6 @@ class DataRepository @Inject constructor(
     }
 
     private suspend fun deleteAll() = questionsDao.deleteAll()
+
+    suspend fun getQuestionById(id: Int): QuestionEntity = questionsDao.getQuestion(id)
 }
