@@ -10,7 +10,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -80,4 +79,6 @@ class DataRepository @Inject constructor(
     private suspend fun deleteAll() = questionsDao.deleteAll()
 
     suspend fun getQuestionById(id: Int): QuestionEntity = questionsDao.getQuestion(id)
+
+    suspend fun updateQuestion(question: QuestionEntity) = questionsDao.updateQuestion(question)
 }

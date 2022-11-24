@@ -3,6 +3,7 @@ package com.elvitalya.droiderhandbook.ui.sections
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,8 +27,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.elvitalya.droiderhandbook.data.model.QuestionEntity
+import com.elvitalya.droiderhandbook.navigation.Destinations
 import com.elvitalya.droiderhandbook.ui.GlobalViewModel
-import com.elvitalya.droiderhandbook.ui.main.Destinations
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -34,10 +37,10 @@ fun SectionsScreen(
     vm: GlobalViewModel = hiltViewModel()
 ) {
 
-    val javaQuestions by vm.javaQuestions.collectAsState()
-    val androidQuestions by vm.androidQuestions.collectAsState()
-    val kotlinQuestions by vm.kotlinQuestions.collectAsState()
-    val basicQuestions by vm.basicQuestions.collectAsState()
+    val javaQuestions by vm.javaQuestions.collectAsState(emptyList())
+    val androidQuestions by vm.androidQuestions.collectAsState(emptyList())
+    val kotlinQuestions by vm.kotlinQuestions.collectAsState(emptyList())
+    val basicQuestions by vm.basicQuestions.collectAsState(emptyList())
 
     val loading by vm.loading.collectAsState()
 
@@ -73,7 +76,8 @@ fun SectionsScreen(
                             Sections.Android -> expandedSections.copy(android = expandedSections.android.not())
                             Sections.Basic -> expandedSections.copy(basic = expandedSections.basic.not())
                         }
-                    }
+                    },
+                    onFavoriteClick = { vm.updateQuestion(question = it.copy(favorite = it.favorite.not())) }
                 )
             } else {
                 CircularProgressIndicator(
@@ -94,7 +98,8 @@ private fun Content(
     basicQuestions: List<QuestionEntity>,
     onQuestionClick: (Int) -> Unit,
     expandedSections: SectionScreenContentVisibility,
-    onSectionClick: (Sections) -> Unit
+    onSectionClick: (Sections) -> Unit,
+    onFavoriteClick: (QuestionEntity) -> Unit,
 ) {
 
     LazyColumn(
@@ -112,7 +117,8 @@ private fun Content(
             AnimatedVisibility(visible = expandedSections.java) {
                 SectionContentItem(
                     questionEntity = it,
-                    onQuestionClick = onQuestionClick
+                    onQuestionClick = onQuestionClick,
+                    onFavoriteClick = onFavoriteClick
                 )
             }
         }
@@ -128,7 +134,8 @@ private fun Content(
             AnimatedVisibility(visible = expandedSections.kotlin) {
                 SectionContentItem(
                     questionEntity = it,
-                    onQuestionClick = onQuestionClick
+                    onQuestionClick = onQuestionClick,
+                    onFavoriteClick = onFavoriteClick
                 )
             }
         }
@@ -143,7 +150,8 @@ private fun Content(
             AnimatedVisibility(visible = expandedSections.android) {
                 SectionContentItem(
                     questionEntity = it,
-                    onQuestionClick = onQuestionClick
+                    onQuestionClick = onQuestionClick,
+                    onFavoriteClick = onFavoriteClick
                 )
             }
         }
@@ -158,7 +166,8 @@ private fun Content(
             AnimatedVisibility(visible = expandedSections.basic) {
                 SectionContentItem(
                     questionEntity = it,
-                    onQuestionClick = onQuestionClick
+                    onQuestionClick = onQuestionClick,
+                    onFavoriteClick = onFavoriteClick
                 )
             }
         }
@@ -192,7 +201,13 @@ fun SectionTitle(
 fun SectionContentItem(
     questionEntity: QuestionEntity,
     onQuestionClick: (Int) -> Unit,
+    onFavoriteClick: (QuestionEntity) -> Unit,
 ) {
+
+    val favoriteIconTint by animateColorAsState(
+        targetValue = if (questionEntity.favorite) MaterialTheme.colorScheme.tertiary
+        else MaterialTheme.colorScheme.onTertiary
+    )
 
     Column(
         modifier = Modifier
@@ -206,20 +221,36 @@ fun SectionContentItem(
             .clickable { onQuestionClick(questionEntity.id) }
 
     ) {
-        Text(
-            text = questionEntity.title,
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
-        )
+        ) {
+            Text(
+                text = questionEntity.title,
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .align(Alignment.Center),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+            IconButton(
+                onClick = { onFavoriteClick(questionEntity) },
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = null,
+                    tint = favoriteIconTint
+                )
+            }
+        }
         Text(
             text = questionEntity.text,
             modifier = Modifier
                 .padding(8.dp),
-            maxLines = 2,
+            maxLines = 3,
             overflow = TextOverflow.Ellipsis
         )
 

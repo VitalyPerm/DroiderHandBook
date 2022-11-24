@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class QuestionEntity(
     @PrimaryKey val id: Int,
     val title: String,
-    val text: String
+    val text: String,
+    val favorite: Boolean = false
 )

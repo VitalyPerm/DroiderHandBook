@@ -9,6 +9,7 @@ import com.elvitalya.droiderhandbook.ui.main.MainActivity.Companion.TAG
 import com.elvitalya.droiderhandbook.utils.FireBaseHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,10 +18,42 @@ class GlobalViewModel @Inject constructor(
     private val dataRepository: DataRepository
 ) : ViewModel() {
 
-    val javaQuestions = MutableStateFlow<List<QuestionEntity>>(emptyList())
-    val kotlinQuestions = MutableStateFlow<List<QuestionEntity>>(emptyList())
-    val basicQuestions = MutableStateFlow<List<QuestionEntity>>(emptyList())
-    val androidQuestions = MutableStateFlow<List<QuestionEntity>>(emptyList())
+    //  val javaQuestions = MutableStateFlow<List<QuestionEntity>>(emptyList())
+
+    private val allQuestions = MutableStateFlow<List<QuestionEntity>>(emptyList())
+
+    val javaQuestions
+        get() = allQuestions.map { list ->
+            list.filter { question ->
+                question.id.toString().startsWith(FireBaseHelper.javaQuestionsIds)
+            }
+        }
+
+    val kotlinQuestions
+        get() = allQuestions.map { list ->
+            list.filter { question ->
+                question.id.toString().startsWith(FireBaseHelper.kotlinQuestionsIds)
+            }
+        }
+
+    val basicQuestions
+        get() = allQuestions.map { list ->
+            list.filter { question ->
+                question.id.toString().startsWith(FireBaseHelper.basicQuestionsIds)
+            }
+        }
+
+    val androidQuestions
+        get() = allQuestions.map { list ->
+            list.filter { question ->
+                question.id.toString().startsWith(FireBaseHelper.androidQuestionsIds)
+            }
+        }
+
+    val favoriteQuestions
+        get() = allQuestions.map { list ->
+            list.filter { question -> question.favorite }
+        }
 
 
     val detailQuestion = MutableStateFlow<QuestionEntity?>(null)
@@ -58,23 +91,7 @@ class GlobalViewModel @Inject constructor(
                 dataRepository.getQuestions().collect { questions ->
                     if (questions.isEmpty()) reloadQuestions()
                     else {
-                        javaQuestions.value =
-                            questions.filter { question ->
-                                question.id.toString().startsWith(FireBaseHelper.javaQuestionsIds)
-                            }
-                        kotlinQuestions.value =
-                            questions.filter { question ->
-                                question.id.toString().startsWith(FireBaseHelper.kotlinQuestionsIds)
-                            }
-                        basicQuestions.value =
-                            questions.filter { question ->
-                                question.id.toString().startsWith(FireBaseHelper.basicQuestionsIds)
-                            }
-                        androidQuestions.value =
-                            questions.filter { question ->
-                                question.id.toString()
-                                    .startsWith(FireBaseHelper.androidQuestionsIds)
-                            }
+                        allQuestions.value = questions
                         loading.value = false
                     }
                 }
@@ -83,6 +100,12 @@ class GlobalViewModel @Inject constructor(
                 Log.d(TAG, "getQuestions: error ${e.message}")
             }
 
+        }
+    }
+
+    fun updateQuestion(question: QuestionEntity) {
+        viewModelScope.launch {
+            dataRepository.updateQuestion(question)
         }
     }
 }

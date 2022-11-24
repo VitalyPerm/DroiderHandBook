@@ -13,15 +13,15 @@ interface QuestionsDao {
     @Query("SELECT * FROM questionentity WHERE id=(:id)")
     suspend fun getQuestion(id: Int): QuestionEntity
 
-    @Update
-    suspend fun updateQuestion(note: QuestionEntity)
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addQuestion(note: QuestionEntity)
+    suspend fun addQuestion(question: QuestionEntity)
 
     @Delete
-    suspend fun deleteQuestion(note: QuestionEntity)
+    suspend fun deleteQuestion(question: QuestionEntity)
 
     @Query("DELETE FROM questionentity")
     suspend fun deleteAll()
+
+    @Update
+    suspend fun updateQuestion(question: QuestionEntity)
 }
