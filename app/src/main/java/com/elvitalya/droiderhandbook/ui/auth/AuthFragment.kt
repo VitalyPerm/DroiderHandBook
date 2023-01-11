@@ -31,11 +31,18 @@ class AuthFragment : KeyedFragment() {
     ): View = createComposeView(requireContext()).apply {
         setContent {
 
-            val screenState by viewModel.screenState.collectAsState()
+            val authMethod by viewModel.authMethod.collectAsState()
+            val email by viewModel.email.collectAsState()
+            val password by viewModel.password.collectAsState()
+            val errorMessage by viewModel.errorMessage.collectAsState()
+            val viewState by viewModel.viewState.collectAsState()
 
             AuthScreen(
-                onSuccess = { },
-                screenState = screenState,
+                authMethod = authMethod,
+                email = email,
+                password = password,
+                errorMessage = errorMessage,
+                viewState = viewState,
                 onAuthMethodSelected = viewModel::onAuthMethodSelected,
                 onEmailInputChanged = viewModel::onEmailInputChanged,
                 onPassInputChanged = viewModel::onPassInputChanged,

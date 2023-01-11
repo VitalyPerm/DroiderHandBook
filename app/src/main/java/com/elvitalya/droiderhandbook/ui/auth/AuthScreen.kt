@@ -28,14 +28,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.elvitalya.droiderhandbook.R
+import com.elvitalya.droiderhandbook.utils.ViewState
 import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.navigationBarsWithImePadding
 
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AuthScreen(
-    onSuccess: () -> Unit,
-    screenState: AuthScreenState,
+    authMethod: AuthMethod,
+    email: String,
+    password: String,
+    viewState: ViewState,
+    errorMessage: String?,
     onAuthMethodSelected: (AuthMethod) -> Unit,
     onEmailInputChanged: (String) -> Unit,
     onPassInputChanged: (String) -> Unit,
@@ -44,36 +49,41 @@ fun AuthScreen(
 
     ProvideWindowInsets {
         Crossfade(
-            targetState = screenState.authMethod,
+            targetState = authMethod,
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.tertiary)
-        ) { loginSelected ->
-            AnimatedContent(targetState = screenState.loading) { loading ->
-                if (loading) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize(), contentAlignment = Center
-                    ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .size(100.dp),
-                            color = MaterialTheme.colorScheme.onTertiary
-                        )
-                    }
-                } else {
-                    when (loginSelected) {
-                        AuthMethod.UNSELECTED -> {
+                .navigationBarsWithImePadding()
+        ) { authMethod ->
+            AnimatedContent(targetState = viewState) { viewState ->
+                when (viewState) {
+                    ViewState.Content -> {
+                        if (authMethod == AuthMethod.UNSELECTED) {
                             LoginOrRegisterChooserScreen { authMethod ->
                                 onAuthMethodSelected(authMethod)
                             }
-                        }
-                        else -> {
+                        } else {
                             InputScreen(
-                                screenState = screenState,
+                                authMethod = authMethod,
+                                email = email,
+                                password = password,
+                                errorMessage = errorMessage,
                                 onEmailInputChanged = onEmailInputChanged,
                                 onPassInputChanged = onPassInputChanged,
                                 onClickArrow = onClickLogin
+                            )
+                        }
+                    }
+                    ViewState.Error -> {}
+                    ViewState.Loading -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize(), contentAlignment = Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .size(100.dp),
+                                color = MaterialTheme.colorScheme.onTertiary
                             )
                         }
                     }
@@ -86,14 +96,17 @@ fun AuthScreen(
 
 @Composable
 private fun InputScreen(
-    screenState: AuthScreenState,
+    authMethod: AuthMethod,
+    email: String,
+    password: String,
     onEmailInputChanged: (String) -> Unit,
     onPassInputChanged: (String) -> Unit,
-    onClickArrow: () -> Unit
+    onClickArrow: () -> Unit,
+    errorMessage: String?
 ) {
 
     val title = stringResource(
-        id = if (screenState.authMethod == AuthMethod.LOGIN)
+        id = if (authMethod == AuthMethod.LOGIN)
             R.string.sign_in else R.string.registration
     )
 
@@ -120,13 +133,15 @@ private fun InputScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            ErrorCard(message = screenState.errorMessage)
+            errorMessage?.let { error ->
+                ErrorCard(message = error)
+            }
         }
 
         LoginPassInput(
-            email = screenState.email,
+            email = email,
             onEmailInputChanged = onEmailInputChanged,
-            pass = screenState.pass,
+            password = password,
             onPassInputChanged = onPassInputChanged,
             onClickArrow = onClickArrow
         )
@@ -139,7 +154,7 @@ private fun InputScreen(
 fun LoginPassInput(
     email: String,
     onEmailInputChanged: (String) -> Unit,
-    pass: String,
+    password: String,
     onPassInputChanged: (String) -> Unit,
     onClickArrow: () -> Unit
 ) {
@@ -175,7 +190,7 @@ fun LoginPassInput(
             Spacer(modifier = Modifier.height(24.dp))
 
             TextField(
-                value = pass,
+                value = password,
                 onValueChange = { onPassInputChanged(it) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 label = {

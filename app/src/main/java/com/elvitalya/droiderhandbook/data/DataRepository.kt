@@ -49,11 +49,11 @@ class DataRepository @Inject constructor(
     suspend fun login(
         email: String,
         pass: String
-    ): Result {
+    ): Result<Unit> {
         return suspendCoroutine { continuation ->
             Firebase.auth.signInWithEmailAndPassword(email, pass)
                 .addOnSuccessListener {
-                    continuation.resume(Result.Success)
+                    continuation.resume(Result.Success(Unit))
                 }
                 .addOnFailureListener {
                     continuation.resume(Result.Error(it.message ?: "Неизвестная ошибка"))
@@ -64,11 +64,11 @@ class DataRepository @Inject constructor(
     suspend fun registration(
         email: String,
         pass: String
-    ): Result {
+    ): Result<Unit> {
         return suspendCoroutine { continuation ->
             Firebase.auth.createUserWithEmailAndPassword(email, pass)
                 .addOnSuccessListener {
-                    continuation.resume(Result.Success)
+                    continuation.resume(Result.Success(Unit))
                 }
                 .addOnFailureListener {
                     continuation.resume(Result.Error(it.message ?: "Неизвестная ошибка"))
