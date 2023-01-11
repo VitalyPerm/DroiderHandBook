@@ -7,6 +7,7 @@ import com.elvitalya.droiderhandbook.data.DataRepository
 import com.elvitalya.droiderhandbook.data.model.QuestionEntity
 import com.elvitalya.droiderhandbook.ui.main.MainActivity.Companion.TAG
 import com.elvitalya.droiderhandbook.utils.FireBaseHelper
+import com.elvitalya.droiderhandbook.utils.ViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -18,9 +19,9 @@ class SectionsViewModel @Inject constructor(
     private val dataRepository: DataRepository
 ) : ViewModel() {
 
-    //  val javaQuestions = MutableStateFlow<List<QuestionEntity>>(emptyList())
-
     private val allQuestions = MutableStateFlow<List<QuestionEntity>>(emptyList())
+
+    val viewState = MutableStateFlow<ViewState>(ViewState.Loading)
 
     val javaQuestions
         get() = allQuestions.map { list ->
@@ -58,8 +59,6 @@ class SectionsViewModel @Inject constructor(
 
     val detailQuestion = MutableStateFlow<QuestionEntity?>(null)
 
-    val loading = MutableStateFlow(true)
-
     fun getQuestionById(id: Int) {
         viewModelScope.launch {
             try {
@@ -75,29 +74,30 @@ class SectionsViewModel @Inject constructor(
     fun reloadQuestions() {
         viewModelScope.launch {
             try {
-                loading.value = true
+                viewState.value = ViewState.Loading
                 dataRepository.loadQuestions()
-                loading.value = false
+                viewState.value = ViewState.Content
             } catch (e: Exception) {
-                loading.value = false
+                viewState.value = ViewState.Error
             }
         }
     }
 
     fun getQuestions() {
+        Log.d(TAG, "getQuestions: called")
         viewModelScope.launch {
             try {
-                loading.value = true
+                viewState.value = ViewState.Loading
                 dataRepository.getQuestions().collect { questions ->
                     if (questions.isEmpty()) reloadQuestions()
                     else {
+                        Log.d(TAG, "getQuestions: else")
                         allQuestions.value = questions
-                        loading.value = false
+                        viewState.value = ViewState.Content
                     }
                 }
             } catch (e: Exception) {
-                loading.value = false
-                Log.d(TAG, "getQuestions: error ${e.message}")
+                viewState.value = ViewState.Error
             }
 
         }

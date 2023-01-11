@@ -38,9 +38,6 @@ class FragmentStackHostFragment : Fragment(R.layout.fragment_stack_host) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val stackHostId = requireArguments().getString(ARG_STACK_HOST_ID)!!
-
         stackHost.backstack.setStateChanger(SimpleStateChanger { stateChange ->
             stateChanger.handleStateChange(stateChange)
         })

@@ -15,6 +15,7 @@ import com.elvitalya.droiderhandbook.ui.core.FragmentStackHostFragment
 import com.elvitalya.droiderhandbook.ui.favorite.FavoriteKey
 import com.elvitalya.droiderhandbook.ui.search.SearchKey
 import com.elvitalya.droiderhandbook.ui.sections.SectionsKey
+import com.elvitalya.droiderhandbook.ui.test.TestKey
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.zhuinden.simplestack.ServiceBinder
 import com.zhuinden.simplestackextensions.fragments.KeyedFragment
@@ -30,7 +31,7 @@ data class MainFlowKey(val placeholder: Int = 0) : FragmentKey() {
             add(FragmentStackHost(SectionsKey()), MainNavigation.SECTIONS.name)
             add(FragmentStackHost(SearchKey()), MainNavigation.SEARCH.name)
             add(FragmentStackHost(FavoriteKey()), MainNavigation.FAVORITE.name)
-            add(FragmentStackHost(SectionsKey()), MainNavigation.TEST.name)
+            add(FragmentStackHost(TestKey()), MainNavigation.TEST.name)
         }
     }
 }
@@ -76,7 +77,7 @@ class MainFlowFragment : KeyedFragment(R.layout.fragment_main_flow) {
                 .add(R.id.viewContainer, fragment1, MainNavigation.SECTIONS.name)
                 .add(R.id.viewContainer, fragment2, MainNavigation.SEARCH.name)
                 .add(R.id.viewContainer, fragment3, MainNavigation.FAVORITE.name)
-                .add(R.id.viewContainer, fragment3, MainNavigation.TEST.name)
+                .add(R.id.viewContainer, fragment4, MainNavigation.TEST.name)
                 .selectFragment(selectedIndex)
                 .commit()
         } else {

@@ -1,5 +1,6 @@
 package com.elvitalya.droiderhandbook.ui.sections
 
+import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -25,6 +26,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.elvitalya.droiderhandbook.data.model.QuestionEntity
+import com.elvitalya.droiderhandbook.ui.main.MainActivity.Companion.TAG
+import com.elvitalya.droiderhandbook.utils.ViewState
+import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.statusBarsPadding
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -33,44 +38,48 @@ fun SectionsScreen(
     androidQuestions: List<QuestionEntity>,
     kotlinQuestions: List<QuestionEntity>,
     basicQuestions: List<QuestionEntity>,
-    loading: Boolean,
+    viewState: ViewState,
     onQuestionClick: (Int) -> Unit,
     onFavoriteClick: (QuestionEntity) -> Unit
 ) {
 
     var expandedSections by remember { mutableStateOf(SectionScreenContentVisibility()) }
 
+    Log.d(TAG, "SectionsScreen: viewState - $viewState")
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        AnimatedContent(targetState = loading) { loading ->
-            if (loading.not()) {
-                Content(
-                    javaQuestions = javaQuestions,
-                    kotlinQuestions = kotlinQuestions,
-                    androidQuestions = androidQuestions,
-                    basicQuestions = basicQuestions,
-                    onQuestionClick = onQuestionClick,
-                    expandedSections = expandedSections,
-                    onSectionClick = {
-                        expandedSections = when (it) {
-                            Sections.Java -> expandedSections.copy(java = expandedSections.java.not())
-                            Sections.Kotlin -> expandedSections.copy(kotlin = expandedSections.kotlin.not())
-                            Sections.Android -> expandedSections.copy(android = expandedSections.android.not())
-                            Sections.Basic -> expandedSections.copy(basic = expandedSections.basic.not())
-                        }
-                    },
-                    onFavoriteClick = onFavoriteClick
-                )
-            } else {
-                CircularProgressIndicator(
-                    color = MaterialTheme.colorScheme.tertiary,
-                    modifier = Modifier
-                        .size(100.dp)
-                )
+    ProvideWindowInsets {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding(),
+            contentAlignment = Alignment.Center
+        ) {
+            AnimatedContent(targetState = viewState) { viewState ->
+                if (viewState != ViewState.Loading) {
+                    Content(
+                        javaQuestions = javaQuestions,
+                        kotlinQuestions = kotlinQuestions,
+                        androidQuestions = androidQuestions,
+                        basicQuestions = basicQuestions,
+                        onQuestionClick = onQuestionClick,
+                        expandedSections = expandedSections,
+                        onSectionClick = {
+                            expandedSections = when (it) {
+                                Sections.Java -> expandedSections.copy(java = expandedSections.java.not())
+                                Sections.Kotlin -> expandedSections.copy(kotlin = expandedSections.kotlin.not())
+                                Sections.Android -> expandedSections.copy(android = expandedSections.android.not())
+                                Sections.Basic -> expandedSections.copy(basic = expandedSections.basic.not())
+                            }
+                        },
+                        onFavoriteClick = onFavoriteClick
+                    )
+                } else {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier
+                            .size(100.dp)
+                    )
+                }
             }
         }
     }
@@ -194,53 +203,51 @@ fun SectionContentItem(
         targetValue = if (questionEntity.favorite) MaterialTheme.colorScheme.tertiary
         else MaterialTheme.colorScheme.onTertiary
     )
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp)
-            .border(
-                BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary),
-                RoundedCornerShape(16.dp)
-            )
-            .clip(RoundedCornerShape(16.dp))
-            .clickable { onQuestionClick(questionEntity.id) }
-
-    ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-        ) {
-            Text(
-                text = questionEntity.title,
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .align(Alignment.Center),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-            IconButton(
-                onClick = { onFavoriteClick(questionEntity) },
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = null,
-                    tint = favoriteIconTint
+                .padding(4.dp)
+                .border(
+                    BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary),
+                    RoundedCornerShape(16.dp)
                 )
+                .clip(RoundedCornerShape(16.dp))
+                .clickable { onQuestionClick(questionEntity.id) }
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = questionEntity.title,
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .align(Alignment.Center),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+                IconButton(
+                    onClick = { onFavoriteClick(questionEntity) },
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Favorite,
+                        contentDescription = null,
+                        tint = favoriteIconTint
+                    )
+                }
             }
-        }
-        Text(
-            text = questionEntity.text,
-            modifier = Modifier
-                .padding(8.dp),
-            maxLines = 3,
-            overflow = TextOverflow.Ellipsis
-        )
+            Text(
+                text = questionEntity.text,
+                modifier = Modifier
+                    .padding(8.dp),
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
+            )
 
-    }
+        }
 }
 
 @Composable
