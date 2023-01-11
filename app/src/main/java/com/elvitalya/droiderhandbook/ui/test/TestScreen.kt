@@ -7,10 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 
 @Composable
-fun TestScreen(navController: NavHostController) {
+fun TestScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize(), contentAlignment = Alignment.Center

@@ -13,13 +13,19 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.DroiderHandBook"
+        android:theme="@style/Theme.App"
         tools:targetApi="31">
         <activity
             android:name=".ui.main.MainActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.DroiderHandBook">
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.App"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
+            tools:ignore="LockedOrientationActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,6 +36,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
     </application>
 
 </manifest>

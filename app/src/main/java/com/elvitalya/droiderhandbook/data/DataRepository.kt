@@ -1,10 +1,8 @@
 package com.elvitalya.droiderhandbook.data
 
-import android.util.Log
 import com.elvitalya.droiderhandbook.data.db.QuestionsDao
 import com.elvitalya.droiderhandbook.data.model.FirebaseQuestion
 import com.elvitalya.droiderhandbook.data.model.QuestionEntity
-import com.elvitalya.droiderhandbook.ui.main.MainActivity.Companion.TAG
 import com.elvitalya.droiderhandbook.utils.FireBaseHelper
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.toObject
@@ -14,13 +12,17 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.flow.flow
 import com.elvitalya.droiderhandbook.utils.Result
 
 @Singleton
 class DataRepository @Inject constructor(
     private val questionsDao: QuestionsDao
 ) {
-    fun getQuestions(): Flow<List<QuestionEntity>> = questionsDao.getQuestionsFlow()
+
+    private fun getErrorMessage(e: Exception) = e.message ?: "Упс, что то пошло не так"
+
+    fun getQuestionsFlow(): Flow<List<QuestionEntity>> = questionsDao.getQuestionsFlow()
 
     suspend fun loadQuestions() {
         deleteAll()
@@ -40,7 +42,6 @@ class DataRepository @Inject constructor(
                     continuation.resume(response)
                 }
                 .addOnFailureListener {
-                    Log.d(TAG, "fetchQuestionsFromFirebase: ${it.message}")
                     continuation.resume(emptyList())
                 }
         }
@@ -49,14 +50,18 @@ class DataRepository @Inject constructor(
     suspend fun login(
         email: String,
         pass: String
-    ): Result {
+    ): Result<Unit> {
         return suspendCoroutine { continuation ->
             Firebase.auth.signInWithEmailAndPassword(email, pass)
                 .addOnSuccessListener {
-                    continuation.resume(Result.Success)
+                    continuation.resume(Result.Success(Unit))
                 }
                 .addOnFailureListener {
-                    continuation.resume(Result.Error(it.message ?: "Неизвестная ошибка"))
+                    continuation.resume(
+                        Result.Error(
+                            it.message ?: "Неизвестная ошибка"
+                        )
+                    )
                 }
         }
     }
@@ -64,11 +69,11 @@ class DataRepository @Inject constructor(
     suspend fun registration(
         email: String,
         pass: String
-    ): Result {
+    ): Result<Unit> {
         return suspendCoroutine { continuation ->
             Firebase.auth.createUserWithEmailAndPassword(email, pass)
                 .addOnSuccessListener {
-                    continuation.resume(Result.Success)
+                    continuation.resume(Result.Success(Unit))
                 }
                 .addOnFailureListener {
                     continuation.resume(Result.Error(it.message ?: "Неизвестная ошибка"))
@@ -78,7 +83,16 @@ class DataRepository @Inject constructor(
 
     private suspend fun deleteAll() = questionsDao.deleteAll()
 
-    suspend fun getQuestionById(id: Int): QuestionEntity = questionsDao.getQuestion(id)
+    fun getQuestionById(id: Long): Flow<Result<QuestionEntity>> =
+        flow {
+            emit(Result.Loading())
+            try {
+                val question = questionsDao.getQuestion(id)
+                emit(Result.Success(question))
+            } catch (e: Exception) {
+                emit(Result.Error(getErrorMessage(e)))
+            }
+        }
 
     suspend fun updateQuestion(question: QuestionEntity) = questionsDao.updateQuestion(question)
 }

@@ -1,4 +1,4 @@
-package com.elvitalya.droiderhandbook.ui.signin
+package com.elvitalya.droiderhandbook.ui.auth
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -27,68 +27,79 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.elvitalya.droiderhandbook.R
+import com.elvitalya.droiderhandbook.utils.ViewState
+import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.navigationBarsWithImePadding
 
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun SignInScreen(
-    onSuccess: () -> Unit,
-    viewModel: SignInViewModel = hiltViewModel()
+fun AuthScreen(
+    authMethod: AuthMethod,
+    email: String,
+    password: String,
+    viewState: ViewState,
+    errorMessage: String?,
+    onEmailInputChanged: (String) -> Unit,
+    onPassInputChanged: (String) -> Unit,
+    onClickLogin: () -> Unit
 ) {
 
-    val screenState by viewModel.screenState.collectAsState()
-
-    Crossfade(
-        targetState = screenState.authMethod,
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.tertiary)
-    ) { loginSelected ->
-        AnimatedContent(targetState = screenState.loading) { loading ->
-            if (loading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(), contentAlignment = Center
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(100.dp),
-                        color = MaterialTheme.colorScheme.onTertiary
-                    )
-                }
-            } else {
-                when (loginSelected) {
-                    SignInScreenAuthMethod.UNSELECTED -> {
-                        LoginOrRegisterChooserScreen { authMethod ->
-                            viewModel.onAuthMethodSelected(authMethod)
+    ProvideWindowInsets {
+        Crossfade(
+            targetState = authMethod,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.tertiary)
+                .navigationBarsWithImePadding()
+        ) { authMethod ->
+            AnimatedContent(targetState = viewState) { viewState ->
+                when (viewState) {
+                    ViewState.Loading -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize(), contentAlignment = Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .size(100.dp),
+                                color = MaterialTheme.colorScheme.onTertiary
+                            )
                         }
                     }
+
                     else -> {
                         InputScreen(
-                            screenState = screenState,
-                            onEmailInputChanged = viewModel::onEmailInputChanged,
-                            onPassInputChanged = viewModel::onPassInputChanged,
-                            onClickArrow = { viewModel.onClickArrow(onSuccess) }
+                            authMethod = authMethod,
+                            email = email,
+                            password = password,
+                            errorMessage = errorMessage,
+                            onEmailInputChanged = onEmailInputChanged,
+                            onPassInputChanged = onPassInputChanged,
+                            onClickArrow = onClickLogin
                         )
                     }
                 }
             }
         }
     }
+
 }
 
 @Composable
 private fun InputScreen(
-    screenState: SignInScreenState,
+    authMethod: AuthMethod,
+    email: String,
+    password: String,
     onEmailInputChanged: (String) -> Unit,
     onPassInputChanged: (String) -> Unit,
-    onClickArrow: () -> Unit
+    onClickArrow: () -> Unit,
+    errorMessage: String?
 ) {
 
     val title = stringResource(
-        id = if (screenState.authMethod == SignInScreenAuthMethod.LOGIN)
+        id = if (authMethod == AuthMethod.LOGIN)
             R.string.sign_in else R.string.registration
     )
 
@@ -115,13 +126,15 @@ private fun InputScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            ErrorCard(message = screenState.errorMessage)
+            errorMessage?.let { error ->
+                ErrorCard(message = error)
+            }
         }
 
         LoginPassInput(
-            email = screenState.email,
+            email = email,
             onEmailInputChanged = onEmailInputChanged,
-            pass = screenState.pass,
+            password = password,
             onPassInputChanged = onPassInputChanged,
             onClickArrow = onClickArrow
         )
@@ -134,7 +147,7 @@ private fun InputScreen(
 fun LoginPassInput(
     email: String,
     onEmailInputChanged: (String) -> Unit,
-    pass: String,
+    password: String,
     onPassInputChanged: (String) -> Unit,
     onClickArrow: () -> Unit
 ) {
@@ -170,7 +183,7 @@ fun LoginPassInput(
             Spacer(modifier = Modifier.height(24.dp))
 
             TextField(
-                value = pass,
+                value = password,
                 onValueChange = { onPassInputChanged(it) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 label = {
@@ -220,7 +233,7 @@ private fun ErrorCard(message: String) {
 
 @Composable
 private fun LoginOrRegisterChooserScreen(
-    onAuthMethodSelected: (SignInScreenAuthMethod) -> Unit
+    onAuthMethodSelected: (AuthMethod) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -238,7 +251,7 @@ private fun LoginOrRegisterChooserScreen(
                 modifier = Modifier
                     .clip(RoundedCornerShape(16.dp))
                     .background(MaterialTheme.colorScheme.tertiary)
-                    .clickable { onAuthMethodSelected(SignInScreenAuthMethod.LOGIN) },
+                    .clickable { onAuthMethodSelected(AuthMethod.LOGIN) },
                 contentAlignment = Center
             ) {
                 Text(
@@ -256,7 +269,7 @@ private fun LoginOrRegisterChooserScreen(
                 modifier = Modifier
                     .clip(RoundedCornerShape(16.dp))
                     .background(MaterialTheme.colorScheme.tertiary)
-                    .clickable { onAuthMethodSelected(SignInScreenAuthMethod.REGISTRATION) },
+                    .clickable { onAuthMethodSelected(AuthMethod.REGISTRATION) },
                 contentAlignment = Center
             ) {
                 Text(

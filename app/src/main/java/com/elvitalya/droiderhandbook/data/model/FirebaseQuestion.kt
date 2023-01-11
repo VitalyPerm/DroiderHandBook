@@ -2,7 +2,7 @@ package com.elvitalya.droiderhandbook.data.model
 
 
 data class FirebaseQuestion(
-    val id: Int? = null,
+    val id: Long? = null,
     val title: String? = null,
     val text: String? = null
 ) {
