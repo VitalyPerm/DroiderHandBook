@@ -41,9 +41,6 @@ fun View.roundCorners(
     }
 }
 
-val Fragment.backstack: Backstack
-    get() = Navigator.getBackstack(requireContext())
-
 
 fun createComposeView(context: Context) = ComposeView(context).apply {
     setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -52,6 +49,7 @@ fun createComposeView(context: Context) = ComposeView(context).apply {
 fun Context.lookupBottomSheetBackstack(): Backstack {
     return Navigator.getBackstack(this).lookup(AppBottomSheetView.BACKSTACK_TAG)
 }
+
 
 fun Backstack.canNavigateBack(): Boolean {
     val keys = getHistory<DefaultFragmentKey>()

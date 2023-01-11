@@ -13,7 +13,11 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.elvitalya.droiderhandbook.ui.core.FragmentKey
 import com.elvitalya.droiderhandbook.ui.core.createComposeView
+import com.elvitalya.droiderhandbook.ui.main.MainFlowKey
+import com.zhuinden.simplestack.History
+import com.zhuinden.simplestack.StateChange
 import com.zhuinden.simplestackextensions.fragments.KeyedFragment
+import com.zhuinden.simplestackextensions.fragmentsktx.backstack
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -35,6 +39,8 @@ class AuthFragment : KeyedFragment() {
     ): View = createComposeView(requireContext()).apply {
         setContent {
 
+            viewModel.onAuthMethodSelected(getKey<AuthKey>().authMethod)
+
             val authMethod by viewModel.authMethod.collectAsState()
             val email by viewModel.email.collectAsState()
             val password by viewModel.password.collectAsState()
@@ -47,7 +53,6 @@ class AuthFragment : KeyedFragment() {
                 password = password,
                 errorMessage = errorMessage,
                 viewState = viewState,
-                onAuthMethodSelected = viewModel::onAuthMethodSelected,
                 onEmailInputChanged = viewModel::onEmailInputChanged,
                 onPassInputChanged = viewModel::onPassInputChanged,
                 onClickLogin = viewModel::onClickLogin
@@ -61,7 +66,7 @@ class AuthFragment : KeyedFragment() {
             viewModel.navigateToMainScreen
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .collect {
-                    // todo navigate
+                    backstack.setHistory(History.of(MainFlowKey()), StateChange.REPLACE)
                 }
         }
     }

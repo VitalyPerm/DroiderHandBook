@@ -36,7 +36,7 @@ data class MainFlowKey(val placeholder: Int = 0) : FragmentKey() {
 }
 
 @AndroidEntryPoint
-class MainFlowFragment : KeyedFragment() {
+class MainFlowFragment : KeyedFragment(R.layout.fragment_main_flow) {
 
     companion object {
         private const val STATE_SELECTED_INDEX = "selectedIndex"
@@ -117,6 +117,11 @@ class MainFlowFragment : KeyedFragment() {
                 )
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(STATE_SELECTED_INDEX, selectedIndex)
     }
 
     private fun selectTab(index: Int) {

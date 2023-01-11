@@ -41,7 +41,6 @@ fun AuthScreen(
     password: String,
     viewState: ViewState,
     errorMessage: String?,
-    onAuthMethodSelected: (AuthMethod) -> Unit,
     onEmailInputChanged: (String) -> Unit,
     onPassInputChanged: (String) -> Unit,
     onClickLogin: () -> Unit
@@ -57,24 +56,6 @@ fun AuthScreen(
         ) { authMethod ->
             AnimatedContent(targetState = viewState) { viewState ->
                 when (viewState) {
-                    ViewState.Content -> {
-                        if (authMethod == AuthMethod.UNSELECTED) {
-                            LoginOrRegisterChooserScreen { authMethod ->
-                                onAuthMethodSelected(authMethod)
-                            }
-                        } else {
-                            InputScreen(
-                                authMethod = authMethod,
-                                email = email,
-                                password = password,
-                                errorMessage = errorMessage,
-                                onEmailInputChanged = onEmailInputChanged,
-                                onPassInputChanged = onPassInputChanged,
-                                onClickArrow = onClickLogin
-                            )
-                        }
-                    }
-                    ViewState.Error -> {}
                     ViewState.Loading -> {
                         Box(
                             modifier = Modifier
@@ -86,6 +67,18 @@ fun AuthScreen(
                                 color = MaterialTheme.colorScheme.onTertiary
                             )
                         }
+                    }
+
+                    else -> {
+                        InputScreen(
+                            authMethod = authMethod,
+                            email = email,
+                            password = password,
+                            errorMessage = errorMessage,
+                            onEmailInputChanged = onEmailInputChanged,
+                            onPassInputChanged = onPassInputChanged,
+                            onClickArrow = onClickLogin
+                        )
                     }
                 }
             }
