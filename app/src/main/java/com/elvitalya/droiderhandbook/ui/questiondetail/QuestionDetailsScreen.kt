@@ -8,26 +8,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.elvitalya.droiderhandbook.ui.GlobalViewModel
+import com.elvitalya.droiderhandbook.data.model.QuestionEntity
 
 @Composable
 fun QuestionDetailsScreen(
     id: Int,
-    vm: GlobalViewModel = hiltViewModel()
+    question: QuestionEntity
 ) {
 
-    LaunchedEffect(key1 = Unit, block = { vm.getQuestionById(id) })
-    val question by vm.detailQuestion.collectAsState()
+  //  LaunchedEffect(key1 = Unit, block = { vm.getQuestionById(id) })
 
     Column(
         modifier = Modifier
@@ -36,7 +30,7 @@ fun QuestionDetailsScreen(
     ) {
 
         Text(
-            text = question?.title ?: "",
+            text = question.title ?: "",
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
@@ -45,7 +39,7 @@ fun QuestionDetailsScreen(
             textAlign = TextAlign.Center
         )
         Text(
-            text = question?.text ?: "",
+            text = question.text ?: "",
             modifier = Modifier
                 .padding(8.dp)
         )

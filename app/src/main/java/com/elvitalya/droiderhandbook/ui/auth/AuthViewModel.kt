@@ -1,4 +1,4 @@
-package com.elvitalya.droiderhandbook.ui.signin
+package com.elvitalya.droiderhandbook.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,12 +9,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-enum class SignInScreenAuthMethod {
+enum class AuthMethod {
     UNSELECTED, LOGIN, REGISTRATION
 }
 
-data class SignInScreenState(
-    val authMethod: SignInScreenAuthMethod = SignInScreenAuthMethod.UNSELECTED,
+data class AuthScreenState(
+    val authMethod: AuthMethod = AuthMethod.UNSELECTED,
     val email: String = "",
     val pass: String = "",
     val loading: Boolean = false,
@@ -22,13 +22,13 @@ data class SignInScreenState(
 )
 
 @HiltViewModel
-class SignInViewModel @Inject constructor(
+class AuthViewModel @Inject constructor(
     private val repository: DataRepository
 ) : ViewModel() {
 
-    val screenState = MutableStateFlow(SignInScreenState())
+    val screenState = MutableStateFlow(AuthScreenState())
 
-    fun onAuthMethodSelected(authMethod: SignInScreenAuthMethod) {
+    fun onAuthMethodSelected(authMethod: AuthMethod) {
         screenState.value = screenState.value.copy(authMethod = authMethod)
     }
 
@@ -40,23 +40,23 @@ class SignInViewModel @Inject constructor(
         screenState.value = screenState.value.copy(pass = pass)
     }
 
-    fun onClickArrow(onSuccess: () -> Unit) {
+    fun onClickLogin() {
         viewModelScope.launch {
             val email = screenState.value.email
             val pass = screenState.value.pass
             screenState.value = screenState.value.copy(loading = true)
 
-            if (screenState.value.authMethod == SignInScreenAuthMethod.LOGIN) {
+            if (screenState.value.authMethod == AuthMethod.LOGIN) {
                 when (val response = repository.login(email, pass)) {
                     is Result.Error -> screenState.value =
                         screenState.value.copy(loading = false, errorMessage = response.message)
-                    is Result.Success -> onSuccess()
+                    is Result.Success -> {}
                 }
             } else {
                 when (val response = repository.registration(email, pass)) {
                     is Result.Error -> screenState.value =
                         screenState.value.copy(loading = false, errorMessage = response.message)
-                    is Result.Success -> onSuccess()
+                    is Result.Success -> {}
                 }
             }
         }

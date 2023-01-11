@@ -1,8 +1,11 @@
 package com.elvitalya.droiderhandbook.ui.core
 
+import android.content.Context
 import android.graphics.Outline
 import android.view.View
 import android.view.ViewOutlineProvider
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import kotlin.math.roundToInt
 
 /**
@@ -34,4 +37,9 @@ fun View.roundCorners(
             )
         }
     }
+}
+
+
+fun createComposeView(context: Context) = ComposeView(context).apply {
+    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
 }

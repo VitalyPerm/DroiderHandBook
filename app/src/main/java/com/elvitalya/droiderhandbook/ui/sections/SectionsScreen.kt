@@ -24,32 +24,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.elvitalya.droiderhandbook.data.model.QuestionEntity
-import com.elvitalya.droiderhandbook.navigation.Destinations
-import com.elvitalya.droiderhandbook.ui.GlobalViewModel
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SectionsScreen(
-    navController: NavHostController,
-    vm: GlobalViewModel = hiltViewModel()
+    javaQuestions: List<QuestionEntity>,
+    androidQuestions: List<QuestionEntity>,
+    kotlinQuestions: List<QuestionEntity>,
+    basicQuestions: List<QuestionEntity>,
+    loading: Boolean,
+    onQuestionClick: (Int) -> Unit,
+    onFavoriteClick: (QuestionEntity) -> Unit
 ) {
-
-    val javaQuestions by vm.javaQuestions.collectAsState(emptyList())
-    val androidQuestions by vm.androidQuestions.collectAsState(emptyList())
-    val kotlinQuestions by vm.kotlinQuestions.collectAsState(emptyList())
-    val basicQuestions by vm.basicQuestions.collectAsState(emptyList())
-
-    val loading by vm.loading.collectAsState()
 
     var expandedSections by remember { mutableStateOf(SectionScreenContentVisibility()) }
 
-
-    LaunchedEffect(key1 = Unit) {
-        vm.getQuestions()
-    }
 
     Box(
         modifier = Modifier
@@ -63,11 +53,7 @@ fun SectionsScreen(
                     kotlinQuestions = kotlinQuestions,
                     androidQuestions = androidQuestions,
                     basicQuestions = basicQuestions,
-                    onQuestionClick = { questionId ->
-                        navController.navigate(
-                            Destinations.QuestionDetail.createRoute(questionId)
-                        )
-                    },
+                    onQuestionClick = onQuestionClick,
                     expandedSections = expandedSections,
                     onSectionClick = {
                         expandedSections = when (it) {
@@ -77,7 +63,7 @@ fun SectionsScreen(
                             Sections.Basic -> expandedSections.copy(basic = expandedSections.basic.not())
                         }
                     },
-                    onFavoriteClick = { vm.updateQuestion(question = it.copy(favorite = it.favorite.not())) }
+                    onFavoriteClick = onFavoriteClick
                 )
             } else {
                 CircularProgressIndicator(

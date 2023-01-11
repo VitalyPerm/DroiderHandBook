@@ -3,30 +3,17 @@ package com.elvitalya.droiderhandbook.ui.main
 import android.content.Intent
 import android.os.Bundle
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.tween
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.core.view.children
-import com.elvitalya.droiderhandbook.R
 import com.elvitalya.droiderhandbook.databinding.ActivityMainBinding
+import com.elvitalya.droiderhandbook.ui.auth.AuthKey
 import com.elvitalya.droiderhandbook.ui.core.*
-import com.elvitalya.droiderhandbook.ui.signin.SignInScreen
-import com.elvitalya.droiderhandbook.ui.theme.DroiderHandBookTheme
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.zhuinden.simplestack.GlobalServices
+import com.zhuinden.simplestack.History
 import com.zhuinden.simplestack.SimpleStateChanger
 import com.zhuinden.simplestack.navigator.Navigator
-import com.zhuinden.simplestackextensions.navigatorktx.backstack
 import com.zhuinden.simplestackextensions.services.DefaultServiceProvider
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -76,7 +63,7 @@ class MainActivity : AppCompatActivity() {
 
         val fragmentStateChanger = AppStateChanger(supportFragmentManager, binding.viewRoot.id)
 
-        val history = when {
+//        val history = when {
             // todo add history
 //            !authDataSource.isAuthorized() && BuildConfig.ENDPOINT_CHANGE_ENABLED -> History.of(
 //                EndpointChangeKey()
@@ -86,7 +73,7 @@ class MainActivity : AppCompatActivity() {
 //                videoRoomKey
 //            )
 //            else -> History.of(UpdateKey())
-        }
+  //      }
 
         val globalServices = GlobalServices
             .builder()
@@ -102,7 +89,7 @@ class MainActivity : AppCompatActivity() {
                 // hideKeyboard()
                 fragmentStateChanger.handleStateChange(stateChange)
             })
-            .install(this, binding.viewRoot, history)
+            .install(this, binding.viewRoot, History.of(AuthKey()))
 
         binding.viewAppBottomSheet.attachStateChanger()
 

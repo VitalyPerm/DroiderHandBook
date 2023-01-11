@@ -1,4 +1,4 @@
-package com.elvitalya.droiderhandbook.ui
+package com.elvitalya.droiderhandbook.ui.sections
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GlobalViewModel @Inject constructor(
+class SectionsViewModel @Inject constructor(
     private val dataRepository: DataRepository
 ) : ViewModel() {
 

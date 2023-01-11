@@ -1,40 +1,6 @@
 package com.elvitalya.droiderhandbook.ui.main
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.elvitalya.droiderhandbook.R
-import com.elvitalya.droiderhandbook.navigation.BottomNavigationScreen
-import com.elvitalya.droiderhandbook.navigation.Destinations
-import com.elvitalya.droiderhandbook.ui.favorite.FavoriteScreen
-import com.elvitalya.droiderhandbook.ui.questiondetail.QuestionDetailsScreen
-import com.elvitalya.droiderhandbook.ui.search.SearchScreen
-import com.elvitalya.droiderhandbook.ui.sections.ReloadQuestionsAlertDialog
-import com.elvitalya.droiderhandbook.ui.sections.SectionsScreen
-import com.elvitalya.droiderhandbook.ui.GlobalViewModel
-import com.elvitalya.droiderhandbook.ui.test.TestScreen
-import com.elvitalya.droiderhandbook.ui.theme.ColorsScreen
-import com.elvitalya.droiderhandbook.navigation.NavConstants
-
+/*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainNavHost(
@@ -157,3 +123,5 @@ private fun getTopAppBarTitle(route: String?): Int = when (route) {
     Destinations.ColorsScreen.route -> Destinations.ColorsScreen.resourceId
     else -> R.string.empty_string
 }
+
+ */
