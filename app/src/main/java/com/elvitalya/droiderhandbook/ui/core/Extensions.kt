@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewOutlineProvider
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.fragment.app.Fragment
+import com.zhuinden.simplestack.Backstack
+import com.zhuinden.simplestack.navigator.Navigator
+import com.zhuinden.simplestackextensions.fragments.DefaultFragmentKey
+import com.zhuinden.simplestackextensions.servicesktx.lookup
 import kotlin.math.roundToInt
 
-/**
- * Created by uvays on 19.02.2022.
- */
 
 fun View.roundCorners(
     radius: Float,
@@ -39,7 +41,23 @@ fun View.roundCorners(
     }
 }
 
+val Fragment.backstack: Backstack
+    get() = Navigator.getBackstack(requireContext())
+
 
 fun createComposeView(context: Context) = ComposeView(context).apply {
     setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+}
+
+fun Context.lookupBottomSheetBackstack(): Backstack {
+    return Navigator.getBackstack(this).lookup(AppBottomSheetView.BACKSTACK_TAG)
+}
+
+fun Backstack.canNavigateBack(): Boolean {
+    val keys = getHistory<DefaultFragmentKey>()
+
+    // ignore PlaceholderKey if contained in history
+    val size = if (keys.contains(PlaceholderKey())) keys.size - 1 else keys.size
+
+    return size > 1
 }

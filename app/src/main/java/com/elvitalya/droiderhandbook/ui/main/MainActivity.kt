@@ -1,15 +1,20 @@
 package com.elvitalya.droiderhandbook.ui.main
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.children
 import com.elvitalya.droiderhandbook.databinding.ActivityMainBinding
-import com.elvitalya.droiderhandbook.ui.auth.AuthKey
+import com.elvitalya.droiderhandbook.ui.auth.SelectAuthMethodKey
 import com.elvitalya.droiderhandbook.ui.core.*
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.zhuinden.simplestack.GlobalServices
 import com.zhuinden.simplestack.History
 import com.zhuinden.simplestack.SimpleStateChanger
@@ -63,17 +68,10 @@ class MainActivity : AppCompatActivity() {
 
         val fragmentStateChanger = AppStateChanger(supportFragmentManager, binding.viewRoot.id)
 
-//        val history = when {
-            // todo add history
-//            !authDataSource.isAuthorized() && BuildConfig.ENDPOINT_CHANGE_ENABLED -> History.of(
-//                EndpointChangeKey()
-//            )
-//            authDataSource.isAuthorized() && videoRoomKey != null -> History.of(
-//                UpdateKey(),
-//                videoRoomKey
-//            )
-//            else -> History.of(UpdateKey())
-  //      }
+
+        val history = if (Firebase.auth.currentUser == null) History.of(SelectAuthMethodKey())
+        else History.of(MainFlowKey())
+
 
         val globalServices = GlobalServices
             .builder()
@@ -86,10 +84,10 @@ class MainActivity : AppCompatActivity() {
             .setScopedServices(DefaultServiceProvider())
             .setStateChanger(SimpleStateChanger { stateChange ->
 
-                // hideKeyboard()
+                hideKeyboard()
                 fragmentStateChanger.handleStateChange(stateChange)
             })
-            .install(this, binding.viewRoot, History.of(AuthKey()))
+            .install(this, binding.viewRoot, history)
 
         binding.viewAppBottomSheet.attachStateChanger()
 
@@ -111,40 +109,11 @@ class MainActivity : AppCompatActivity() {
             })
 
     }
-}
 
-/*
-before
-
-@AndroidEntryPoint
-class MainActivity : ComponentActivity() {
-    companion object {
-        const val TAG = "check___"
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            val context = LocalContext.current
-            var isRegistered by remember { mutableStateOf(false) }
-            isRegistered = Firebase.auth.currentUser != null
-            DroiderHandBookTheme {
-                Crossfade(
-                    targetState = isRegistered,
-                    animationSpec = tween(1000)
-                ) { registered ->
-                    if (registered) MainNavHost()
-                    else SignInScreen(
-                        onSuccess = {
-                            isRegistered = true
-                            Toast.makeText(context, getString(R.string.success), Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                    )
-                }
-            }
-        }
-
+    private fun hideKeyboard() {
+        val view = currentFocus ?: View(this)
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }
- */
+

@@ -8,14 +8,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.elvitalya.droiderhandbook.ui.core.FragmentKey
 import com.elvitalya.droiderhandbook.ui.core.createComposeView
 import com.zhuinden.simplestackextensions.fragments.KeyedFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class AuthKey(val placeholder: Int = 0) : FragmentKey() {
+data class AuthKey(val authMethod: AuthMethod) : FragmentKey() {
     override fun instantiateFragment(): Fragment = AuthFragment()
 }
 
@@ -48,6 +52,17 @@ class AuthFragment : KeyedFragment() {
                 onPassInputChanged = viewModel::onPassInputChanged,
                 onClickLogin = viewModel::onClickLogin
             )
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.navigateToMainScreen
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collect {
+                    // todo navigate
+                }
         }
     }
 

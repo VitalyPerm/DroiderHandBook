@@ -7,6 +7,7 @@ import com.elvitalya.droiderhandbook.utils.Result
 import com.elvitalya.droiderhandbook.utils.ViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,48 +20,59 @@ class AuthViewModel @Inject constructor(
     private val repository: DataRepository
 ) : ViewModel() {
 
-    val authMethod = MutableStateFlow(AuthMethod.UNSELECTED)
-    val email = MutableStateFlow("")
-    val password = MutableStateFlow("")
-    val viewState = MutableStateFlow<ViewState>(ViewState.Content)
-    val errorMessage = MutableStateFlow("")
-    val navigateToMainScreen = MutableStateFlow(false)
+    private val _authMethod = MutableStateFlow(AuthMethod.UNSELECTED)
+    val authMethod = _authMethod.asStateFlow()
+
+    private val _email = MutableStateFlow("")
+    val email = _email.asStateFlow()
+
+    private val _password = MutableStateFlow("")
+    val password = _password.asStateFlow()
+
+    private val _viewState = MutableStateFlow<ViewState>(ViewState.Content)
+    val viewState = _viewState.asStateFlow()
+
+    private val _errorMessage = MutableStateFlow("")
+    val errorMessage = _errorMessage.asStateFlow()
+
+    private val _navigateToMainScreen = MutableStateFlow(false)
+    val navigateToMainScreen = _navigateToMainScreen.asStateFlow()
 
 
     fun onAuthMethodSelected(method: AuthMethod) {
-        authMethod.value = method
+        _authMethod.value = method
     }
 
     fun onEmailInputChanged(emailInput: String) {
-        email.value = emailInput
+        _email.value = emailInput
     }
 
     fun onPassInputChanged(passwordInput: String) {
-        password.value = passwordInput
+        _password.value = passwordInput
     }
 
     fun onClickLogin() {
         viewModelScope.launch {
-            val email = email.value
-            val pass = password.value
+            val email = _email.value
+            val pass = _password.value
 
-            if (authMethod.value == AuthMethod.LOGIN) {
+            if (_authMethod.value == AuthMethod.LOGIN) {
                 when (val response = repository.login(email, pass)) {
                     is Result.Error -> {
-                        errorMessage.value = response.message ?: ""
-                        viewState.value = ViewState.Error
+                        _errorMessage.value = response.message ?: ""
+                        _viewState.value = ViewState.Error
                     }
-                    is Result.Loading -> viewState.value = ViewState.Loading
-                    is Result.Success -> navigateToMainScreen.value = true
+                    is Result.Loading -> _viewState.value = ViewState.Loading
+                    is Result.Success -> _navigateToMainScreen.value = true
                 }
             } else {
                 when (val response = repository.registration(email, pass)) {
                     is Result.Error -> {
-                        errorMessage.value = response.message ?: ""
-                        viewState.value = ViewState.Error
+                        _errorMessage.value = response.message ?: ""
+                        _viewState.value = ViewState.Error
                     }
-                    is Result.Loading -> viewState.value = ViewState.Loading
-                    is Result.Success -> navigateToMainScreen.value = true
+                    is Result.Loading -> _viewState.value = ViewState.Loading
+                    is Result.Success -> _navigateToMainScreen.value = true
                 }
             }
         }
