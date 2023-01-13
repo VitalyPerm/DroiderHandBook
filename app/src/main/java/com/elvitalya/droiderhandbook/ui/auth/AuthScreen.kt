@@ -1,33 +1,43 @@
 package com.elvitalya.droiderhandbook.ui.auth
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Password
+import androidx.compose.material.icons.filled.WifiPassword
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
-import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.elvitalya.droiderhandbook.R
+import com.elvitalya.droiderhandbook.ui.core.AppBar
+import com.elvitalya.droiderhandbook.ui.core.rippleClickable
+import com.elvitalya.droiderhandbook.ui.theme.*
 import com.elvitalya.droiderhandbook.utils.ViewState
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
@@ -40,10 +50,12 @@ fun AuthScreen(
     email: String,
     password: String,
     viewState: ViewState,
-    errorMessage: String?,
+    errorMessage: String,
     onEmailInputChanged: (String) -> Unit,
     onPassInputChanged: (String) -> Unit,
-    onClickLogin: () -> Unit
+    onAuthClick: () -> Unit,
+    authButtonEnabled: Boolean,
+    onCloseClick: () -> Unit
 ) {
 
     ProvideWindowInsets {
@@ -70,14 +82,16 @@ fun AuthScreen(
                     }
 
                     else -> {
-                        InputScreen(
+                        Content(
                             authMethod = authMethod,
                             email = email,
                             password = password,
                             errorMessage = errorMessage,
                             onEmailInputChanged = onEmailInputChanged,
                             onPassInputChanged = onPassInputChanged,
-                            onClickArrow = onClickLogin
+                            onClickAuth = onAuthClick,
+                            authButtonEnabled = authButtonEnabled,
+                            onCloseClick = onCloseClick
                         )
                     }
                 }
@@ -88,14 +102,16 @@ fun AuthScreen(
 }
 
 @Composable
-private fun InputScreen(
+private fun Content(
     authMethod: AuthMethod,
     email: String,
     password: String,
     onEmailInputChanged: (String) -> Unit,
     onPassInputChanged: (String) -> Unit,
-    onClickArrow: () -> Unit,
-    errorMessage: String?
+    onClickAuth: () -> Unit,
+    errorMessage: String,
+    authButtonEnabled: Boolean,
+    onCloseClick: () -> Unit
 ) {
 
     val title = stringResource(
@@ -103,60 +119,60 @@ private fun InputScreen(
             R.string.sign_in else R.string.registration
     )
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.CenterStart
-    ) {
-
+    ProvideWindowInsets {
         Column(
             modifier = Modifier
-                .align(TopCenter),
-            horizontalAlignment = CenterHorizontally
+                .fillMaxSize()
+                .background(white)
+                .navigationBarsWithImePadding()
         ) {
-            Text(
-                text = title,
-                modifier = Modifier
-                    .padding(top = 24.dp)
-                    .background(MaterialTheme.colorScheme.onTertiary, RoundedCornerShape(16.dp))
-                    .padding(24.dp),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+            AppBar(
+                title = title,
+                onCloseClick = onCloseClick
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            errorMessage?.let { error ->
-                ErrorCard(message = error)
+            LoginPassInput(
+                email = email,
+                onEmailInputChanged = onEmailInputChanged,
+                password = password,
+                onPassInputChanged = onPassInputChanged,
+                onAuthClick = onClickAuth,
+                authButtonEnabled = authButtonEnabled
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            AnimatedVisibility(visible = errorMessage.isNotBlank()) {
+                ErrorCard(message = errorMessage)
             }
         }
-
-        LoginPassInput(
-            email = email,
-            onEmailInputChanged = onEmailInputChanged,
-            password = password,
-            onPassInputChanged = onPassInputChanged,
-            onClickArrow = onClickArrow
-        )
     }
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPassInput(
     email: String,
     onEmailInputChanged: (String) -> Unit,
     password: String,
     onPassInputChanged: (String) -> Unit,
-    onClickArrow: () -> Unit
+    onAuthClick: () -> Unit,
+    authButtonEnabled: Boolean
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth(0.85f)
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .shadow(
+                4.dp,
+                shape = RoundedCornerShape(16.dp),
+                clip = true
+            )
             .background(
-                MaterialTheme.colorScheme.onTertiary,
-                RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
+                white,
+                RoundedCornerShape(16.dp)
             ),
         verticalAlignment = CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -165,49 +181,129 @@ fun LoginPassInput(
             modifier = Modifier,
             horizontalAlignment = CenterHorizontally
         ) {
-            TextField(
+
+            BasicTextField(
                 value = email,
-                onValueChange = { onEmailInputChanged(it) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                label = {
-                    Text(
-                        text = stringResource(id = R.string.email),
-                        color = Color.Black
-                    )
-                },
+                onValueChange = onEmailInputChanged,
+                maxLines = 1,
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
-                    .padding(8.dp)
+                    .padding(8.dp),
+                textStyle = TextStyle(
+                    color = black,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 16.sp,
+                    lineHeight = 16.sp,
+                ),
+                cursorBrush = SolidColor(accent),
+                decorationBox = { innerTextField ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(inActive, RoundedCornerShape(8.dp))
+                            .padding(horizontal = 16.dp, vertical = 10.dp)
+                    ) {
+                        if (email.isEmpty()) {
+                            Text(
+                                text = stringResource(R.string.email),
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 16.sp,
+                                lineHeight = 16.sp,
+                                overflow = TextOverflow.Ellipsis,
+                                textAlign = TextAlign.Start,
+                                color = hint,
+                            )
+                        }
+
+                        innerTextField()
+                    }
+                }
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            TextField(
+            var passwordVisible by remember { mutableStateOf(false) }
+
+            val toggleIcon = if (passwordVisible) R.drawable.ic_password_eye_visible
+            else R.drawable.ic_password_eye_invisible
+
+            BasicTextField(
                 value = password,
-                onValueChange = { onPassInputChanged(it) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                label = {
-                    Text(
-                        text = stringResource(id = R.string.pass),
-                        color = Color.Black
-                    )
-                },
+                onValueChange = onPassInputChanged,
+                maxLines = 1,
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
-                    .padding(8.dp)
+                    .padding(8.dp),
+                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                    color = black,
+                    fontSize = 16.sp,
+                    lineHeight = 16.sp,
+                ),
+                cursorBrush = SolidColor(accent),
+                decorationBox = { innerTextField ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(inActive, RoundedCornerShape(8.dp))
+                            .padding(horizontal = 16.dp, vertical = 7.dp)
+                    ) {
+                        if (password.isEmpty()) {
+                            Text(
+                                text = stringResource(R.string.pass),
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 16.sp,
+                                lineHeight = 16.sp,
+                                overflow = TextOverflow.Ellipsis,
+                                textAlign = TextAlign.Start,
+                                color = hint,
+                            )
+                        }
+
+                        innerTextField()
+
+                        Box(
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .rippleClickable({
+                                    passwordVisible = passwordVisible.not()
+                                })
+                                .padding(6.dp)
+                                .align(Alignment.CenterEnd),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painterResource(id = toggleIcon),
+                                contentDescription = null,
+                                colorFilter = ColorFilter.tint(black)
+                            )
+                        }
+                    }
+                },
+                visualTransformation = if (passwordVisible) VisualTransformation.None
+                else PasswordVisualTransformation()
             )
 
         }
-        IconButton(
+
+        val btnBgColor by animateColorAsState(
+            targetValue = if (authButtonEnabled) accent else inActive
+        )
+
+        Box(
             modifier = Modifier
-                .padding(16.dp)
-                .background(MaterialTheme.colorScheme.tertiary, CircleShape)
-                .align(CenterVertically),
-            onClick = onClickArrow
+                .padding(6.dp)
+                .clip(CircleShape)
+                .background(btnBgColor)
+                .align(CenterVertically)
+                .rippleClickable(onAuthClick, enabled = authButtonEnabled),
+            contentAlignment = Center
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowForward,
-                contentDescription = null
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(6.dp),
+                tint = black
             )
         }
     }
@@ -216,17 +312,22 @@ fun LoginPassInput(
 
 @Composable
 private fun ErrorCard(message: String) {
-    AnimatedVisibility(message.isNotBlank()) {
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .shadow(4.dp, shape = RoundedCornerShape(16.dp))
+            .background(white),
+        contentAlignment = Center
+    ) {
         Text(
             text = message,
             modifier = Modifier
-                .padding(top = 24.dp)
-                .padding(16.dp)
-                .background(MaterialTheme.colorScheme.onTertiary, RoundedCornerShape(16.dp))
-                .padding(24.dp),
+                .padding(16.dp),
             fontSize = 20.sp,
             fontWeight = FontWeight.Medium,
-            color = Color.Red
+            color = error
         )
     }
 }
@@ -283,5 +384,23 @@ private fun LoginOrRegisterChooserScreen(
         }
     }
 
+}
+
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun AuthScreenPreview() {
+    AuthScreen(
+        authMethod = AuthMethod.LOGIN,
+        email = "hello@android.ru",
+        password = "123",
+        viewState = ViewState.Content,
+        errorMessage = "Some Error occured",
+        onEmailInputChanged = {},
+        onPassInputChanged = {},
+        onAuthClick = { },
+        authButtonEnabled = true,
+        onCloseClick = {}
+    )
 }
 

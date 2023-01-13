@@ -13,6 +13,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.elvitalya.droiderhandbook.ui.core.FragmentKey
 import com.elvitalya.droiderhandbook.ui.core.createComposeView
+import com.elvitalya.droiderhandbook.ui.core.lookupBottomSheetBackstack
 import com.elvitalya.droiderhandbook.ui.main.MainFlowKey
 import com.zhuinden.simplestack.History
 import com.zhuinden.simplestack.StateChange
@@ -32,6 +33,8 @@ class AuthFragment : KeyedFragment() {
 
     private val viewModel: AuthViewModel by viewModels()
 
+    private val bottomSheetBackstack by lazy { requireContext().lookupBottomSheetBackstack() }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -44,6 +47,7 @@ class AuthFragment : KeyedFragment() {
             val authMethod by viewModel.authMethod.collectAsState()
             val email by viewModel.email.collectAsState()
             val password by viewModel.password.collectAsState()
+            val authButtonEnabled by viewModel.buttonAuthEnabled.collectAsState()
             val errorMessage by viewModel.errorMessage.collectAsState()
             val viewState by viewModel.viewState.collectAsState()
 
@@ -51,11 +55,13 @@ class AuthFragment : KeyedFragment() {
                 authMethod = authMethod,
                 email = email,
                 password = password,
+                authButtonEnabled = authButtonEnabled,
                 errorMessage = errorMessage,
                 viewState = viewState,
                 onEmailInputChanged = viewModel::onEmailInputChanged,
                 onPassInputChanged = viewModel::onPassInputChanged,
-                onClickLogin = viewModel::onClickLogin
+                onAuthClick = viewModel::onClickLogin,
+                onCloseClick = { bottomSheetBackstack.jumpToRoot() }
             )
         }
     }
@@ -66,6 +72,8 @@ class AuthFragment : KeyedFragment() {
             viewModel.navigateToMainScreen
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .collect {
+                    if (it.not()) return@collect
+                    bottomSheetBackstack.jumpToRoot()
                     backstack.setHistory(History.of(MainFlowKey()), StateChange.REPLACE)
                 }
         }

@@ -38,6 +38,9 @@ class AuthViewModel @Inject constructor(
     private val _navigateToMainScreen = MutableStateFlow(false)
     val navigateToMainScreen = _navigateToMainScreen.asStateFlow()
 
+    private val _buttonAuthEnabled = MutableStateFlow(false)
+    val buttonAuthEnabled = _buttonAuthEnabled.asStateFlow()
+
 
     fun onAuthMethodSelected(method: AuthMethod) {
         _authMethod.value = method
@@ -45,11 +48,20 @@ class AuthViewModel @Inject constructor(
 
     fun onEmailInputChanged(emailInput: String) {
         _email.value = emailInput
+        checkButtonAuthEnabled()
     }
 
     fun onPassInputChanged(passwordInput: String) {
         _password.value = passwordInput
+        checkButtonAuthEnabled()
     }
+
+    private fun checkButtonAuthEnabled() {
+        val enabled = _email.value.length > 5
+                && _email.value.contains("@") && _password.value.length > 6
+        _buttonAuthEnabled.value = enabled
+    }
+
 
     fun onClickLogin() {
         viewModelScope.launch {

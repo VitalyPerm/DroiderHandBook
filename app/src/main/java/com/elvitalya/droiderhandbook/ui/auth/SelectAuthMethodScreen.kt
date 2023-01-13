@@ -13,6 +13,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.elvitalya.droiderhandbook.R
+import com.elvitalya.droiderhandbook.ui.theme.accent
+import com.elvitalya.droiderhandbook.ui.theme.inActive
+import com.elvitalya.droiderhandbook.ui.theme.white
 import com.google.accompanist.insets.ProvideWindowInsets
 
 @Composable
@@ -23,20 +26,20 @@ fun SelectAuthMethodScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.tertiary),
+                .background(white),
             contentAlignment = Alignment.Center
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth(0.7f)
-                    .background(MaterialTheme.colorScheme.onTertiary, RoundedCornerShape(16.dp))
+                    .background(inActive, RoundedCornerShape(16.dp))
                     .padding(vertical = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.tertiary)
+                        .background(accent)
                         .clickable { onAuthMethodSelected(AuthMethod.LOGIN) },
                     contentAlignment = Alignment.Center
                 ) {
@@ -54,7 +57,7 @@ fun SelectAuthMethodScreen(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.tertiary)
+                        .background(accent)
                         .clickable { onAuthMethodSelected(AuthMethod.REGISTRATION) },
                     contentAlignment = Alignment.Center
                 ) {

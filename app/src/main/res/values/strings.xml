@@ -13,7 +13,7 @@
 
 
     <!--  SignInOrReg  -->
-    <string name="sign_in">Вход</string>
+    <string name="sign_in">Авторизация</string>
     <string name="registration">Регистрация</string>
     <string name="email">Почта</string>
     <string name="pass">Пароль</string>

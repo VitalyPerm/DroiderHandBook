@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.elvitalya.droiderhandbook.ui.core.FragmentKey
 import com.elvitalya.droiderhandbook.ui.core.createComposeView
+import com.elvitalya.droiderhandbook.ui.core.lookupBottomSheetBackstack
 import com.zhuinden.simplestackextensions.fragments.KeyedFragment
 import com.zhuinden.simplestackextensions.navigatorktx.backstack
 import kotlinx.parcelize.Parcelize
@@ -18,6 +19,8 @@ data class SelectAuthMethodKey(val placeholder: Int = 0) : FragmentKey() {
 
 class SelectAuthMethodFragment : KeyedFragment() {
 
+    private val bottomSheetBackstack by lazy { requireContext().lookupBottomSheetBackstack() }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -25,7 +28,7 @@ class SelectAuthMethodFragment : KeyedFragment() {
     ): View = createComposeView(requireContext()).apply {
         setContent {
             SelectAuthMethodScreen { authMethod ->
-                backstack.goTo(AuthKey(authMethod))
+                bottomSheetBackstack.goTo(AuthKey(authMethod))
             }
         }
     }
