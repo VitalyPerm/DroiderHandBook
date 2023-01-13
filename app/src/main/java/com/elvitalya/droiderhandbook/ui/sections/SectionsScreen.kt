@@ -154,23 +154,23 @@ private fun Content(
         modifier = Modifier
             .fillMaxSize()
     ) {
-
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-                .clip(CircleShape)
-                .background(accent)
-                .rippleClickable(onReloadClick)
-        ) {
-            Image(
-                imageVector = Icons.Default.Refresh,
-                contentDescription = null,
+        if (expandedSections.allInvisible) {
+            Box(
                 modifier = Modifier
-                    .padding(6.dp)
-            )
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+                    .clip(CircleShape)
+                    .background(accent)
+                    .rippleClickable(onReloadClick)
+            ) {
+                Image(
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(6.dp)
+                )
+            }
         }
-
 
         LazyColumn(
             modifier = Modifier
@@ -384,4 +384,7 @@ data class SectionScreenContentVisibility(
     val java: Boolean = false,
     val android: Boolean = false,
     val basic: Boolean = false,
-)
+) {
+    val allInvisible
+        get() = kotlin.not() && java.not() && android.not() && basic.not()
+}
