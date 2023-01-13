@@ -1,6 +1,8 @@
 package com.elvitalya.droiderhandbook.ui.auth
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,12 +12,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Password
-import androidx.compose.material.icons.filled.WifiPassword
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -36,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.elvitalya.droiderhandbook.R
 import com.elvitalya.droiderhandbook.ui.core.AppBar
+import com.elvitalya.droiderhandbook.ui.core.LoadingBanner
 import com.elvitalya.droiderhandbook.ui.core.rippleClickable
 import com.elvitalya.droiderhandbook.ui.theme.*
 import com.elvitalya.droiderhandbook.utils.ViewState
@@ -43,7 +46,6 @@ import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AuthScreen(
     authMethod: AuthMethod,
@@ -59,73 +61,17 @@ fun AuthScreen(
 ) {
 
     ProvideWindowInsets {
-        Crossfade(
-            targetState = authMethod,
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.tertiary)
-                .navigationBarsWithImePadding()
-        ) { authMethod ->
-            AnimatedContent(targetState = viewState) { viewState ->
-                when (viewState) {
-                    ViewState.Loading -> {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize(), contentAlignment = Center
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier
-                                    .size(100.dp),
-                                color = MaterialTheme.colorScheme.onTertiary
-                            )
-                        }
-                    }
-
-                    else -> {
-                        Content(
-                            authMethod = authMethod,
-                            email = email,
-                            password = password,
-                            errorMessage = errorMessage,
-                            onEmailInputChanged = onEmailInputChanged,
-                            onPassInputChanged = onPassInputChanged,
-                            onClickAuth = onAuthClick,
-                            authButtonEnabled = authButtonEnabled,
-                            onCloseClick = onCloseClick
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-}
-
-@Composable
-private fun Content(
-    authMethod: AuthMethod,
-    email: String,
-    password: String,
-    onEmailInputChanged: (String) -> Unit,
-    onPassInputChanged: (String) -> Unit,
-    onClickAuth: () -> Unit,
-    errorMessage: String,
-    authButtonEnabled: Boolean,
-    onCloseClick: () -> Unit
-) {
-
-    val title = stringResource(
-        id = if (authMethod == AuthMethod.LOGIN)
-            R.string.sign_in else R.string.registration
-    )
-
-    ProvideWindowInsets {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(white)
                 .navigationBarsWithImePadding()
         ) {
+            val title = stringResource(
+                id = if (authMethod == AuthMethod.LOGIN)
+                    R.string.sign_in else R.string.registration
+            )
+
             AppBar(
                 title = title,
                 onCloseClick = onCloseClick
@@ -133,20 +79,32 @@ private fun Content(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            LoginPassInput(
-                email = email,
-                onEmailInputChanged = onEmailInputChanged,
-                password = password,
-                onPassInputChanged = onPassInputChanged,
-                onAuthClick = onClickAuth,
-                authButtonEnabled = authButtonEnabled
-            )
+            Crossfade(targetState = viewState) { viewState ->
+                when (viewState) {
+                    ViewState.Loading -> LoadingBanner()
+                    else -> {
 
-            Spacer(modifier = Modifier.height(16.dp))
+                        Column {
+                            LoginPassInput(
+                                email = email,
+                                onEmailInputChanged = onEmailInputChanged,
+                                password = password,
+                                onPassInputChanged = onPassInputChanged,
+                                onAuthClick = onAuthClick,
+                                authButtonEnabled = authButtonEnabled
+                            )
 
-            AnimatedVisibility(visible = errorMessage.isNotBlank()) {
-                ErrorCard(message = errorMessage)
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            AnimatedVisibility(visible = errorMessage.isNotBlank()) {
+                                ErrorCard(message = errorMessage)
+                            }
+                        }
+                    }
+                }
+
             }
+
         }
     }
 
@@ -166,7 +124,7 @@ fun LoginPassInput(
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .shadow(
-                4.dp,
+                elevation = 4.dp,
                 shape = RoundedCornerShape(16.dp),
                 clip = true
             )
@@ -234,8 +192,9 @@ fun LoginPassInput(
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
                     .padding(8.dp),
-                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                textStyle = TextStyle(
                     color = black,
+                    fontWeight = FontWeight.Medium,
                     fontSize = 16.sp,
                     lineHeight = 16.sp,
                 ),
@@ -245,7 +204,7 @@ fun LoginPassInput(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(inActive, RoundedCornerShape(8.dp))
-                            .padding(horizontal = 16.dp, vertical = 7.dp)
+                            .padding(horizontal = 16.dp, vertical = 10.dp)
                     ) {
                         if (password.isEmpty()) {
                             Text(
@@ -267,9 +226,9 @@ fun LoginPassInput(
                                 .rippleClickable({
                                     passwordVisible = passwordVisible.not()
                                 })
-                                .padding(6.dp)
-                                .align(Alignment.CenterEnd),
-                            contentAlignment = Alignment.Center
+                                .padding(4.dp)
+                                .align(CenterEnd),
+                            contentAlignment = Center
                         ) {
                             Image(
                                 painterResource(id = toggleIcon),

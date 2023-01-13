@@ -65,9 +65,9 @@ class AuthViewModel @Inject constructor(
 
     fun onClickLogin() {
         viewModelScope.launch {
+            _viewState.value = ViewState.Loading
             val email = _email.value
             val pass = _password.value
-
             if (_authMethod.value == AuthMethod.LOGIN) {
                 when (val response = repository.login(email, pass)) {
                     is Result.Error -> {

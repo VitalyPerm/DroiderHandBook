@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.elvitalya.droiderhandbook.R
 import com.elvitalya.droiderhandbook.ui.theme.black
 import com.elvitalya.droiderhandbook.ui.theme.accent
+import com.elvitalya.droiderhandbook.ui.theme.white
 
 @Composable
 fun ErrorBanner() {
@@ -41,10 +42,16 @@ fun ErrorBanner() {
 @Composable
 fun LoadingBanner() {
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(white),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(
+            modifier = Modifier
+                .size(100.dp),
+            color = accent
+        )
     }
 }
 

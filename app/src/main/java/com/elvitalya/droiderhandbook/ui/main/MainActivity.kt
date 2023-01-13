@@ -2,7 +2,6 @@ package com.elvitalya.droiderhandbook.ui.main
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -11,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.children
 import com.elvitalya.droiderhandbook.databinding.ActivityMainBinding
-import com.elvitalya.droiderhandbook.ui.splash.SplashKey
+import com.elvitalya.droiderhandbook.ui.auth.SelectAuthMethodKey
 import com.elvitalya.droiderhandbook.ui.core.*
 import com.zhuinden.simplestack.GlobalServices
 import com.zhuinden.simplestack.History
@@ -70,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                 hideKeyboard()
                 fragmentStateChanger.handleStateChange(stateChange)
             })
-            .install(this, binding.viewRoot, History.of(SplashKey()))
+            .install(this, binding.viewRoot, History.of(SelectAuthMethodKey()))
 
         binding.viewAppBottomSheet.attachStateChanger()
 
