@@ -7,8 +7,8 @@
         <item name="colorOnPrimary">@color/black</item>
         <item name="colorSecondary">@color/black</item>
         <item name="colorOnSecondary">@color/white</item>
-        <item name="android:statusBarColor">@color/systemBarColor</item>
-        <item name="android:navigationBarColor">@color/systemBarColor</item>
+        <item name="android:statusBarColor">@color/accent</item>
+        <item name="android:navigationBarColor">@color/accent</item>
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
     </style>
 

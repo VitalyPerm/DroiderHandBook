@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="primary">#7c5260</color>
     <color name="systemBarColor">#80DDDDDD</color>
+    <color name="accent">#89E4BD</color>
 </resources>

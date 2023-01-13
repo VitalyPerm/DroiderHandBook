@@ -53,7 +53,8 @@ class SectionsFragment : KeyedFragment() {
                 basicQuestions = basicQuestions,
                 viewState = viewState,
                 onQuestionClick = { id -> bottomSheetBackstack.goTo(QuestionDetailKey(id)) },
-                onFavoriteClick = viewModel::updateQuestion
+                onFavoriteClick = viewModel::updateQuestion,
+                onReloadClick = viewModel::reloadQuestions
             )
         }
     }

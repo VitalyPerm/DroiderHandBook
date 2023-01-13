@@ -17,4 +17,8 @@
     <string name="registration">Регистрация</string>
     <string name="email">Почта</string>
     <string name="pass">Пароль</string>
+
+    <string name="sections_alert_title">Хотите подгрузить данные с сервера?</string>
+    <string name="sections_alert_yes">Хочу</string>
+    <string name="sections_alert_no">Нет</string>
 </resources>
