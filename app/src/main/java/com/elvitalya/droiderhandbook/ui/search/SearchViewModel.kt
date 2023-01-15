@@ -1,4 +1,4 @@
-package com.elvitalya.droiderhandbook.ui.favorite
+package com.elvitalya.droiderhandbook.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,26 +8,32 @@ import com.elvitalya.droiderhandbook.utils.Result
 import com.elvitalya.droiderhandbook.utils.ToastDispatcher
 import com.elvitalya.droiderhandbook.utils.ViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class FavoriteViewModel @Inject constructor(
+class SearchViewModel @Inject constructor(
     private val dataRepository: DataRepository,
     private val toastDispatcher: ToastDispatcher
 ) : ViewModel() {
 
-    private val favoriteQuestions = MutableStateFlow<List<QuestionEntity>>(emptyList())
+    private val allQuestions = MutableStateFlow<List<QuestionEntity>>(emptyList())
 
-    val questions
-        get() = favoriteQuestions.map { list ->
-            list.filter { question -> question.favorite }
+    val searchInput = MutableStateFlow("")
+
+    val correspondedQuestions = combine(allQuestions, searchInput) { questions, input ->
+        if (input.isBlank()) emptyList()
+        else questions.filter { question ->
+            question.title.lowercase().contains(input) || question.text.lowercase()
+                .contains(input)
         }
+    }
 
+    fun onSearchInput(input: String) {
+        if(input.length > 10) return
+        searchInput.value = input
+    }
 
     val viewState = MutableStateFlow<ViewState>(ViewState.Loading)
 
@@ -36,7 +42,7 @@ class FavoriteViewModel @Inject constructor(
             try {
                 viewState.value = ViewState.Loading
                 dataRepository.getQuestionsFlow().onEach { questions ->
-                    favoriteQuestions.value = questions
+                    allQuestions.value = questions
                     viewState.value = ViewState.Content
                 }.launchIn(viewModelScope)
             } catch (e: Exception) {

@@ -11,6 +11,7 @@
     <string name="details">Подробно</string>
     <string name="colors">Палитра</string>
     <string name="default_error_message">Упс… Что-то пошло не так</string>
+    <string name="search_hint">Введите ключевые слова</string>
 
 
     <!--  SignInOrReg  -->
@@ -29,4 +30,6 @@
     <string name="android">Андроид СДК</string>
     <string name="basic">Базовые вопросы</string>
     <string name="coroutines">Корутины</string>
+
+
 </resources>

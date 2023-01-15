@@ -38,7 +38,7 @@ class FavoriteFragment : KeyedFragment() {
             val viewState by viewModel.viewState.collectAsState()
             FavoriteScreen(
                 questions = questions,
-                onFavoriteClick = viewModel::unMarkAsFavorite,
+                onFavoriteClick = viewModel::onFavoriteClick,
                 onQuestionClick = { id -> bottomSheetBackstack.goTo(QuestionDetailKey(id)) },
                 viewState = viewState
             )

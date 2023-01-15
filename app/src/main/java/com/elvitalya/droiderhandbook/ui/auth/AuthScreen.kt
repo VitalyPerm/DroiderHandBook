@@ -161,7 +161,7 @@ fun LoginPassInput(
                             .background(inActive, RoundedCornerShape(8.dp))
                             .padding(horizontal = 16.dp, vertical = 10.dp)
                     ) {
-                        if (email.isEmpty()) {
+                        if (email.isBlank()) {
                             Text(
                                 text = stringResource(R.string.email),
                                 fontWeight = FontWeight.Normal,
@@ -206,7 +206,7 @@ fun LoginPassInput(
                             .background(inActive, RoundedCornerShape(8.dp))
                             .padding(horizontal = 16.dp, vertical = 10.dp)
                     ) {
-                        if (password.isEmpty()) {
+                        if (password.isBlank()) {
                             Text(
                                 text = stringResource(R.string.pass),
                                 fontWeight = FontWeight.Normal,

@@ -3,7 +3,10 @@ package com.elvitalya.droiderhandbook.ui.sections
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,11 +15,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -155,12 +162,13 @@ private fun Content(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .padding(8.dp)
     ) {
         if (expandedSections.allInvisible) {
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(16.dp)
+                    .padding(8.dp)
                     .clip(CircleShape)
                     .background(accent)
                     .rippleClickable(onReloadClick)
@@ -177,7 +185,7 @@ private fun Content(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
+                .padding(top = 8.dp)
         ) {
             item {
                 SectionTitle(
@@ -284,101 +292,46 @@ fun SectionContentItem(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp)
+            .padding(vertical = 4.dp, horizontal = 8.dp)
             .border(
                 BorderStroke(1.dp, accent),
                 RoundedCornerShape(16.dp)
             )
             .clip(RoundedCornerShape(16.dp))
-            .clickable { onQuestionClick(questionEntity.id) }
+            .rippleClickable({ onQuestionClick(questionEntity.id) })
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(end = 6.dp)
         ) {
             Text(
                 text = questionEntity.title,
                 modifier = Modifier
-                    .fillMaxWidth(0.8f)
                     .align(Alignment.Center),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
             )
-            IconButton(
-                onClick = { onFavoriteClick(questionEntity) },
+
+            Image(
+                imageVector = Icons.Default.Favorite,
+                contentDescription = null,
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = null,
-                    tint = favoriteIconTint
-                )
-            }
+                    .clip(CircleShape)
+                    .rippleClickable({ onFavoriteClick(questionEntity) })
+                    .padding(6.dp),
+                colorFilter = ColorFilter.tint(favoriteIconTint)
+            )
         }
         Text(
             text = questionEntity.text,
             modifier = Modifier
-                .padding(8.dp),
+                .padding(horizontal = 16.dp, vertical = 6.dp),
             maxLines = 3,
             overflow = TextOverflow.Ellipsis
         )
 
-    }
-}
-
-@Composable
-fun ReloadQuestionsAlertDialog(
-    state: Boolean,
-    onYesClick: () -> Unit,
-    onNoClick: () -> Unit
-) {
-    AnimatedVisibility(visible = state) {
-        AlertDialog(
-            title = {
-                Text(
-                    text = "Хотите обновить список вопросов?",
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    textAlign = TextAlign.Start
-                )
-            },
-            shape = RoundedCornerShape(8.dp),
-            onDismissRequest = onNoClick,
-            confirmButton = {
-                TextButton(onClick = onYesClick) {
-                    Text(
-                        text = "Да",
-                        fontSize = 24.sp,
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .background(
-                                MaterialTheme.colorScheme.tertiary,
-                                RoundedCornerShape(16.dp)
-                            )
-                            .padding(8.dp),
-                        color = MaterialTheme.colorScheme.onTertiary
-                    )
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = onNoClick) {
-                    Text(
-                        text = "Нет",
-                        fontSize = 24.sp,
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .background(
-                                MaterialTheme.colorScheme.tertiary,
-                                RoundedCornerShape(16.dp)
-                            )
-                            .padding(8.dp),
-                        color = MaterialTheme.colorScheme.onTertiary
-                    )
-                }
-            }
-        )
     }
 }
 
