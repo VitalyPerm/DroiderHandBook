@@ -1,6 +1,8 @@
 package com.elvitalya.droiderhandbook.ui.sections
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,7 +34,6 @@ import com.elvitalya.droiderhandbook.utils.ViewState
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.statusBarsPadding
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SectionsScreen(
     javaQuestions: List<QuestionEntity>,
@@ -71,6 +72,7 @@ fun SectionsScreen(
                                     Sections.Kotlin -> expandedSections.copy(kotlin = expandedSections.kotlin.not())
                                     Sections.Android -> expandedSections.copy(android = expandedSections.android.not())
                                     Sections.Basic -> expandedSections.copy(basic = expandedSections.basic.not())
+                                    Sections.Coroutines -> expandedSections.copy(basic = expandedSections.coroutines.not())
                                 }
                             },
                             onFavoriteClick = onFavoriteClick,
@@ -175,6 +177,7 @@ private fun Content(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = 16.dp)
         ) {
             item {
                 SectionTitle(
@@ -253,7 +256,7 @@ fun SectionTitle(
     onSectionClick: (Sections) -> Unit
 ) {
     Text(
-        text = section.name,
+        text = stringResource(id = section.nameRes),
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
@@ -275,8 +278,8 @@ fun SectionContentItem(
 ) {
 
     val favoriteIconTint by animateColorAsState(
-        targetValue = if (questionEntity.favorite) MaterialTheme.colorScheme.tertiary
-        else MaterialTheme.colorScheme.onTertiary
+        targetValue = if (questionEntity.favorite) accent
+        else black
     )
     Column(
         modifier = Modifier
@@ -384,7 +387,8 @@ data class SectionScreenContentVisibility(
     val java: Boolean = false,
     val android: Boolean = false,
     val basic: Boolean = false,
+    val coroutines: Boolean = false
 ) {
     val allInvisible
-        get() = kotlin.not() && java.not() && android.not() && basic.not()
+        get() = kotlin.not() && java.not() && android.not() && basic.not() && coroutines.not()
 }

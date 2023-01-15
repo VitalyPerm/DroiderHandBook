@@ -94,5 +94,14 @@ class DataRepository @Inject constructor(
             }
         }
 
-    suspend fun updateQuestion(question: QuestionEntity) = questionsDao.updateQuestion(question)
+    suspend fun updateQuestion(question: QuestionEntity) = flow {
+        emit(Result.Loading())
+        try {
+            questionsDao.updateQuestion(question)
+            emit(Result.Success(Unit))
+        } catch (e: Exception) {
+            emit(Result.Error(getErrorMessage(e)))
+        }
+
+    }
 }

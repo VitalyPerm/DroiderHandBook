@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.StringRes
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.elvitalya.droiderhandbook.R
 import com.elvitalya.droiderhandbook.ui.core.FragmentKey
 import com.elvitalya.droiderhandbook.ui.core.createComposeView
 import com.elvitalya.droiderhandbook.ui.core.lookupBottomSheetBackstack
@@ -17,8 +19,12 @@ import com.zhuinden.simplestackextensions.fragments.KeyedFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.Parcelize
 
-enum class Sections {
-    Java, Kotlin, Android, Basic
+enum class Sections(@StringRes val nameRes: Int) {
+    Java(R.string.java),
+    Kotlin(R.string.kotlin),
+    Android(R.string.android),
+    Basic(R.string.basic),
+    Coroutines(R.string.coroutines)
 }
 
 @Parcelize
@@ -29,7 +35,7 @@ data class SectionsKey(val placeholder: Int = 0) : FragmentKey() {
 @AndroidEntryPoint
 class SectionsFragment : KeyedFragment() {
 
-    val viewModel: SectionsViewModel by viewModels()
+    private val viewModel: SectionsViewModel by viewModels()
 
     private val bottomSheetBackstack by lazy { requireContext().lookupBottomSheetBackstack() }
 

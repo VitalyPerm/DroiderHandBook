@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">DroiderHandBook</string>
     <string name="sections">Разделы</string>
-    <string name="favorite">Учу</string>
+    <string name="favorite">Лайк</string>
     <string name="search">Поиск</string>
     <string name="test">Тест</string>
     <string name="reg_or_auth">Регистрация</string>
@@ -10,6 +10,7 @@
     <string name="success">Успешно</string>
     <string name="details">Подробно</string>
     <string name="colors">Палитра</string>
+    <string name="default_error_message">Упс… Что-то пошло не так</string>
 
 
     <!--  SignInOrReg  -->
@@ -21,4 +22,11 @@
     <string name="sections_alert_title">Хотите подгрузить данные с сервера?</string>
     <string name="sections_alert_yes">Хочу</string>
     <string name="sections_alert_no">Нет</string>
+
+    <!--  Sections  -->
+    <string name="java">Джава</string>
+    <string name="kotlin">Котлин</string>
+    <string name="android">Андроид СДК</string>
+    <string name="basic">Базовые вопросы</string>
+    <string name="coroutines">Корутины</string>
 </resources>
