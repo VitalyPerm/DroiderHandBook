@@ -3,7 +3,7 @@ package com.elvitalya.droiderhandbook.ui.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elvitalya.droiderhandbook.data.DataRepository
-import com.elvitalya.droiderhandbook.utils.Result
+import com.elvitalya.droiderhandbook.utils.Event
 import com.elvitalya.droiderhandbook.utils.ViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -70,21 +70,21 @@ class AuthViewModel @Inject constructor(
             val pass = _password.value
             if (_authMethod.value == AuthMethod.LOGIN) {
                 when (val response = repository.login(email, pass)) {
-                    is Result.Error -> {
+                    is Event.Error -> {
                         _errorMessage.value = response.message ?: ""
                         _viewState.value = ViewState.Error
                     }
-                    is Result.Loading -> _viewState.value = ViewState.Loading
-                    is Result.Success -> _navigateToMainScreen.value = true
+                    is Event.Loading -> _viewState.value = ViewState.Loading
+                    is Event.Success -> _navigateToMainScreen.value = true
                 }
             } else {
                 when (val response = repository.registration(email, pass)) {
-                    is Result.Error -> {
+                    is Event.Error -> {
                         _errorMessage.value = response.message ?: ""
                         _viewState.value = ViewState.Error
                     }
-                    is Result.Loading -> _viewState.value = ViewState.Loading
-                    is Result.Success -> _navigateToMainScreen.value = true
+                    is Event.Loading -> _viewState.value = ViewState.Loading
+                    is Event.Success -> _navigateToMainScreen.value = true
                 }
             }
         }

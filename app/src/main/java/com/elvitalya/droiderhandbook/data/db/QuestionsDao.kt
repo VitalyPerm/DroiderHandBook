@@ -14,7 +14,7 @@ interface QuestionsDao {
     suspend fun getQuestion(id: Long): QuestionEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addQuestion(question: QuestionEntity)
+    suspend fun addQuestionsList(questions: List<QuestionEntity>)
 
     @Delete
     suspend fun deleteQuestion(question: QuestionEntity)

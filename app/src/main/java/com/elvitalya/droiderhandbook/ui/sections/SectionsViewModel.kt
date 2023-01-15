@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.elvitalya.droiderhandbook.data.DataRepository
 import com.elvitalya.droiderhandbook.data.model.QuestionEntity
 import com.elvitalya.droiderhandbook.utils.FireBaseHelper
-import com.elvitalya.droiderhandbook.utils.Result
+import com.elvitalya.droiderhandbook.utils.Event
 import com.elvitalya.droiderhandbook.utils.ToastDispatcher
 import com.elvitalya.droiderhandbook.utils.ViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -56,15 +56,13 @@ class SectionsViewModel @Inject constructor(
 
 
     fun reloadQuestions() {
-        viewModelScope.launch {
-            try {
-                viewState.value = ViewState.Loading
-                dataRepository.loadQuestions()
-                viewState.value = ViewState.Content
-            } catch (e: Exception) {
-                viewState.value = ViewState.Error
+        dataRepository.loadQuestions().onEach { event ->
+            when (event) {
+                is Event.Error -> viewState.value = ViewState.Error
+                is Event.Loading -> viewState.value = ViewState.Loading
+                is Event.Success -> viewState.value = ViewState.Content
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
     fun getQuestions() {
@@ -90,12 +88,12 @@ class SectionsViewModel @Inject constructor(
             val new = question.copy(favorite = question.favorite.not())
             dataRepository.updateQuestion(new).onEach { result ->
                 when (result) {
-                    is Result.Error -> {
+                    is Event.Error -> {
                         viewState.value = ViewState.Error
                         toastDispatcher.dispatchUnique(result.message)
                     }
-                    is Result.Loading -> viewState.value = ViewState.Loading
-                    is Result.Success -> viewState.value = ViewState.Content
+                    is Event.Loading -> viewState.value = ViewState.Loading
+                    is Event.Success -> viewState.value = ViewState.Content
                 }
             }.launchIn(viewModelScope)
         }

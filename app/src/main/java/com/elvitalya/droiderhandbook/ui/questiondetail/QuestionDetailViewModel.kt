@@ -4,19 +4,16 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elvitalya.droiderhandbook.App
 import com.elvitalya.droiderhandbook.data.DataRepository
 import com.elvitalya.droiderhandbook.data.model.QuestionEntity
-import com.elvitalya.droiderhandbook.utils.Result
+import com.elvitalya.droiderhandbook.utils.Event
 import com.elvitalya.droiderhandbook.utils.ViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,12 +34,12 @@ class QuestionDetailViewModel @Inject constructor(
     fun getQuestionById(id: Long) {
         dataRepository.getQuestionById(id).onEach { result ->
             when (result) {
-                is Result.Error -> {
+                is Event.Error -> {
                     _viewState.value = ViewState.Error
                     Toast.makeText(app, result.message, Toast.LENGTH_SHORT).show()
                 }
-                is Result.Loading -> _viewState.value = ViewState.Loading
-                is Result.Success -> {
+                is Event.Loading -> _viewState.value = ViewState.Loading
+                is Event.Success -> {
                     _question.value = result.data
                     _viewState.value = ViewState.Content
                 }
