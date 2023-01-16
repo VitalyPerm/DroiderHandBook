@@ -12,6 +12,7 @@
     <string name="colors">Палитра</string>
     <string name="default_error_message">Упс… Что-то пошло не так</string>
     <string name="search_hint">Введите ключевые слова</string>
+    <string name="next_question">Следующий вопрос</string>
 
 
     <!--  SignInOrReg  -->

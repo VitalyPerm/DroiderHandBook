@@ -1,19 +1,85 @@
 package com.elvitalya.droiderhandbook.ui.test
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.elvitalya.droiderhandbook.ui.core.rippleClickable
+import com.elvitalya.droiderhandbook.ui.theme.accent
+import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.statusBarsPadding
+import com.elvitalya.droiderhandbook.R
+import com.elvitalya.droiderhandbook.data.model.QuestionEntity
+import com.elvitalya.droiderhandbook.ui.theme.black
+import com.elvitalya.droiderhandbook.ui.theme.white
+import kotlinx.coroutines.delay
 
 @Composable
-fun TestScreen() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize(), contentAlignment = Alignment.Center
-    ) {
-        Text(text = "Test", fontSize = 33.sp)
+fun TestScreen(
+    question: QuestionEntity,
+    onNextQuestionClick: () -> Unit
+) {
+
+    LaunchedEffect(key1 = Unit) {
+        delay(1000)
+        onNextQuestionClick()
+    }
+
+    ProvideWindowInsets {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+        ) {
+            Spacer(modifier = Modifier.weight(1f))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .shadow(6.dp, shape = RoundedCornerShape(16.dp), clip = true)
+                    .background(white, RoundedCornerShape(16.dp))
+                    .rippleClickable({}),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = question.title,
+                    modifier = Modifier
+                        .padding(16.dp),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = black
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .background(accent, RoundedCornerShape(16.dp))
+                    .rippleClickable(onNextQuestionClick),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(id = R.string.next_question),
+                    modifier = Modifier
+                        .padding(16.dp),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = white
+                )
+            }
+        }
     }
 }

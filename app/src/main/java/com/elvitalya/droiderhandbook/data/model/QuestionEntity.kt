@@ -9,4 +9,13 @@ data class QuestionEntity(
     val title: String,
     val text: String,
     val favorite: Boolean = false
-)
+) {
+    companion object {
+        val EMPTY = QuestionEntity(
+            id = 0,
+            text = "",
+            title = "",
+            favorite = false
+        )
+    }
+}
