@@ -44,6 +44,7 @@ class SearchFragment : KeyedFragment() {
                 questions = questions,
                 onFavoriteClick = viewModel::onFavoriteClick,
                 onQuestionClick = { id -> bottomSheetBackstack.goTo(QuestionDetailKey(id)) },
+                onClearSearchInput = { viewModel.onSearchInput("") }
             )
         }
     }

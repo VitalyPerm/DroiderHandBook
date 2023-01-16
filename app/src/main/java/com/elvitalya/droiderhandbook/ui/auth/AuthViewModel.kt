@@ -3,9 +3,9 @@ package com.elvitalya.droiderhandbook.ui.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elvitalya.droiderhandbook.data.DataRepository
-import com.elvitalya.droiderhandbook.utils.Event
 import com.elvitalya.droiderhandbook.utils.ViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -19,6 +19,11 @@ enum class AuthMethod {
 class AuthViewModel @Inject constructor(
     private val repository: DataRepository
 ) : ViewModel() {
+
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        _errorMessage.value = throwable.message ?: ""
+        _viewState.value = ViewState.Error
+    }
 
     private val _authMethod = MutableStateFlow(AuthMethod.UNSELECTED)
     val authMethod = _authMethod.asStateFlow()
@@ -57,36 +62,21 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun checkButtonAuthEnabled() {
-        val enabled = _email.value.length > 5
-                && _email.value.contains("@") && _password.value.length > 6
+        val enabled =
+            _email.value.length > 5 && _email.value.contains("@") && _password.value.length > 6
         _buttonAuthEnabled.value = enabled
     }
 
 
     fun onClickLogin() {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             _viewState.value = ViewState.Loading
             val email = _email.value
             val pass = _password.value
-            if (_authMethod.value == AuthMethod.LOGIN) {
-                when (val response = repository.login(email, pass)) {
-                    is Event.Error -> {
-                        _errorMessage.value = response.message ?: ""
-                        _viewState.value = ViewState.Error
-                    }
-                    is Event.Loading -> _viewState.value = ViewState.Loading
-                    is Event.Success -> _navigateToMainScreen.value = true
-                }
-            } else {
-                when (val response = repository.registration(email, pass)) {
-                    is Event.Error -> {
-                        _errorMessage.value = response.message ?: ""
-                        _viewState.value = ViewState.Error
-                    }
-                    is Event.Loading -> _viewState.value = ViewState.Loading
-                    is Event.Success -> _navigateToMainScreen.value = true
-                }
-            }
+            val authResult =
+                if (_authMethod.value == AuthMethod.LOGIN) repository.login(email, pass)
+                else repository.registration(email, pass)
+            if (authResult.user != null) _navigateToMainScreen.value = true
         }
 
     }

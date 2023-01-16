@@ -46,7 +46,8 @@ fun SearchScreen(
     onQuestionClick: (Long) -> Unit,
     viewState: ViewState,
     searchInput: String,
-    onSearchInput: (String) -> Unit
+    onSearchInput: (String) -> Unit,
+    onClearSearchInput :() -> Unit
 ) {
     ProvideWindowInsets {
         Box(
@@ -113,7 +114,7 @@ fun SearchScreen(
                                                     contentDescription = null,
                                                     modifier = Modifier
                                                         .clip(CircleShape)
-                                                        .rippleClickable({})
+                                                        .rippleClickable(onClearSearchInput)
                                                         .padding(6.dp),
                                                     colorFilter = ColorFilter.tint(black)
                                                 )

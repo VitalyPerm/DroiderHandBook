@@ -5,6 +5,7 @@ import com.elvitalya.droiderhandbook.data.model.FirebaseQuestion
 import com.elvitalya.droiderhandbook.data.model.QuestionEntity
 import com.elvitalya.droiderhandbook.utils.Event
 import com.elvitalya.droiderhandbook.utils.FireBaseHelper
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -21,8 +22,6 @@ class DataRepository @Inject constructor(
     private val questionsDao: QuestionsDao
 ) {
 
-    private fun getErrorMessage(e: Exception) = e.message ?: "Упс, что то пошло не так"
-
     fun getQuestionsFlow(): Flow<List<QuestionEntity>> = questionsDao.getQuestionsFlow()
 
     suspend fun loadQuestions() {
@@ -36,34 +35,13 @@ class DataRepository @Inject constructor(
     suspend fun login(
         email: String,
         pass: String
-    ): Event<Unit> {
-        return suspendCoroutine { continuation ->
-            Firebase.auth.signInWithEmailAndPassword(email, pass)
-                .addOnSuccessListener {
-                    continuation.resume(Event.Success(Unit))
-                }
-                .addOnFailureListener {
-                    continuation.resume(
-                        Event.Error(getErrorMessage(it))
-                    )
-                }
-        }
-    }
+    ): AuthResult = Firebase.auth.signInWithEmailAndPassword(email, pass).await()
+
 
     suspend fun registration(
         email: String,
         pass: String
-    ): Event<Unit> {
-        return suspendCoroutine { continuation ->
-            Firebase.auth.createUserWithEmailAndPassword(email, pass)
-                .addOnSuccessListener {
-                    continuation.resume(Event.Success(Unit))
-                }
-                .addOnFailureListener {
-                    continuation.resume(Event.Error(it.message ?: "Неизвестная ошибка"))
-                }
-        }
-    }
+    ): AuthResult = Firebase.auth.createUserWithEmailAndPassword(email, pass).await()
 
     private suspend fun deleteAllQuestions() = questionsDao.deleteAll()
 
