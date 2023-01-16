@@ -14,7 +14,6 @@ import com.elvitalya.droiderhandbook.ui.core.FragmentKey
 import com.elvitalya.droiderhandbook.ui.core.createComposeView
 import com.elvitalya.droiderhandbook.ui.core.lookupBottomSheetBackstack
 import com.elvitalya.droiderhandbook.ui.questiondetail.QuestionDetailKey
-import com.elvitalya.droiderhandbook.utils.ViewState
 import com.zhuinden.simplestackextensions.fragments.KeyedFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.Parcelize
@@ -63,10 +62,5 @@ class SectionsFragment : KeyedFragment() {
                 onReloadClick = viewModel::reloadQuestions
             )
         }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewModel.getQuestions()
     }
 }

@@ -4,14 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elvitalya.droiderhandbook.data.DataRepository
 import com.elvitalya.droiderhandbook.data.model.QuestionEntity
-import com.elvitalya.droiderhandbook.utils.Event
 import com.elvitalya.droiderhandbook.utils.ToastDispatcher
 import com.elvitalya.droiderhandbook.utils.ViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,44 +18,29 @@ class FavoriteViewModel @Inject constructor(
     private val toastDispatcher: ToastDispatcher
 ) : ViewModel() {
 
-    private val favoriteQuestions = MutableStateFlow<List<QuestionEntity>>(emptyList())
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        toastDispatcher.dispatchUnique(throwable.message)
+        _viewState.value = ViewState.Error
+    }
+
+    private val allQuestions = dataRepository.getQuestionsFlow()
+        .stateIn(viewModelScope, started = SharingStarted.Eagerly, initialValue = emptyList())
 
     val questions
-        get() = favoriteQuestions.map { list ->
+        get() = allQuestions.map { list ->
             list.filter { question -> question.favorite }
         }
 
 
-    val viewState = MutableStateFlow<ViewState>(ViewState.Loading)
-
-    init {
-        viewModelScope.launch {
-            try {
-                viewState.value = ViewState.Loading
-                dataRepository.getQuestionsFlow().onEach { questions ->
-                    favoriteQuestions.value = questions
-                    viewState.value = ViewState.Content
-                }.launchIn(viewModelScope)
-            } catch (e: Exception) {
-                viewState.value = ViewState.Error
-                toastDispatcher.dispatchUnique(e.message)
-            }
-        }
-    }
+    private val _viewState = MutableStateFlow<ViewState>(ViewState.Content)
+    val viewState = _viewState.asStateFlow()
 
     fun onFavoriteClick(question: QuestionEntity) {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
+            _viewState.value = ViewState.Loading
             val new = question.copy(favorite = question.favorite.not())
-            dataRepository.updateQuestion(new).onEach { result ->
-                when (result) {
-                    is Event.Error -> {
-                        viewState.value = ViewState.Error
-                        toastDispatcher.dispatchUnique(result.message)
-                    }
-                    is Event.Loading -> viewState.value = ViewState.Loading
-                    is Event.Success -> viewState.value = ViewState.Content
-                }
-            }.launchIn(viewModelScope)
+            dataRepository.updateQuestion(new)
+            _viewState.value = ViewState.Content
         }
     }
 

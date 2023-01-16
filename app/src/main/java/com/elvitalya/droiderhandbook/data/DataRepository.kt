@@ -25,18 +25,12 @@ class DataRepository @Inject constructor(
 
     fun getQuestionsFlow(): Flow<List<QuestionEntity>> = questionsDao.getQuestionsFlow()
 
-    fun loadQuestions(): Flow<Event<Unit>> = flow {
-        emit(Event.Loading())
-        try {
-            deleteAllQuestions()
-            val snapShot = FireBaseHelper.questions.get().await()
-            val questions: List<FirebaseQuestion> =
-                snapShot.documents.mapNotNull { documentSnapshot -> documentSnapshot?.toObject() }
-            questionsDao.addQuestionsList(questions.mapNotNull { it.mapToEntity() })
-            emit(Event.Success(Unit))
-        } catch (e: Exception) {
-            emit(Event.Error(getErrorMessage(e)))
-        }
+    suspend fun loadQuestions() {
+        deleteAllQuestions()
+        val snapShot = FireBaseHelper.questions.get().await()
+        val questions: List<FirebaseQuestion> =
+            snapShot.documents.mapNotNull { documentSnapshot -> documentSnapshot?.toObject() }
+        questionsDao.addQuestionsList(questions.mapNotNull { it.mapToEntity() })
     }
 
     suspend fun login(
@@ -73,25 +67,9 @@ class DataRepository @Inject constructor(
 
     private suspend fun deleteAllQuestions() = questionsDao.deleteAll()
 
-    fun getQuestionById(id: Long): Flow<Event<QuestionEntity>> =
-        flow {
-            emit(Event.Loading())
-            try {
-                val question = questionsDao.getQuestion(id)
-                emit(Event.Success(question))
-            } catch (e: Exception) {
-                emit(Event.Error(getErrorMessage(e)))
-            }
-        }
+    suspend fun getQuestionById(id: Long): QuestionEntity = questionsDao.getQuestion(id)
 
-    suspend fun updateQuestion(question: QuestionEntity) = flow {
-        emit(Event.Loading())
-        try {
-            questionsDao.updateQuestion(question)
-            emit(Event.Success(Unit))
-        } catch (e: Exception) {
-            emit(Event.Error(getErrorMessage(e)))
-        }
+    suspend fun updateQuestion(question: QuestionEntity) = questionsDao.updateQuestion(question)
 
-    }
+
 }
