@@ -39,8 +39,14 @@ class SearchViewModel @Inject constructor(
     private val _viewState = MutableStateFlow<ViewState>(ViewState.Content)
     val viewState = _viewState.asStateFlow()
 
+    init {
+        correspondedQuestions.onEach { list ->
+            _viewState.value = if (list.isEmpty()) ViewState.Empty else ViewState.Content
+        }.launchIn(viewModelScope)
+    }
+
     fun onSearchInput(input: String) {
-        if(input.length > 10) return
+        if (input.length > 10) return
         searchInput.value = input
     }
 

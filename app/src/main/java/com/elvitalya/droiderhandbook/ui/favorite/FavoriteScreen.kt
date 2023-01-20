@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.elvitalya.droiderhandbook.data.model.QuestionEntity
+import com.elvitalya.droiderhandbook.ui.core.EmptyBanner
 import com.elvitalya.droiderhandbook.ui.core.ErrorBanner
 import com.elvitalya.droiderhandbook.ui.core.LoadingBanner
 import com.elvitalya.droiderhandbook.ui.sections.SectionContentItem
@@ -53,6 +54,7 @@ fun FavoriteScreen(
 
                     ViewState.Error -> ErrorBanner()
                     ViewState.Loading -> LoadingBanner()
+                    ViewState.Empty -> EmptyBanner()
                 }
             }
         }

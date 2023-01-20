@@ -1,11 +1,9 @@
 package com.elvitalya.droiderhandbook.ui.test
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elvitalya.droiderhandbook.data.DataRepository
 import com.elvitalya.droiderhandbook.data.model.QuestionEntity
-import com.elvitalya.droiderhandbook.ui.main.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,8 +28,8 @@ class TestViewModel @Inject constructor(
     }
 
     fun getRandomQuestions() {
-        val size = allQuestions.value.size
-        if (size == 0) return
-        questionIndex.value = Random.nextInt(size - 1)
+        val lastIndex = allQuestions.value.lastIndex
+        if (lastIndex == -1) return
+        questionIndex.value = Random.nextInt(lastIndex)
     }
 }

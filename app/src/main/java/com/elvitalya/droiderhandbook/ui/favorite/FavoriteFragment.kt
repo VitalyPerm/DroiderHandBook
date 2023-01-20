@@ -26,7 +26,7 @@ class FavoriteFragment : KeyedFragment() {
 
     private val viewModel: FavoriteViewModel by viewModels()
 
-    private val bottomSheetBackstack by lazy { requireContext().lookupBottomSheetBackstack() }
+    private val contentView by lazy { requireContext().lookupBottomSheetBackstack() }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,7 +39,7 @@ class FavoriteFragment : KeyedFragment() {
             FavoriteScreen(
                 questions = questions,
                 onFavoriteClick = viewModel::onFavoriteClick,
-                onQuestionClick = { id -> bottomSheetBackstack.goTo(QuestionDetailKey(id)) },
+                onQuestionClick = { id -> contentView.goTo(QuestionDetailKey(id)) },
                 viewState = viewState
             )
         }

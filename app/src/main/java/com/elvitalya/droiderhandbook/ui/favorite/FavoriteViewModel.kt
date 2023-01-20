@@ -44,4 +44,10 @@ class FavoriteViewModel @Inject constructor(
         }
     }
 
+    init {
+        questions.onEach { list ->
+            _viewState.value = if (list.isEmpty()) ViewState.Empty else ViewState.Content
+        }.launchIn(viewModelScope)
+    }
+
 }

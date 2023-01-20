@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.elvitalya.droiderhandbook.R
 import com.elvitalya.droiderhandbook.data.model.QuestionEntity
+import com.elvitalya.droiderhandbook.ui.core.EmptyBanner
 import com.elvitalya.droiderhandbook.ui.core.ErrorBanner
 import com.elvitalya.droiderhandbook.ui.core.LoadingBanner
 import com.elvitalya.droiderhandbook.ui.core.rippleClickable
@@ -86,6 +87,7 @@ fun SectionsScreen(
 
                     ViewState.Error -> ErrorBanner()
                     ViewState.Loading -> LoadingBanner()
+                    ViewState.Empty -> EmptyBanner()
                 }
             }
             if (reloadDialogVisible) {

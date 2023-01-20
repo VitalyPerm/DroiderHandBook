@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -36,6 +37,20 @@ fun ErrorBanner() {
         contentAlignment = Alignment.Center
     ) {
         Image(painter = painterResource(id = R.drawable.ic_error), contentDescription = null)
+    }
+}
+
+@Composable
+fun EmptyBanner() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_empty),
+            contentDescription = null,
+            Modifier.fillMaxSize(0.5f)
+        )
     }
 }
 
@@ -108,12 +123,11 @@ fun AppBar(
     }
 }
 
-@Composable
 fun Modifier.rippleClickable(
     onClick: () -> Unit,
     enabled: Boolean = true
-): Modifier {
-    return clickable(
+): Modifier = composed {
+    clickable(
         interactionSource = remember { MutableInteractionSource() },
         indication = rememberRipple(),
         role = Role.Button,

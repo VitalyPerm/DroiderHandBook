@@ -33,7 +33,7 @@ class AuthFragment : KeyedFragment() {
 
     private val viewModel: AuthViewModel by viewModels()
 
-    private val bottomSheetBackstack by lazy { requireContext().lookupBottomSheetBackstack() }
+    private val contentView by lazy { requireContext().lookupBottomSheetBackstack() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,7 +61,7 @@ class AuthFragment : KeyedFragment() {
                 onEmailInputChanged = viewModel::onEmailInputChanged,
                 onPassInputChanged = viewModel::onPassInputChanged,
                 onAuthClick = viewModel::onClickLogin,
-                onCloseClick = { bottomSheetBackstack.jumpToRoot() }
+                onCloseClick = { contentView.jumpToRoot() }
             )
         }
     }
@@ -73,7 +73,7 @@ class AuthFragment : KeyedFragment() {
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .collect {
                     if (it.not()) return@collect
-                    bottomSheetBackstack.jumpToRoot()
+                    contentView.jumpToRoot()
                     backstack.setHistory(History.of(MainFlowKey()), StateChange.REPLACE)
                 }
         }

@@ -36,7 +36,7 @@ class SectionsFragment : KeyedFragment() {
 
     private val viewModel: SectionsViewModel by viewModels()
 
-    private val bottomSheetBackstack by lazy { requireContext().lookupBottomSheetBackstack() }
+    private val contentView by lazy { requireContext().lookupBottomSheetBackstack() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,7 +57,7 @@ class SectionsFragment : KeyedFragment() {
                 kotlinQuestions = kotlinQuestions,
                 basicQuestions = basicQuestions,
                 viewState = viewState,
-                onQuestionClick = { id -> bottomSheetBackstack.goTo(QuestionDetailKey(id)) },
+                onQuestionClick = { id -> contentView.goTo(QuestionDetailKey(id)) },
                 onFavoriteClick = viewModel::updateQuestion,
                 onReloadClick = viewModel::reloadQuestions
             )

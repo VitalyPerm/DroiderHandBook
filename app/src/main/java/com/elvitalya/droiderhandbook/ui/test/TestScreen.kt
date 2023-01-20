@@ -1,16 +1,18 @@
 package com.elvitalya.droiderhandbook.ui.test
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.elvitalya.droiderhandbook.ui.core.rippleClickable
@@ -34,6 +36,9 @@ fun TestScreen(
         onNextQuestionClick()
     }
 
+    var questionExpanded by remember { mutableStateOf(false) }
+    val text = if (questionExpanded) question.text else question.title
+
     ProvideWindowInsets {
         Column(
             modifier = Modifier
@@ -48,16 +53,18 @@ fun TestScreen(
                     .padding(16.dp)
                     .shadow(6.dp, shape = RoundedCornerShape(16.dp), clip = true)
                     .background(white, RoundedCornerShape(16.dp))
-                    .rippleClickable({}),
+                    .clickable { questionExpanded = questionExpanded.not() }
+                    .animateContentSize(),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = question.title,
+                    text = text,
                     modifier = Modifier
                         .padding(16.dp),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Medium,
-                    color = black
+                    color = black,
+                    textAlign = TextAlign.Center
                 )
             }
 
@@ -68,7 +75,10 @@ fun TestScreen(
                     .fillMaxWidth()
                     .padding(16.dp)
                     .background(accent, RoundedCornerShape(16.dp))
-                    .rippleClickable(onNextQuestionClick),
+                    .rippleClickable({
+                        questionExpanded = false
+                        onNextQuestionClick()
+                    }),
                 contentAlignment = Alignment.Center
             ) {
                 Text(

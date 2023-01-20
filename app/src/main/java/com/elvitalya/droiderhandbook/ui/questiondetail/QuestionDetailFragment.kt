@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.elvitalya.droiderhandbook.ui.core.FragmentKey
 import com.elvitalya.droiderhandbook.ui.core.createComposeView
+import com.elvitalya.droiderhandbook.ui.core.lookupBottomSheetBackstack
 import com.zhuinden.simplestackextensions.fragments.KeyedFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.Parcelize
@@ -24,6 +25,8 @@ class QuestionDetailFragment : KeyedFragment() {
 
     private val viewModel: QuestionDetailViewModel by viewModels()
 
+    private val contentView by lazy { requireContext().lookupBottomSheetBackstack() }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,7 +37,8 @@ class QuestionDetailFragment : KeyedFragment() {
             val viewState by viewModel.viewState.collectAsState()
             QuestionDetailsScreen(
                 question = question,
-                viewState = viewState
+                viewState = viewState,
+                onCloseClick = { contentView.jumpToRoot() }
             )
         }
     }

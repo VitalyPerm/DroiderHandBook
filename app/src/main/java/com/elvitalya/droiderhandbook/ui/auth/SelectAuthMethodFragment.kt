@@ -9,7 +9,6 @@ import com.elvitalya.droiderhandbook.ui.core.FragmentKey
 import com.elvitalya.droiderhandbook.ui.core.createComposeView
 import com.elvitalya.droiderhandbook.ui.core.lookupBottomSheetBackstack
 import com.zhuinden.simplestackextensions.fragments.KeyedFragment
-import com.zhuinden.simplestackextensions.navigatorktx.backstack
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -19,7 +18,7 @@ data class SelectAuthMethodKey(val placeholder: Int = 0) : FragmentKey() {
 
 class SelectAuthMethodFragment : KeyedFragment() {
 
-    private val bottomSheetBackstack by lazy { requireContext().lookupBottomSheetBackstack() }
+    private val contentView by lazy { requireContext().lookupBottomSheetBackstack() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,7 +27,7 @@ class SelectAuthMethodFragment : KeyedFragment() {
     ): View = createComposeView(requireContext()).apply {
         setContent {
             SelectAuthMethodScreen { authMethod ->
-                bottomSheetBackstack.goTo(AuthKey(authMethod))
+                contentView.goTo(AuthKey(authMethod))
             }
         }
     }

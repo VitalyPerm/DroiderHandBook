@@ -26,7 +26,7 @@ class SearchFragment : KeyedFragment() {
 
     private val viewModel: SearchViewModel by viewModels()
 
-    private val bottomSheetBackstack by lazy { requireContext().lookupBottomSheetBackstack() }
+    private val contentView by lazy { requireContext().lookupBottomSheetBackstack() }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,7 +43,7 @@ class SearchFragment : KeyedFragment() {
                 onSearchInput = viewModel::onSearchInput,
                 questions = questions,
                 onFavoriteClick = viewModel::onFavoriteClick,
-                onQuestionClick = { id -> bottomSheetBackstack.goTo(QuestionDetailKey(id)) },
+                onQuestionClick = { id -> contentView.goTo(QuestionDetailKey(id)) },
                 onClearSearchInput = { viewModel.onSearchInput("") }
             )
         }
