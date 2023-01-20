@@ -22,7 +22,6 @@ object AppModule {
             QuestionDataBase::class.java,
             "questions_db"
         )
-            .fallbackToDestructiveMigration()
             .build().dao
     }
 }

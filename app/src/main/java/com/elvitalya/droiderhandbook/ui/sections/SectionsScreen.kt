@@ -47,7 +47,7 @@ fun SectionsScreen(
     kotlinQuestions: List<QuestionEntity>,
     basicQuestions: List<QuestionEntity>,
     viewState: ViewState,
-    onQuestionClick: (Long) -> Unit,
+    onQuestionClick: (String) -> Unit,
     onFavoriteClick: (QuestionEntity) -> Unit,
     onReloadClick: () -> Unit
 ) {
@@ -152,7 +152,7 @@ private fun Content(
     kotlinQuestions: List<QuestionEntity>,
     androidQuestions: List<QuestionEntity>,
     basicQuestions: List<QuestionEntity>,
-    onQuestionClick: (Long) -> Unit,
+    onQuestionClick: (String) -> Unit,
     expandedSections: SectionScreenContentVisibility,
     onSectionClick: (Sections) -> Unit,
     onFavoriteClick: (QuestionEntity) -> Unit,
@@ -281,7 +281,7 @@ fun SectionTitle(
 @Composable
 fun SectionContentItem(
     questionEntity: QuestionEntity,
-    onQuestionClick: (Long) -> Unit,
+    onQuestionClick: (String) -> Unit,
     onFavoriteClick: (QuestionEntity) -> Unit,
 ) {
 

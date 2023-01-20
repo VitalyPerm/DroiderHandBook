@@ -39,28 +39,28 @@ class SectionsViewModel @Inject constructor(
     val javaQuestions
         get() = allQuestions.map { list ->
             list.filter { question ->
-                question.id.toString().startsWith(FireBaseHelper.javaQuestionsIds)
+                question.id.startsWith(FireBaseHelper.javaQuestionsPrefix)
             }
         }
 
     val kotlinQuestions
         get() = allQuestions.map { list ->
             list.filter { question ->
-                question.id.toString().startsWith(FireBaseHelper.kotlinQuestionsIds)
+                question.id.startsWith(FireBaseHelper.kotlinQuestionsPrefix)
             }
         }
 
     val basicQuestions
         get() = allQuestions.map { list ->
             list.filter { question ->
-                question.id.toString().startsWith(FireBaseHelper.basicQuestionsIds)
+                question.id.startsWith(FireBaseHelper.basicQuestionsPrefix)
             }
         }
 
     val androidQuestions
         get() = allQuestions.map { list ->
             list.filter { question ->
-                question.id.toString().startsWith(FireBaseHelper.androidQuestionsIds)
+                question.id.startsWith(FireBaseHelper.androidQuestionsPrefix)
             }
         }
 

@@ -5,14 +5,14 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class QuestionEntity(
-    @PrimaryKey val id: Long,
+    @PrimaryKey val id: String,
     val title: String,
     val text: String,
     val favorite: Boolean = false
 ) {
     companion object {
         val EMPTY = QuestionEntity(
-            id = 0,
+            id = "",
             text = "",
             title = "",
             favorite = false

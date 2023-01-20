@@ -6,8 +6,8 @@ import com.google.firebase.ktx.Firebase
 object FireBaseHelper {
     val questions = Firebase.firestore.collection("questions")
 
-    val javaQuestionsIds = "1"
-    val kotlinQuestionsIds = "2"
-    val androidQuestionsIds = "3"
-    val basicQuestionsIds = "4"
+    const val javaQuestionsPrefix = "a"
+    const val kotlinQuestionsPrefix = "b"
+    const val androidQuestionsPrefix = "c"
+    const val basicQuestionsPrefix = "d"
 }

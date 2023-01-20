@@ -35,14 +35,13 @@ import com.elvitalya.droiderhandbook.ui.sections.SectionContentItem
 import com.elvitalya.droiderhandbook.ui.theme.*
 import com.elvitalya.droiderhandbook.utils.ViewState
 import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.statusBarsPadding
 
 @Composable
 fun SearchScreen(
     questions: List<QuestionEntity>,
     onFavoriteClick: (QuestionEntity) -> Unit,
-    onQuestionClick: (Long) -> Unit,
+    onQuestionClick: (String) -> Unit,
     viewState: ViewState,
     searchInput: String,
     onSearchInput: (String) -> Unit,

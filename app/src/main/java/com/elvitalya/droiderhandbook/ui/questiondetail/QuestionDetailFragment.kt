@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class QuestionDetailKey(val questionId: Long) : FragmentKey() {
+data class QuestionDetailKey(val questionId: String) : FragmentKey() {
     override fun instantiateFragment(): Fragment = QuestionDetailFragment()
 }
 

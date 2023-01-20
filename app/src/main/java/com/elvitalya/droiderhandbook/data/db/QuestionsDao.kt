@@ -11,7 +11,7 @@ interface QuestionsDao {
     fun getQuestionsFlow(): Flow<List<QuestionEntity>>
 
     @Query("SELECT * FROM questionentity WHERE id=(:id)")
-    suspend fun getQuestion(id: Long): QuestionEntity
+    suspend fun getQuestion(id: String): QuestionEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addQuestionsList(questions: List<QuestionEntity>)

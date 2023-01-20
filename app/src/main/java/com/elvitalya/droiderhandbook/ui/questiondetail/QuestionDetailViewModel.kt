@@ -34,7 +34,7 @@ class QuestionDetailViewModel @Inject constructor(
     }
 
 
-    fun getQuestionById(id: Long) {
+    fun getQuestionById(id: String) {
         viewModelScope.launch(exceptionHandler) {
             _viewState.value = ViewState.Loading
             _question.value = dataRepository.getQuestionById(id)
