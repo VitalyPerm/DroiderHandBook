@@ -3,9 +3,10 @@ package com.elvitalya.droiderhandbook.data
 import com.elvitalya.droiderhandbook.data.db.QuestionsDao
 import com.elvitalya.droiderhandbook.data.model.FirebaseQuestion
 import com.elvitalya.droiderhandbook.data.model.QuestionEntity
-import com.elvitalya.droiderhandbook.utils.FireBaseHelper
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +23,10 @@ class DataRepository @Inject constructor(
 
     suspend fun loadQuestions() {
         deleteAllQuestions()
-        val snapShot = FireBaseHelper.questions.get().await()
+        val snapShot = Firebase.firestore.collection("questions")
+            .orderBy("id", Query.Direction.ASCENDING)
+            .get()
+            .await()
         val questions: List<FirebaseQuestion> =
             snapShot.documents.mapNotNull { documentSnapshot -> documentSnapshot?.toObject() }
         questionsDao.addQuestionsList(questions.mapNotNull { it.mapToEntity() })
