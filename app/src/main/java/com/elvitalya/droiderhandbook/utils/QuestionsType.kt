@@ -5,5 +5,6 @@ enum class QuestionsType(val prefix: Char) {
     Kotlin('b'),
     Android('c'),
     Basic('d'),
-    Coroutines('e')
+    Coroutines('e'),
+    Flow('f')
 }

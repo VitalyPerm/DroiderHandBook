@@ -26,11 +26,12 @@
     <string name="sections_alert_no">Нет</string>
 
     <!--  Sections  -->
-    <string name="java">Джава</string>
-    <string name="kotlin">Котлин</string>
-    <string name="android">Андроид СДК</string>
-    <string name="basic">Базовые вопросы</string>
-    <string name="coroutines">Корутины</string>
+    <string name="section_java">Джава</string>
+    <string name="section_kotlin">Котлин</string>
+    <string name="section_android">Андроид СДК</string>
+    <string name="section_basic">Базовые вопросы</string>
+    <string name="section_coroutines">Корутины</string>
+    <string name="section_flow">Котлин флоу</string>
 
 
 </resources>

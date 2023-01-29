@@ -71,6 +71,13 @@ class SectionsViewModel @Inject constructor(
             }
         }
 
+    val flowQuestions
+        get() = allQuestions.map { list ->
+            list.filter { question ->
+                question.id.startsWith(QuestionsType.Flow.prefix)
+            }
+        }
+
 
     fun reloadQuestions() {
         viewModelScope.launch(exceptionHandler) {

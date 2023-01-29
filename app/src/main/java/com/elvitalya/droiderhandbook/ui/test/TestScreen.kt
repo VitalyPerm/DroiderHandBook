@@ -2,9 +2,10 @@ package com.elvitalya.droiderhandbook.ui.test
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,14 +16,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.elvitalya.droiderhandbook.ui.core.rippleClickable
-import com.elvitalya.droiderhandbook.ui.theme.accent
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.statusBarsPadding
 import com.elvitalya.droiderhandbook.R
 import com.elvitalya.droiderhandbook.data.model.QuestionEntity
+import com.elvitalya.droiderhandbook.ui.core.noRippleClickable
+import com.elvitalya.droiderhandbook.ui.core.rippleClickable
+import com.elvitalya.droiderhandbook.ui.theme.accent
 import com.elvitalya.droiderhandbook.ui.theme.black
 import com.elvitalya.droiderhandbook.ui.theme.white
+import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.delay
 
 @Composable
@@ -47,15 +49,17 @@ fun TestScreen(
         ) {
             Spacer(modifier = Modifier.weight(1f))
 
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
                     .shadow(6.dp, shape = RoundedCornerShape(16.dp), clip = true)
                     .background(white, RoundedCornerShape(16.dp))
-                    .clickable { questionExpanded = questionExpanded.not() }
+                    .noRippleClickable { questionExpanded = questionExpanded.not() }
+                    .verticalScroll(rememberScrollState())
                     .animateContentSize(),
-                contentAlignment = Alignment.Center
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = text,

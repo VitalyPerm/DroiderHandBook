@@ -46,6 +46,8 @@ fun SectionsScreen(
     androidQuestions: List<QuestionEntity>,
     kotlinQuestions: List<QuestionEntity>,
     basicQuestions: List<QuestionEntity>,
+    coroutinesQuestions: List<QuestionEntity>,
+    flowQuestions: List<QuestionEntity>,
     viewState: ViewState,
     onQuestionClick: (String) -> Unit,
     onFavoriteClick: (QuestionEntity) -> Unit,
@@ -70,6 +72,8 @@ fun SectionsScreen(
                             kotlinQuestions = kotlinQuestions,
                             androidQuestions = androidQuestions,
                             basicQuestions = basicQuestions,
+                            coroutinesQuestions = coroutinesQuestions,
+                            flowQuestions = flowQuestions,
                             onQuestionClick = onQuestionClick,
                             expandedSections = expandedSections,
                             onSectionClick = { section ->
@@ -78,7 +82,8 @@ fun SectionsScreen(
                                     Sections.Kotlin -> expandedSections.copy(kotlin = expandedSections.kotlin.not())
                                     Sections.Android -> expandedSections.copy(android = expandedSections.android.not())
                                     Sections.Basic -> expandedSections.copy(basic = expandedSections.basic.not())
-                                    Sections.Coroutines -> expandedSections.copy(basic = expandedSections.coroutines.not())
+                                    Sections.Coroutines -> expandedSections.copy(coroutines = expandedSections.coroutines.not())
+                                    Sections.Flow -> expandedSections.copy(flow = expandedSections.flow.not())
                                 }
                             },
                             onFavoriteClick = onFavoriteClick,
@@ -152,6 +157,8 @@ private fun Content(
     kotlinQuestions: List<QuestionEntity>,
     androidQuestions: List<QuestionEntity>,
     basicQuestions: List<QuestionEntity>,
+    coroutinesQuestions: List<QuestionEntity>,
+    flowQuestions: List<QuestionEntity>,
     onQuestionClick: (String) -> Unit,
     expandedSections: SectionScreenContentVisibility,
     onSectionClick: (Sections) -> Unit,
@@ -252,6 +259,38 @@ private fun Content(
                     )
                 }
             }
+
+            item {
+                SectionTitle(
+                    section = Sections.Coroutines,
+                    onSectionClick = onSectionClick
+                )
+            }
+            items(coroutinesQuestions) {
+                AnimatedVisibility(visible = expandedSections.coroutines) {
+                    SectionContentItem(
+                        questionEntity = it,
+                        onQuestionClick = onQuestionClick,
+                        onFavoriteClick = onFavoriteClick
+                    )
+                }
+            }
+
+            item {
+                SectionTitle(
+                    section = Sections.Flow,
+                    onSectionClick = onSectionClick
+                )
+            }
+            items(flowQuestions) {
+                AnimatedVisibility(visible = expandedSections.flow) {
+                    SectionContentItem(
+                        questionEntity = it,
+                        onQuestionClick = onQuestionClick,
+                        onFavoriteClick = onFavoriteClick
+                    )
+                }
+            }
         }
 
     }
@@ -340,8 +379,10 @@ data class SectionScreenContentVisibility(
     val java: Boolean = false,
     val android: Boolean = false,
     val basic: Boolean = false,
-    val coroutines: Boolean = false
+    val coroutines: Boolean = false,
+    val flow: Boolean = false
 ) {
     val allInvisible
-        get() = kotlin.not() && java.not() && android.not() && basic.not() && coroutines.not()
+        get() = kotlin.not() && java.not() && android.not() && basic.not()
+                && coroutines.not() && flow.not()
 }
