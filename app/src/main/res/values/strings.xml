@@ -33,5 +33,9 @@
     <string name="section_coroutines">Корутины</string>
     <string name="section_flow">Котлин флоу</string>
 
+    <!--  Test  -->
+    <string name="test_title">Проверь свои знания</string>
+    <string name="test_dialog_desc">Проверь себя! Попробуй ответить на вопросы</string>
+
 
 </resources>

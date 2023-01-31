@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -73,7 +74,8 @@ fun LoadingBanner() {
 @Composable
 fun AppBar(
     title: String,
-    onCloseClick: () -> Unit
+    icon: ImageVector,
+    onIconClick: () -> Unit,
 ) {
     Column {
         Row(
@@ -98,18 +100,18 @@ fun AppBar(
 
             Box(
                 modifier = Modifier
+                    .background(white)
                     .padding(6.dp)
                     .clip(CircleShape)
-                    .background(accent)
-                    .rippleClickable(onClick = onCloseClick),
+                    .rippleClickable(onClick = onIconClick),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = Icons.Default.Close,
+                    imageVector = icon,
                     contentDescription = null,
                     modifier = Modifier
-                        .padding(6.dp),
-                    tint = black
+                        .size(36.dp),
+                    tint = accent
                 )
             }
         }

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -62,7 +64,8 @@ private fun Content(
     ) {
         AppBar(
             title = question?.title ?: "",
-            onCloseClick = onCloseClick
+            onIconClick = onCloseClick,
+            icon = Icons.Default.Close
         )
 
         Column(

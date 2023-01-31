@@ -4,20 +4,26 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Help
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.elvitalya.droiderhandbook.R
 import com.elvitalya.droiderhandbook.data.model.QuestionEntity
+import com.elvitalya.droiderhandbook.ui.core.AppBar
 import com.elvitalya.droiderhandbook.ui.core.noRippleClickable
 import com.elvitalya.droiderhandbook.ui.core.rippleClickable
 import com.elvitalya.droiderhandbook.ui.theme.accent
@@ -39,6 +45,7 @@ fun TestScreen(
     }
 
     var questionExpanded by remember { mutableStateOf(false) }
+    var instructionsDialogState by remember { mutableStateOf(false) }
     val text = if (questionExpanded) question.text else question.title
 
     ProvideWindowInsets {
@@ -47,6 +54,13 @@ fun TestScreen(
                 .fillMaxSize()
                 .statusBarsPadding()
         ) {
+
+            AppBar(
+                title = stringResource(id = R.string.test_title),
+                icon = Icons.Default.Help,
+                onIconClick = { instructionsDialogState = instructionsDialogState.not() }
+            )
+
             Spacer(modifier = Modifier.weight(1f))
 
             Column(
@@ -78,11 +92,12 @@ fun TestScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
-                    .background(accent, RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
                     .rippleClickable(onClick = {
                         questionExpanded = false
                         onNextQuestionClick()
-                    }),
+                    })
+                    .background(accent),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -94,6 +109,35 @@ fun TestScreen(
                     color = white
                 )
             }
+        }
+
+        if (instructionsDialogState) {
+            InstructionDialog(onClose = { instructionsDialogState = false })
+        }
+    }
+}
+
+@Composable
+private fun InstructionDialog(
+    onClose: () -> Unit
+) {
+    Dialog(onDismissRequest = onClose) {
+        Box(
+            modifier = Modifier
+                .clip(CircleShape)
+                .fillMaxWidth()
+                .background(white)
+                .padding(24.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = stringResource(id = R.string.test_dialog_desc),
+                modifier = Modifier
+                    .fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                fontSize = 18.sp,
+                lineHeight = 22.sp
+            )
         }
     }
 }
