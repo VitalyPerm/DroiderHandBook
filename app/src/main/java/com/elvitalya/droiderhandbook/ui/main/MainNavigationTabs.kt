@@ -66,33 +66,31 @@ private fun TabItem(
 
     Column(
         modifier = modifier
-            .padding(top = 8.dp, bottom = 6.dp)
-            .navigationBarsPadding(),
+            .padding(top = 4.dp, bottom = 3.dp)
+            .navigationBarsPadding()
+            .clip(CircleShape)
+            .rippleClickable(onClick = { onClick(index) })
+            .padding(top = 4.dp, bottom = 3.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Column(
-            modifier = Modifier
-                .clip(CircleShape)
-                .rippleClickable(onClick = { onClick(index) }),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Image(
-                imageVector = item.drawableRes,
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(tintColor),
-            )
 
-            Text(
-                text = stringResource(item.titleRes),
-                modifier = Modifier.fillMaxWidth(),
-                fontWeight = FontWeight.Medium,
-                fontSize = 12.sp,
-                textAlign = TextAlign.Center,
-                lineHeight = 14.sp,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1,
-                color = textColor,
-            )
-        }
+        Image(
+            imageVector = item.drawableRes,
+            contentDescription = null,
+            colorFilter = ColorFilter.tint(tintColor),
+        )
+
+        Text(
+            text = stringResource(item.titleRes),
+            modifier = Modifier.fillMaxWidth(),
+            fontWeight = FontWeight.Medium,
+            fontSize = 12.sp,
+            textAlign = TextAlign.Center,
+            lineHeight = 14.sp,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
+            color = textColor,
+        )
     }
 }
 
