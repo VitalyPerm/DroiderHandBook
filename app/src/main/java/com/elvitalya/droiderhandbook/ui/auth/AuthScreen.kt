@@ -223,7 +223,7 @@ fun LoginPassInput(
                         Box(
                             modifier = Modifier
                                 .clip(CircleShape)
-                                .rippleClickable({
+                                .rippleClickable(onClick = {
                                     passwordVisible = passwordVisible.not()
                                 })
                                 .padding(4.dp)
@@ -254,7 +254,7 @@ fun LoginPassInput(
                 .clip(CircleShape)
                 .background(btnBgColor)
                 .align(CenterVertically)
-                .rippleClickable(onAuthClick, enabled = authButtonEnabled),
+                .rippleClickable(onClick = onAuthClick, enabled = authButtonEnabled),
             contentAlignment = Center
         ) {
             Icon(
@@ -289,60 +289,6 @@ private fun ErrorCard(message: String) {
             color = error
         )
     }
-}
-
-@Composable
-private fun LoginOrRegisterChooserScreen(
-    onAuthMethodSelected: (AuthMethod) -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Center
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .background(MaterialTheme.colorScheme.onTertiary, RoundedCornerShape(16.dp))
-                .padding(vertical = 24.dp),
-            horizontalAlignment = CenterHorizontally
-        ) {
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.tertiary)
-                    .clickable { onAuthMethodSelected(AuthMethod.LOGIN) },
-                contentAlignment = Center
-            ) {
-                Text(
-                    text = stringResource(id = R.string.sign_in),
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .padding(horizontal = 24.dp),
-                    color = MaterialTheme.colorScheme.onTertiary
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.tertiary)
-                    .clickable { onAuthMethodSelected(AuthMethod.REGISTRATION) },
-                contentAlignment = Center
-            ) {
-                Text(
-                    text = stringResource(id = R.string.registration),
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .padding(horizontal = 24.dp),
-                    color = MaterialTheme.colorScheme.onTertiary
-                )
-            }
-        }
-    }
-
 }
 
 

@@ -39,9 +39,13 @@ class FavoriteFragment : KeyedFragment() {
             FavoriteScreen(
                 questions = questions,
                 onFavoriteClick = viewModel::onFavoriteClick,
-                onQuestionClick = { id -> contentView.goTo(QuestionDetailKey(id)) },
+                onQuestionClick = ::goToDetailsScreen,
                 viewState = viewState
             )
         }
+    }
+
+    private fun goToDetailsScreen(id: String) {
+        contentView.goTo(QuestionDetailKey(id))
     }
 }

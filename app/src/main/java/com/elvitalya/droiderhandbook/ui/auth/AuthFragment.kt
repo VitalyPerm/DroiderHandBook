@@ -61,7 +61,7 @@ class AuthFragment : KeyedFragment() {
                 onEmailInputChanged = viewModel::onEmailInputChanged,
                 onPassInputChanged = viewModel::onPassInputChanged,
                 onAuthClick = viewModel::onClickLogin,
-                onCloseClick = { contentView.jumpToRoot() }
+                onCloseClick =  contentView::jumpToRoot
             )
         }
     }

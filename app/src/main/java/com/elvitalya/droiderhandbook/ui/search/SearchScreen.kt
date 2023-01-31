@@ -44,8 +44,7 @@ fun SearchScreen(
     onQuestionClick: (String) -> Unit,
     viewState: ViewState,
     searchInput: String,
-    onSearchInput: (String) -> Unit,
-    onClearSearchInput: () -> Unit
+    onSearchInput: (String) -> Unit
 ) {
     ProvideWindowInsets {
         Column(
@@ -58,7 +57,7 @@ fun SearchScreen(
             SearchInput(
                 searchInput = searchInput,
                 onSearchInput = onSearchInput,
-                onClearSearchInput = onClearSearchInput
+                onClearSearchInput = onSearchInput
             )
 
             Crossfade(targetState = viewState) { viewState ->
@@ -92,7 +91,7 @@ fun SearchScreen(
 private fun SearchInput(
     searchInput: String,
     onSearchInput: (String) -> Unit,
-    onClearSearchInput: () -> Unit
+    onClearSearchInput: (String) -> Unit
 ) {
     BasicTextField(
         value = searchInput,
@@ -142,7 +141,7 @@ private fun SearchInput(
                         contentDescription = null,
                         modifier = Modifier
                             .clip(CircleShape)
-                            .rippleClickable(onClearSearchInput)
+                            .rippleClickable(onClick = { onClearSearchInput("") })
                             .padding(6.dp),
                         colorFilter = ColorFilter.tint(black)
                     )

@@ -72,7 +72,7 @@ private fun TabItem(
         Column(
             modifier = Modifier
                 .clip(CircleShape)
-                .rippleClickable({ onClick(index) }),
+                .rippleClickable(onClick = { onClick(index) }),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(

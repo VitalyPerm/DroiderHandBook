@@ -101,7 +101,7 @@ fun AppBar(
                     .padding(6.dp)
                     .clip(CircleShape)
                     .background(accent)
-                    .rippleClickable(onCloseClick),
+                    .rippleClickable(onClick = onCloseClick),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -124,8 +124,8 @@ fun AppBar(
 }
 
 fun Modifier.rippleClickable(
-    onClick: () -> Unit,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    onClick: () -> Unit
 ): Modifier = composed {
     clickable(
         interactionSource = remember { MutableInteractionSource() },

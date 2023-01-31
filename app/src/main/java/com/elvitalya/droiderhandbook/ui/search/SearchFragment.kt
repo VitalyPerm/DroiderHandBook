@@ -43,9 +43,12 @@ class SearchFragment : KeyedFragment() {
                 onSearchInput = viewModel::onSearchInput,
                 questions = questions,
                 onFavoriteClick = viewModel::onFavoriteClick,
-                onQuestionClick = { id -> contentView.goTo(QuestionDetailKey(id)) },
-                onClearSearchInput = { viewModel.onSearchInput("") }
+                onQuestionClick = ::goToDetailsScreen
             )
         }
+    }
+
+    private fun goToDetailsScreen(id: String) {
+        contentView.goTo(QuestionDetailKey(id))
     }
 }

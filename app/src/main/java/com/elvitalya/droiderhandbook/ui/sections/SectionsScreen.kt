@@ -127,7 +127,7 @@ private fun ReloadDialog(
                 modifier = Modifier
                     .padding(8.dp)
                     .clip(CircleShape)
-                    .rippleClickable(onReloadClick)
+                    .rippleClickable(onClick = onReloadClick)
                     .background(accent)
                     .padding(8.dp)
 
@@ -142,7 +142,7 @@ private fun ReloadDialog(
                 modifier = Modifier
                     .padding(8.dp)
                     .clip(CircleShape)
-                    .rippleClickable(onCancelClick)
+                    .rippleClickable(onClick = onCancelClick)
                     .background(accent)
                     .padding(8.dp)
 
@@ -178,7 +178,7 @@ private fun Content(
                     .padding(8.dp)
                     .clip(CircleShape)
                     .background(accent)
-                    .rippleClickable(onReloadClick)
+                    .rippleClickable(onClick = onReloadClick)
             ) {
                 Image(
                     imageVector = Icons.Default.Refresh,
@@ -309,7 +309,7 @@ fun SectionTitle(
             .padding(8.dp)
             .background(accent, RoundedCornerShape(16.dp))
             .clip(RoundedCornerShape(16.dp))
-            .rippleClickable({ onSectionClick(section) })
+            .rippleClickable(onClick = { onSectionClick(section) })
             .padding(16.dp),
         fontSize = 28.sp,
         textAlign = TextAlign.Center,
@@ -337,7 +337,7 @@ fun SectionContentItem(
                 RoundedCornerShape(16.dp)
             )
             .clip(RoundedCornerShape(16.dp))
-            .rippleClickable({ onQuestionClick(questionEntity.id) })
+            .rippleClickable(onClick = { onQuestionClick(questionEntity.id) })
     ) {
         Box(
             modifier = Modifier
@@ -358,7 +358,7 @@ fun SectionContentItem(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .clip(CircleShape)
-                    .rippleClickable({ onFavoriteClick(questionEntity) })
+                    .rippleClickable(onClick = { onFavoriteClick(questionEntity) })
                     .padding(6.dp),
                 colorFilter = ColorFilter.tint(favoriteIconTint)
             )

@@ -38,7 +38,7 @@ class QuestionDetailFragment : KeyedFragment() {
             QuestionDetailsScreen(
                 question = question,
                 viewState = viewState,
-                onCloseClick = { contentView.jumpToRoot() }
+                onCloseClick =  contentView::jumpToRoot
             )
         }
     }

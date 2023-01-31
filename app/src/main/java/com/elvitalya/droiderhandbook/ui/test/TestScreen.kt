@@ -79,7 +79,7 @@ fun TestScreen(
                     .fillMaxWidth()
                     .padding(16.dp)
                     .background(accent, RoundedCornerShape(16.dp))
-                    .rippleClickable({
+                    .rippleClickable(onClick = {
                         questionExpanded = false
                         onNextQuestionClick()
                     }),
