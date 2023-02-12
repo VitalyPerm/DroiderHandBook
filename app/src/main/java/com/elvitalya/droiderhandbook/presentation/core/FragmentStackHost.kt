@@ -9,6 +9,10 @@ import com.zhuinden.statebundle.StateBundle
 
 class FragmentStackHost(initialKey: Any) : Bundleable, ScopedServices.HandlesBack {
 
+    companion object {
+        private const val BACKSTACK_STATE = "BACKSTACK_STATE"
+    }
+
     var isActiveForBack: Boolean = false
 
     val backstack = Backstack()
@@ -19,20 +23,15 @@ class FragmentStackHost(initialKey: Any) : Bundleable, ScopedServices.HandlesBac
     }
 
     override fun toBundle(): StateBundle = StateBundle().apply {
-        putParcelable("BACKSTACK_STATE", backstack.toBundle())
+        putParcelable(BACKSTACK_STATE, backstack.toBundle())
     }
 
     override fun fromBundle(bundle: StateBundle?) {
         bundle?.run {
-            backstack.fromBundle(getParcelable("BACKSTACK_STATE"))
+            backstack.fromBundle(getParcelable(BACKSTACK_STATE))
         }
     }
 
-    override fun onBackEvent(): Boolean {
-        if (isActiveForBack) {
-            return backstack.goBack()
-        }
+    override fun onBackEvent() = if (isActiveForBack) backstack.goBack() else false
 
-        return false
-    }
 }
