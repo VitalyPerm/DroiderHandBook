@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.elvitalya.droiderhandbook.ui.core.AppBottomSheetView
+    <com.elvitalya.droiderhandbook.presentation.core.AppBottomSheetView
         android:id="@+id/viewAppBottomSheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
