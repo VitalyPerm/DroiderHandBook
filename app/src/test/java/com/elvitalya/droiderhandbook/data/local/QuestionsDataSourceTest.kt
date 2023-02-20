@@ -3,91 +3,145 @@ package com.elvitalya.droiderhandbook.data.local
 import com.elvitalya.droiderhandbook.data.local.dao.QuestionsDao
 import com.elvitalya.droiderhandbook.data.local.entity.QuestionEntity
 import com.elvitalya.droiderhandbook.data.local.source.QuestionsDataSource
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.impl.annotations.MockK
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class QuestionsDataSourceTest {
 
-
-    @RelaxedMockK
     private lateinit var dao: QuestionsDao
-
-    private lateinit var source: QuestionsDataSource
+    private lateinit var dataSource: QuestionsDataSource
 
     @Before
-    fun setUp() {
-        MockKAnnotations.init(this)
-        source = QuestionsDataSource(dao)
-    }
-
-    @Test
-    fun `getItems calls dao`() {
-        // Given
-        coEvery { dao.getAll() } returns flowOf(emptyList())
-
-        // When
-        source.getAll()
-
-        // Then
-        verify { dao.getAll() }
+    fun prepare() {
+        dao = QuestionsTestDao()
+        dataSource = QuestionsDataSource(dao)
     }
 
 
     @Test
-    fun `add questions list calls dao`() = runTest {
-        // given
-        coEvery { dao.addQuestionsList(any()) } returns Unit
+    fun getAll() = runTest {
+        val beforeAddReturnEmpty = dataSource.getAll().first().isEmpty()
+        assertEquals(beforeAddReturnEmpty, true)
 
-        // when
-        source.addQuestionList(listOf())
+        val list = prepareExpectedList()
+        dataSource.addQuestionList(list)
 
-        // then
-        coVerify { dao.addQuestionsList(listOf()) }
+        val afterAddReturnsNotEmptyList = dataSource.getAll().first().isNotEmpty()
+        assertEquals(afterAddReturnsNotEmptyList, true)
+    }
+
+
+    @Test
+    fun `delete all clears list`() = runTest {
+        val testList = mutableListOf<QuestionEntity>()
+
+        repeat(3) {
+            testList.add(QuestionEntity(it.toString(), it.toString(), it.toString()))
+        }
+
+        dataSource.addQuestionList(testList)
+        val getAllIsNotEmpty = dataSource.getAll().first().isNotEmpty()
+        assertEquals(getAllIsNotEmpty, true)
+
+        dataSource.deleteAll()
+        val getAllIsEmpty = dataSource.getAll().first().isEmpty()
+        assertEquals(getAllIsEmpty, true)
+
     }
 
     @Test
-    fun `get question calls dao`() = runTest {
-        // given
-        coEvery { dao.getQuestion("1") } returns QuestionEntity("1", "test", "test")
+    fun `get question by id`() = runTest {
+        val dao = QuestionsTestDao()
+        val dataSource = QuestionsDataSource(dao)
 
-        // when
-        source.getQuestionById("1")
+        val testList = mutableListOf<QuestionEntity>()
 
-        // then
-        coVerify { dao.getQuestion("1") }
+        repeat(3) {
+            testList.add(QuestionEntity(it.toString(), it.toString(), it.toString()))
+        }
+
+        dataSource.addQuestionList(testList)
+
+        val expectedId = "2"
+        val actualId = dataSource.getQuestionById("2").id
+
+        assertEquals(actualId, expectedId)
     }
 
     @Test
-    fun `update question calls dao`() = runTest {
-        // given
-        coEvery { dao.updateQuestion(QuestionEntity("1", "test", "test")) } returns Unit
+    fun `add questions list`() = runTest {
+        val expectedList = prepareExpectedList()
 
-        //when
-        dao.updateQuestion(QuestionEntity("1", "test", "test"))
+        dataSource.addQuestionList(expectedList)
 
-        //then
-        coVerify { dao.updateQuestion(QuestionEntity("1", "test", "test")) }
+        val actualList = dataSource.getAll().first()
+
+        actualList.forEachIndexed { index, actual ->
+            assertEquals(expectedList[index], actual)
+        }
     }
 
     @Test
-    fun `delete all calls dao`() = runTest {
-        // given
-        coEvery { dao.deleteAll() } returns Unit
+    fun `update question`() = runTest {
+        val expectedList = prepareExpectedList()
+        dataSource.addQuestionList(expectedList)
+        val questionIdThatWillBeUpdated = "2"
+        val exceptedQuestion = QuestionEntity("2", title = "Hello", "World")
 
-        //when
-        dao.deleteAll()
+        val expectedQuestionBeforeUpdate = dataSource.getQuestionById(questionIdThatWillBeUpdated)
+        assertNotEquals(exceptedQuestion, expectedQuestionBeforeUpdate)
 
-        //then
-        coVerify { dao.deleteAll() }
+        dataSource.updateQuestion(exceptedQuestion)
+
+        val expectedQuestionAfterUpdate = dataSource.getQuestionById(questionIdThatWillBeUpdated)
+        assertEquals(exceptedQuestion, expectedQuestionAfterUpdate)
+
     }
+
+    private fun prepareExpectedList(): MutableList<QuestionEntity> {
+        val list = mutableListOf<QuestionEntity>()
+
+        repeat(3) {
+            list.add(QuestionEntity(it.toString(), it.toString(), it.toString()))
+        }
+
+        return list
+    }
+
+}
+
+
+private class QuestionsTestDao : QuestionsDao {
+
+    val data = mutableListOf<QuestionEntity>()
+
+    override fun getAll(): Flow<List<QuestionEntity>> = flowOf(data)
+
+    override suspend fun getQuestion(id: String): QuestionEntity =
+        data.find { it.id == id } ?: QuestionEntity("", "", "")
+
+    override suspend fun addQuestionsList(questions: List<QuestionEntity>) {
+        data.addAll(questions)
+    }
+
+    override suspend fun deleteAll() {
+        data.clear()
+    }
+
+    override suspend fun updateQuestion(question: QuestionEntity) {
+        val oldIndex = data.indexOfFirst { it.id == question.id }
+        if (oldIndex != -1) {
+            data.removeAt(oldIndex)
+            data.add(oldIndex, question)
+        }
+    }
+
 }

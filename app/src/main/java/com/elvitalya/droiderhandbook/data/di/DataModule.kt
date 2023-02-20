@@ -23,7 +23,7 @@ private val databaseModule = module {
 private val repositoryModule = module {
     singleOf(::QuestionsDataSource)
     singleOf(::FireBaseDataSource)
-    single<AuthRepository> { AuthRepositoryImpl() }
+    single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<QuestionsRepository> { QuestionsRepositoryImpl(get(), get()) }
     single<FireBaseApi> { FireBaseApiImpl() }
 }
