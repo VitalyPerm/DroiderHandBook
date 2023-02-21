@@ -1,13 +1,8 @@
 package com.elvitalya.droiderhandbook.data.remote
 
-import android.os.Parcel
 import com.elvitalya.droiderhandbook.data.remote.api.FireBaseApi
-import com.elvitalya.droiderhandbook.data.remote.model.FirebaseQuestion
 import com.elvitalya.droiderhandbook.data.remote.source.FireBaseDataSource
-import com.google.firebase.auth.AdditionalUserInfo
-import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -23,14 +18,13 @@ class FireBaseDataSourceTest {
 
     @Before
     fun prepare() {
-        api = FireBaseTestApi()
+        api = FireBaseApiTestImpl()
         dataSource = FireBaseDataSource(api)
     }
 
     @Test
-    fun getAll() = runTest {
-
-        val expectedList = prepareTestList()
+    fun `get all returns list of questions`() = runTest {
+        val expectedList = FireBaseApiTestImpl.getFakeList()
 
         val actualList = dataSource.getAllQuestions()
 
@@ -40,47 +34,31 @@ class FireBaseDataSourceTest {
 
     }
 
-    @Test
-    fun login() = runTest {
-        val expected = authResultTestImpl
-        val actual = dataSource.login("", "")
-        assertEquals(actual, expected)
+    @Test(expected = Exception::class)
+    fun `empty login throws exception`() = runTest {
+        dataSource.login("", "world")
+    }
+
+    @Test(expected = Exception::class)
+    fun `empty pass throws exception`() = runTest {
+        dataSource.login("hello", "")
+    }
+
+    @Test(expected = Exception::class)
+    fun `short pass throws exception`() = runTest {
+        dataSource.login("", "world")
+    }
+
+    @Test(expected = Exception::class)
+    fun `invalid email throws exception`() = runTest {
+        dataSource.login("hello", "world")
     }
 
     @Test
-    fun registration() = runTest {
-        val expected = authResultTestImpl
-        val actual = dataSource.registration("", "")
-        assertEquals(actual, expected)
+    fun `valid login not throws exception`() = runTest {
+        dataSource.login( "hello@mail.ru", "world123")
     }
 
-    private inner class FireBaseTestApi : FireBaseApi {
-        override suspend fun getAllQuestions(): List<FirebaseQuestion> = prepareTestList()
 
-        override suspend fun login(email: String, pass: String): AuthResult = authResultTestImpl
-
-        override suspend fun registration(email: String, pass: String): AuthResult =
-            authResultTestImpl
-    }
-
-    private fun prepareTestList(): List<FirebaseQuestion> {
-        val list = mutableListOf<FirebaseQuestion>()
-        repeat(3) {
-            list.add(FirebaseQuestion(it.toString(), it.toString(), it.toString()))
-        }
-        return list
-    }
-
-    private val authResultTestImpl = object : AuthResult {
-        override fun describeContents(): Int = 1
-
-        override fun writeToParcel(p0: Parcel, p1: Int) = Unit
-
-        override fun getAdditionalUserInfo(): AdditionalUserInfo? = null
-
-        override fun getCredential(): AuthCredential? = null
-
-        override fun getUser(): FirebaseUser? = null
-    }
 
 }
