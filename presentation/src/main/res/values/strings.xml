@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">DroiderHandBook</string>
+    <string name="sections">Разделы</string>
+    <string name="favorite">Лайк</string>
+    <string name="search">Поиск</string>
+    <string name="test">Тест</string>
+    <string name="reg_or_auth">Регистрация</string>
+    <string name="question_details">Подробно</string>
+    <string name="empty_string"> </string>
+    <string name="success">Успешно</string>
+    <string name="details">Подробно</string>
+    <string name="colors">Палитра</string>
+    <string name="default_error_message">Упс… Что-то пошло не так</string>
+    <string name="search_hint">Введите ключевые слова</string>
+    <string name="next_question">Следующий вопрос</string>
+
+
+    <!--  SignInOrReg  -->
+    <string name="sign_in">Авторизация</string>
+    <string name="registration">Регистрация</string>
+    <string name="email">Почта</string>
+    <string name="pass">Пароль</string>
+
+    <string name="sections_alert_title">Хотите подгрузить данные с сервера?</string>
+    <string name="sections_alert_yes">Хочу</string>
+    <string name="sections_alert_no">Нет</string>
+
+    <!--  Sections  -->
+    <string name="section_java">Джава</string>
+    <string name="section_kotlin">Котлин</string>
+    <string name="section_android">Андроид СДК</string>
+    <string name="section_basic">Базовые вопросы</string>
+    <string name="section_coroutines">Корутины</string>
+
+    <!--  Test  -->
+    <string name="test_title">Проверь свои знания</string>
+    <string name="test_dialog_desc">Проверь себя! Попробуй ответить на вопросы</string>
+
+
+</resources>

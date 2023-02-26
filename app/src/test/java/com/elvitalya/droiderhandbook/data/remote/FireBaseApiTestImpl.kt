@@ -1,27 +1,32 @@
 package com.elvitalya.droiderhandbook.data.remote
 
-import com.elvitalya.droiderhandbook.data.remote.api.FireBaseApi
-import com.elvitalya.droiderhandbook.data.remote.model.FirebaseQuestion
-import com.google.firebase.auth.AuthResult
+import com.elvitalya.data.remote.api.FireBaseApi
 
-class FireBaseApiTestImpl : FireBaseApi {
 
-    companion object {
-        fun getFakeList(): List<FirebaseQuestion> {
-            val list = mutableListOf<FirebaseQuestion>()
-            repeat(3) {
-                list.add(FirebaseQuestion(it.toString(), it.toString(), it.toString()))
-            }
-            return list
-        }
-    }
-
-    override suspend fun getAllQuestions(): List<FirebaseQuestion> = getFakeList()
-
-    override suspend fun login(email: String, pass: String): AuthResult =
-        FireBaseAuthResultTestImpl(email, pass)
-
-    override suspend fun registration(email: String, pass: String): AuthResult =
-        FireBaseAuthResultTestImpl(email, pass)
-
-}
+//class FireBaseApiTestImpl : FireBaseApi {
+//
+//    companion object {
+//        fun getFakeList(): List<com.elvitalya.data.remote.model.FirebaseQuestion> {
+//            val list = mutableListOf<com.elvitalya.data.remote.model.FirebaseQuestion>()
+//            repeat(3) {
+//                list.add(
+//                    com.elvitalya.data.remote.model.FirebaseQuestion(
+//                        it.toString(),
+//                        it.toString(),
+//                        it.toString()
+//                    )
+//                )
+//            }
+//            return list
+//        }
+//    }
+//
+//    override suspend fun getAllQuestions(): List<com.elvitalya.data.remote.model.FirebaseQuestion> = getFakeList()
+//
+//    override suspend fun login(email: String, pass: String): AuthResult =
+//        FireBaseAuthResultTestImpl(email, pass)
+//
+//    override suspend fun registration(email: String, pass: String): AuthResult =
+//        FireBaseAuthResultTestImpl(email, pass)
+//
+//}

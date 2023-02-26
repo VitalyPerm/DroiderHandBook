@@ -1,8 +1,8 @@
 package com.elvitalya.droiderhandbook.data.local
 
-import com.elvitalya.droiderhandbook.data.local.dao.QuestionsDao
-import com.elvitalya.droiderhandbook.data.local.entity.QuestionEntity
-import com.elvitalya.droiderhandbook.data.local.source.QuestionsDataSource
+import com.elvitalya.data.local.dao.QuestionsDao
+import com.elvitalya.data.local.entity.QuestionEntity
+import com.elvitalya.data.local.source.QuestionsDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -14,13 +14,13 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class QuestionsDataSourceTest {
 
-    private lateinit var dao: QuestionsDao
-    private lateinit var dataSource: QuestionsDataSource
+    private lateinit var dao: com.elvitalya.data.local.dao.QuestionsDao
+    private lateinit var dataSource: com.elvitalya.data.local.source.QuestionsDataSource
 
     @Before
     fun prepare() {
         dao = QuestionsDaoTestImpl()
-        dataSource = QuestionsDataSource(dao)
+        dataSource = com.elvitalya.data.local.source.QuestionsDataSource(dao)
     }
 
 
@@ -39,10 +39,16 @@ class QuestionsDataSourceTest {
 
     @Test
     fun `delete all clears list`() = runTest {
-        val testList = mutableListOf<QuestionEntity>()
+        val testList = mutableListOf<com.elvitalya.data.local.entity.QuestionEntity>()
 
         repeat(3) {
-            testList.add(QuestionEntity(it.toString(), it.toString(), it.toString()))
+            testList.add(
+                com.elvitalya.data.local.entity.QuestionEntity(
+                    it.toString(),
+                    it.toString(),
+                    it.toString()
+                )
+            )
         }
 
         dataSource.addQuestionList(testList)
@@ -58,10 +64,16 @@ class QuestionsDataSourceTest {
     @Test
     fun `get question by id`() = runTest {
 
-        val testList = mutableListOf<QuestionEntity>()
+        val testList = mutableListOf<com.elvitalya.data.local.entity.QuestionEntity>()
 
         repeat(3) {
-            testList.add(QuestionEntity(it.toString(), it.toString(), it.toString()))
+            testList.add(
+                com.elvitalya.data.local.entity.QuestionEntity(
+                    it.toString(),
+                    it.toString(),
+                    it.toString()
+                )
+            )
         }
 
         dataSource.addQuestionList(testList)
@@ -90,7 +102,8 @@ class QuestionsDataSourceTest {
         val expectedList = prepareExpectedList()
         dataSource.addQuestionList(expectedList)
         val questionIdThatWillBeUpdated = "2"
-        val exceptedQuestion = QuestionEntity("2", title = "Hello", "World")
+        val exceptedQuestion =
+            com.elvitalya.data.local.entity.QuestionEntity("2", title = "Hello", "World")
 
         val expectedQuestionBeforeUpdate = dataSource.getQuestionById(questionIdThatWillBeUpdated)
         assertNotEquals(exceptedQuestion, expectedQuestionBeforeUpdate)
@@ -102,11 +115,17 @@ class QuestionsDataSourceTest {
 
     }
 
-    private fun prepareExpectedList(): MutableList<QuestionEntity> {
-        val list = mutableListOf<QuestionEntity>()
+    private fun prepareExpectedList(): MutableList<com.elvitalya.data.local.entity.QuestionEntity> {
+        val list = mutableListOf<com.elvitalya.data.local.entity.QuestionEntity>()
 
         repeat(3) {
-            list.add(QuestionEntity(it.toString(), it.toString(), it.toString()))
+            list.add(
+                com.elvitalya.data.local.entity.QuestionEntity(
+                    it.toString(),
+                    it.toString(),
+                    it.toString()
+                )
+            )
         }
 
         return list
