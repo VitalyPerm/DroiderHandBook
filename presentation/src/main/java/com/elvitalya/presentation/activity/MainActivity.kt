@@ -9,6 +9,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.children
+import com.elvitalya.domain.repository.AuthRepository
 import com.elvitalya.presentation.core.*
 import com.elvitalya.presentation.databinding.ActivityMainBinding
 import com.elvitalya.presentation.fragment.MainFlowKey
@@ -18,6 +19,8 @@ import com.zhuinden.simplestack.History
 import com.zhuinden.simplestack.SimpleStateChanger
 import com.zhuinden.simplestack.navigator.Navigator
 import com.zhuinden.simplestackextensions.services.DefaultServiceProvider
+import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
 
 const val TAG = "check___"
 
@@ -58,8 +61,8 @@ class MainActivity : AppCompatActivity() {
             .builder()
             .addService(AppBottomSheetView.BACKSTACK_TAG, AppBottomSheetView.createBackstack())
             .build()
-
-        val history = if (true) MainFlowKey()
+        val authRepository: AuthRepository = get()
+        val history = if (authRepository.isAuthorized()) MainFlowKey()
         else SelectAuthMethodKey()
 
         Navigator

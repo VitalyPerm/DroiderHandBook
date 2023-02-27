@@ -3,6 +3,8 @@ package com.elvitalya.data.di
 import androidx.room.Room
 import com.elvitalya.data.local.db.QuestionDataBase
 import com.elvitalya.data.local.source.LocalDataSource
+import com.elvitalya.data.remote.api.AuthApi
+import com.elvitalya.data.remote.api.AuthApiImpl
 import com.elvitalya.data.remote.api.QuestionsApi
 import com.elvitalya.data.remote.source.RemoteDataSource
 import com.elvitalya.data.repository.AuthRepositoryImpl
@@ -57,9 +59,10 @@ private val networkModule = module {
 
 private val repositoryModule = module {
     singleOf(::LocalDataSource)
-    singleOf(::RemoteDataSource)
-    single<AuthRepository> { AuthRepositoryImpl() }
+    single { RemoteDataSource(get(), get()) }
+    single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<QuestionsRepository> { QuestionsRepositoryImpl(get(), get()) }
+    single<AuthApi> { AuthApiImpl() }
 }
 
 val dataModules = databaseModule + repositoryModule + networkModule

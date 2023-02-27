@@ -25,4 +25,3 @@ private fun map(question: Question) = QuestionEntity(
 )
 
 fun Question.toEntity() = map(this)
-fun List<Question>.toEntity() = map { it.toEntity() }

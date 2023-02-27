@@ -6,4 +6,6 @@ interface AuthRepository {
 
     suspend fun registration(email: String, pass: String): Result<Unit>
 
+    fun isAuthorized(): Boolean
+
 }
