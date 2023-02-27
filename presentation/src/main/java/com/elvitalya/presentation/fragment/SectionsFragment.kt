@@ -22,7 +22,6 @@ enum class Sections(@StringRes val nameRes: Int) {
     Java(R.string.section_java),
     Kotlin(R.string.section_kotlin),
     Android(R.string.section_android),
-    Basic(R.string.section_basic),
     Coroutines(R.string.section_coroutines)
 }
 
@@ -47,7 +46,6 @@ class SectionsFragment : KeyedFragment() {
             val javaQuestions by viewModel.javaQuestions.collectAsState(emptyList())
             val androidQuestions by viewModel.androidQuestions.collectAsState(emptyList())
             val kotlinQuestions by viewModel.kotlinQuestions.collectAsState(emptyList())
-            val basicQuestions by viewModel.basicQuestions.collectAsState(emptyList())
             val coroutinesQuestions by viewModel.coroutineQuestions.collectAsState(emptyList())
             val viewState by viewModel.viewState.collectAsState()
 
@@ -55,7 +53,6 @@ class SectionsFragment : KeyedFragment() {
                 javaQuestions = javaQuestions,
                 androidQuestions = androidQuestions,
                 kotlinQuestions = kotlinQuestions,
-                basicQuestions = basicQuestions,
                 coroutinesQuestions = coroutinesQuestions,
                 viewState = viewState,
                 onQuestionClick = ::navigateToDetails,

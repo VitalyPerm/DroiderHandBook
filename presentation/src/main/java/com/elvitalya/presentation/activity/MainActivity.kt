@@ -9,7 +9,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.children
-import com.elvitalya.data.remote.api.isAuthorized
 import com.elvitalya.presentation.core.*
 import com.elvitalya.presentation.databinding.ActivityMainBinding
 import com.elvitalya.presentation.fragment.MainFlowKey
@@ -60,7 +59,7 @@ class MainActivity : AppCompatActivity() {
             .addService(AppBottomSheetView.BACKSTACK_TAG, AppBottomSheetView.createBackstack())
             .build()
 
-        val history = if (isAuthorized) MainFlowKey()
+        val history = if (true) MainFlowKey()
         else SelectAuthMethodKey()
 
         Navigator

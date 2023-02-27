@@ -1,17 +1,21 @@
 package com.elvitalya.domain.entity
 
 data class Question(
-    val id: String,
+    val number: Int,
     val title: String,
     val text: String,
-    val isFavorite: Boolean
-){
+    val picUrl: String,
+    val isFavorite: Boolean,
+    val type: QuestionsType
+) {
     companion object {
         val EMPTY = Question(
-            id = "",
+            number = 0,
             text = "",
             title = "",
-            isFavorite = false
+            picUrl = "",
+            isFavorite = false,
+            type = QuestionsType.Unknown
         )
     }
 }

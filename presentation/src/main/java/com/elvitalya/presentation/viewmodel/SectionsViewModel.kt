@@ -2,17 +2,18 @@ package com.elvitalya.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.elvitalya.domain.entity.Question
+import com.elvitalya.domain.entity.QuestionsType
 import com.elvitalya.domain.toastdispatcher.ToastDispatcher
 import com.elvitalya.domain.usecases.GetAllUseCase
 import com.elvitalya.domain.usecases.LoadAllUseCase
 import com.elvitalya.domain.usecases.UpdateQuestionUseCase
-import com.elvitalya.presentation.core.QuestionsType
 import com.elvitalya.presentation.core.ViewState
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class SectionsViewModel (
+class SectionsViewModel(
     private val toastDispatcher: ToastDispatcher,
     getAllUseCase: GetAllUseCase,
     private val loadAllUseCase: LoadAllUseCase,
@@ -39,35 +40,28 @@ class SectionsViewModel (
     val javaQuestions
         get() = allQuestions.map { list ->
             list.filter { question ->
-                question.id.startsWith(QuestionsType.Java.prefix)
+                question.type == QuestionsType.Java
             }
         }
 
     val kotlinQuestions
         get() = allQuestions.map { list ->
             list.filter { question ->
-                question.id.startsWith(QuestionsType.Kotlin.prefix)
-            }
-        }
-
-    val basicQuestions
-        get() = allQuestions.map { list ->
-            list.filter { question ->
-                question.id.startsWith(QuestionsType.Basic.prefix)
+                question.type == QuestionsType.Kotlin
             }
         }
 
     val androidQuestions
         get() = allQuestions.map { list ->
             list.filter { question ->
-                question.id.startsWith(QuestionsType.Android.prefix)
+                question.type == QuestionsType.Android
             }
         }
 
     val coroutineQuestions
         get() = allQuestions.map { list ->
             list.filter { question ->
-                question.id.startsWith(QuestionsType.Coroutines.prefix)
+                question.type == QuestionsType.Coroutines
             }
         }
 
@@ -80,7 +74,7 @@ class SectionsViewModel (
         }
     }
 
-    fun updateQuestion(question: com.elvitalya.domain.entity.Question) {
+    fun updateQuestion(question: Question) {
         viewModelScope.launch(exceptionHandler) {
             _viewState.value = ViewState.Loading
             val new = question.copy(isFavorite = question.isFavorite.not())

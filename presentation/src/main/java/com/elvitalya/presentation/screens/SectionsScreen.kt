@@ -42,7 +42,6 @@ fun SectionsScreen(
     javaQuestions: List<Question>,
     androidQuestions: List<Question>,
     kotlinQuestions: List<Question>,
-    basicQuestions: List<Question>,
     coroutinesQuestions: List<Question>,
     viewState: ViewState,
     onQuestionClick: (String) -> Unit,
@@ -67,7 +66,6 @@ fun SectionsScreen(
                             javaQuestions = javaQuestions,
                             kotlinQuestions = kotlinQuestions,
                             androidQuestions = androidQuestions,
-                            basicQuestions = basicQuestions,
                             coroutinesQuestions = coroutinesQuestions,
                             onQuestionClick = onQuestionClick,
                             expandedSections = expandedSections,
@@ -76,7 +74,6 @@ fun SectionsScreen(
                                     Sections.Java -> expandedSections.copy(java = expandedSections.java.not())
                                     Sections.Kotlin -> expandedSections.copy(kotlin = expandedSections.kotlin.not())
                                     Sections.Android -> expandedSections.copy(android = expandedSections.android.not())
-                                    Sections.Basic -> expandedSections.copy(basic = expandedSections.basic.not())
                                     Sections.Coroutines -> expandedSections.copy(coroutines = expandedSections.coroutines.not())
                                 }
                             },
@@ -150,7 +147,6 @@ private fun Content(
     javaQuestions: List<Question>,
     kotlinQuestions: List<Question>,
     androidQuestions: List<Question>,
-    basicQuestions: List<Question>,
     coroutinesQuestions: List<Question>,
     onQuestionClick: (String) -> Unit,
     expandedSections: SectionScreenContentVisibility,
@@ -239,22 +235,6 @@ private fun Content(
 
             item {
                 SectionTitle(
-                    section = Sections.Basic,
-                    onSectionClick = onSectionClick
-                )
-            }
-            items(basicQuestions) {
-                AnimatedVisibility(visible = expandedSections.basic) {
-                    SectionContentItem(
-                        question = it,
-                        onQuestionClick = onQuestionClick,
-                        onFavoriteClick = onFavoriteClick
-                    )
-                }
-            }
-
-            item {
-                SectionTitle(
                     section = Sections.Coroutines,
                     onSectionClick = onSectionClick
                 )
@@ -314,7 +294,7 @@ fun SectionContentItem(
                 RoundedCornerShape(16.dp)
             )
             .clip(RoundedCornerShape(16.dp))
-            .rippleClickable(onClick = { onQuestionClick(question.id) })
+            .rippleClickable(onClick = { onQuestionClick("22") })
     ) {
         Box(
             modifier = Modifier
@@ -355,9 +335,8 @@ data class SectionScreenContentVisibility(
     val kotlin: Boolean = false,
     val java: Boolean = false,
     val android: Boolean = false,
-    val basic: Boolean = false,
     val coroutines: Boolean = false
 ) {
     val allInvisible
-        get() = kotlin.not() && java.not() && android.not() && basic.not() && coroutines.not()
+        get() = kotlin.not() && java.not() && android.not() && coroutines.not()
 }

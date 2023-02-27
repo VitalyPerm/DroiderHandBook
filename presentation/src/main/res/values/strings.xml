@@ -29,7 +29,6 @@
     <string name="section_java">Джава</string>
     <string name="section_kotlin">Котлин</string>
     <string name="section_android">Андроид СДК</string>
-    <string name="section_basic">Базовые вопросы</string>
     <string name="section_coroutines">Корутины</string>
 
     <!--  Test  -->

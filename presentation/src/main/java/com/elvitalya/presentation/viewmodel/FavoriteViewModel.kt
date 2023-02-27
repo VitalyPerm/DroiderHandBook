@@ -1,19 +1,25 @@
 package com.elvitalya.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.elvitalya.data.remote.api.QuestionsApi
+import com.elvitalya.domain.repository.QuestionsRepository
 import com.elvitalya.domain.toastdispatcher.ToastDispatcher
 import com.elvitalya.domain.usecases.GetAllUseCase
 import com.elvitalya.domain.usecases.UpdateQuestionUseCase
+import com.elvitalya.presentation.activity.TAG
 import com.elvitalya.presentation.core.ViewState
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class FavoriteViewModel(
     getAllUseCase: GetAllUseCase,
     private val updateQuestionUseCase: UpdateQuestionUseCase,
-    private val toastDispatcher: ToastDispatcher
+    private val toastDispatcher: ToastDispatcher,
+    private val questionsRepository: QuestionsRepository
 ) : ViewModel() {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -41,7 +47,7 @@ class FavoriteViewModel(
             _viewState.value = ViewState.Content
         }
     }
-
+    
     init {
         questions.onEach { list ->
             _viewState.value = if (list.isEmpty()) ViewState.Empty else ViewState.Content

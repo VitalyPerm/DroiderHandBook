@@ -1,8 +1,5 @@
 package com.elvitalya.droiderhandbook.data.local
 
-import com.elvitalya.data.local.dao.QuestionsDao
-import com.elvitalya.data.local.entity.QuestionEntity
-import com.elvitalya.data.local.source.QuestionsDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -15,12 +12,12 @@ import org.junit.Test
 class QuestionsDataSourceTest {
 
     private lateinit var dao: com.elvitalya.data.local.dao.QuestionsDao
-    private lateinit var dataSource: com.elvitalya.data.local.source.QuestionsDataSource
+    private lateinit var dataSource: com.elvitalya.data.local.source.LocalDataSource
 
     @Before
     fun prepare() {
         dao = QuestionsDaoTestImpl()
-        dataSource = com.elvitalya.data.local.source.QuestionsDataSource(dao)
+        dataSource = com.elvitalya.data.local.source.LocalDataSource(dao)
     }
 
 

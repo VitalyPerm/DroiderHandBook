@@ -4,7 +4,7 @@ import com.elvitalya.data.local.dao.QuestionsDao
 import com.elvitalya.data.local.entity.QuestionEntity
 import kotlinx.coroutines.flow.Flow
 
-class QuestionsDataSource(
+class LocalDataSource(
     private val dao: QuestionsDao
 ) {
 

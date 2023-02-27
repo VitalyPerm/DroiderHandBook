@@ -2,16 +2,20 @@ package com.elvitalya.data.di
 
 import androidx.room.Room
 import com.elvitalya.data.local.db.QuestionDataBase
-import com.elvitalya.data.local.source.QuestionsDataSource
-import com.elvitalya.data.remote.api.FireBaseApi
-import com.elvitalya.data.remote.api.FireBaseApiImpl
-import com.elvitalya.data.remote.source.FireBaseDataSource
+import com.elvitalya.data.local.source.LocalDataSource
+import com.elvitalya.data.remote.api.QuestionsApi
+import com.elvitalya.data.remote.source.RemoteDataSource
 import com.elvitalya.data.repository.AuthRepositoryImpl
 import com.elvitalya.data.repository.QuestionsRepositoryImpl
 import com.elvitalya.domain.repository.AuthRepository
 import com.elvitalya.domain.repository.QuestionsRepository
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 private val databaseModule = module {
     single {
@@ -24,12 +28,38 @@ private val databaseModule = module {
     }
 }
 
-private val repositoryModule = module {
-    singleOf(::QuestionsDataSource)
-    singleOf(::FireBaseDataSource)
-    single<AuthRepository> { AuthRepositoryImpl(get()) }
-    single<QuestionsRepository> { QuestionsRepositoryImpl(get(), get()) }
-    single<FireBaseApi> { FireBaseApiImpl() }
+private val networkModule = module {
+    val timeOut = 20_000L
+    val baseUrl =
+        "https://script.google.com/macros/s/AKfycbw2HqeDRjPpA3XdtEYpeiQ_oMr_I-iupPaAQR7to9wEiWZZk_uzhK5-RxxEBbh5j-Fmeg/"
+
+    single {
+        val interceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        val okHttpClient = OkHttpClient.Builder()
+            .connectTimeout(timeOut, TimeUnit.MILLISECONDS)
+            .readTimeout(timeOut, TimeUnit.MILLISECONDS)
+            .writeTimeout(timeOut, TimeUnit.MILLISECONDS)
+            .addInterceptor(interceptor)
+            .build()
+
+        Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .baseUrl(baseUrl)
+            .build()
+            .create(QuestionsApi::class.java)
+    }
+
+
 }
 
-val dataModules = databaseModule + repositoryModule
+private val repositoryModule = module {
+    singleOf(::LocalDataSource)
+    singleOf(::RemoteDataSource)
+    single<AuthRepository> { AuthRepositoryImpl() }
+    single<QuestionsRepository> { QuestionsRepositoryImpl(get(), get()) }
+}
+
+val dataModules = databaseModule + repositoryModule + networkModule
