@@ -6,6 +6,6 @@ class GetByIdUseCase(
     private val questionsRepository: QuestionsRepository
 ) {
 
-    suspend fun run(id: String) = questionsRepository.getById(id)
+    suspend fun run(id: Long) = questionsRepository.getById(id)
 
 }

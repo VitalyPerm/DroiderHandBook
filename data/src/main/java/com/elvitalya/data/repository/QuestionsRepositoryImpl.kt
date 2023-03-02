@@ -50,7 +50,7 @@ class QuestionsRepositoryImpl(
     override suspend fun updateQuestion(question: Question) =
         localDataSource.updateQuestion(question.toEntity())
 
-    override suspend fun getById(id: String): Question =
+    override suspend fun getById(id: Long): Question =
         localDataSource.getQuestionById(id).toQuestion()
 
 }

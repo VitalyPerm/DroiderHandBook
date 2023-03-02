@@ -22,7 +22,7 @@ import com.google.accompanist.insets.statusBarsPadding
 fun FavoriteScreen(
     questions: List<Question>,
     onFavoriteClick: (Question) -> Unit,
-    onQuestionClick: (String) -> Unit,
+    onQuestionClick: (Long) -> Unit,
     viewState: ViewState
 ) {
 

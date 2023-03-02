@@ -17,7 +17,7 @@ import kotlinx.parcelize.Parcelize
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @Parcelize
-data class QuestionDetailKey(val questionId: String) : FragmentKey() {
+data class QuestionDetailKey(val questionId: Long) : FragmentKey() {
     override fun instantiateFragment(): Fragment = QuestionDetailFragment()
 }
 

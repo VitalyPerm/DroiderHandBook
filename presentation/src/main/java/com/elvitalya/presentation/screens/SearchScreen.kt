@@ -36,7 +36,7 @@ import com.google.accompanist.insets.statusBarsPadding
 fun SearchScreen(
     questions: List<Question>,
     onFavoriteClick: (Question) -> Unit,
-    onQuestionClick: (String) -> Unit,
+    onQuestionClick: (Long) -> Unit,
     viewState: ViewState,
     searchInput: String,
     onSearchInput: (String) -> Unit

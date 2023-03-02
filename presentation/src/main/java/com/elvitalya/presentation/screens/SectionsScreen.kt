@@ -44,7 +44,7 @@ fun SectionsScreen(
     kotlinQuestions: List<Question>,
     coroutinesQuestions: List<Question>,
     viewState: ViewState,
-    onQuestionClick: (String) -> Unit,
+    onQuestionClick: (Long) -> Unit,
     onFavoriteClick: (Question) -> Unit,
     onReloadClick: () -> Unit
 ) {
@@ -148,7 +148,7 @@ private fun Content(
     kotlinQuestions: List<Question>,
     androidQuestions: List<Question>,
     coroutinesQuestions: List<Question>,
-    onQuestionClick: (String) -> Unit,
+    onQuestionClick: (Long) -> Unit,
     expandedSections: SectionScreenContentVisibility,
     onSectionClick: (Sections) -> Unit,
     onFavoriteClick: (Question) -> Unit,
@@ -277,7 +277,7 @@ fun SectionTitle(
 @Composable
 fun SectionContentItem(
     question: Question,
-    onQuestionClick: (String) -> Unit,
+    onQuestionClick: (Long) -> Unit,
     onFavoriteClick: (Question) -> Unit,
 ) {
 
@@ -294,7 +294,7 @@ fun SectionContentItem(
                 RoundedCornerShape(16.dp)
             )
             .clip(RoundedCornerShape(16.dp))
-            .rippleClickable(onClick = { onQuestionClick("22") })
+            .rippleClickable(onClick = { onQuestionClick(question.id) })
     ) {
         Box(
             modifier = Modifier

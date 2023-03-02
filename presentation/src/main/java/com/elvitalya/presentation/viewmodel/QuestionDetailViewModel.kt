@@ -31,7 +31,7 @@ class QuestionDetailViewModel(
     }
 
 
-    fun getQuestionById(id: String) {
+    fun getQuestionById(id: Long) {
         viewModelScope.launch(exceptionHandler) {
             _viewState.value = ViewState.Loading
             _question.value = getByIdUseCase.run(id)

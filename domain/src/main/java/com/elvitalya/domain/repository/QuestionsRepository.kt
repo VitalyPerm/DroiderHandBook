@@ -11,6 +11,6 @@ interface QuestionsRepository {
 
     suspend fun updateQuestion(question: Question)
 
-    suspend fun getById(id: String): Question
+    suspend fun getById(id: Long): Question
 
 }

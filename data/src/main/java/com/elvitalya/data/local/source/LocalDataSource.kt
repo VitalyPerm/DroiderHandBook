@@ -12,7 +12,7 @@ class LocalDataSource(
 
     suspend fun deleteAll() = dao.deleteAll()
 
-    suspend fun getQuestionById(id: String): QuestionEntity = dao.getQuestion(id)
+    suspend fun getQuestionById(id: Long): QuestionEntity = dao.getQuestion(id)
 
     suspend fun addQuestionList(list: List<QuestionEntity>) = dao.addQuestionsList(list)
 

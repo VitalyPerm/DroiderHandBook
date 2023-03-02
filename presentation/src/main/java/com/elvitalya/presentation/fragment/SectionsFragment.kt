@@ -62,7 +62,7 @@ class SectionsFragment : KeyedFragment() {
         }
     }
 
-    private fun navigateToDetails(questionId: String) {
+    private fun navigateToDetails(questionId: Long) {
         contentView.goTo(QuestionDetailKey(questionId))
     }
 }

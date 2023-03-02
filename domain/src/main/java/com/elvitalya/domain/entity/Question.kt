@@ -1,6 +1,7 @@
 package com.elvitalya.domain.entity
 
 data class Question(
+    val id: Long,
     val number: Int,
     val title: String,
     val text: String,
@@ -10,6 +11,7 @@ data class Question(
 ) {
     companion object {
         val EMPTY = Question(
+            id = 0L,
             number = 0,
             text = "",
             title = "",

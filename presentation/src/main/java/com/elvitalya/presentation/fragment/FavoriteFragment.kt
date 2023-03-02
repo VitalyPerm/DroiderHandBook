@@ -44,7 +44,7 @@ class FavoriteFragment : KeyedFragment() {
         }
     }
 
-    private fun goToDetailsScreen(id: String) {
+    private fun goToDetailsScreen(id: Long) {
         contentView.goTo(QuestionDetailKey(id))
     }
 }
