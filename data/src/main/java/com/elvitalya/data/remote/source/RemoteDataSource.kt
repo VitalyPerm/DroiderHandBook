@@ -8,11 +8,21 @@ class RemoteDataSource(
     private val questionsApi: QuestionsApi,
     private val authApi: AuthApi
 ) {
-    suspend fun getJavaQuestions(): List<QuestionModel> = questionsApi.getJavaQuestions().questions
+    suspend fun getJavaQuestions(): List<QuestionModel> =
+        questionsApi.getJavaQuestions().questions
 
-    suspend fun login(email: String, pass: String) = authApi.login(email,pass)
+    suspend fun getKotlinQuestions(): List<QuestionModel> =
+        questionsApi.getKotlinQuestions().questions
 
-    suspend fun registration(email: String, pass: String) = authApi.registration(email,pass)
+    suspend fun getAndroidQuestions(): List<QuestionModel> =
+        questionsApi.getAndroidQuestions().questions
+
+    suspend fun getCoroutineQuestions(): List<QuestionModel> =
+        questionsApi.getCoroutineQuestions().questions
+
+    suspend fun login(email: String, pass: String) = authApi.login(email, pass)
+
+    suspend fun registration(email: String, pass: String) = authApi.registration(email, pass)
 
     fun isAuthorized(): Boolean = authApi.isAuthorized()
 

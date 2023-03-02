@@ -21,7 +21,7 @@ class TestViewModel(
     private val questionIndex = MutableStateFlow(0)
 
     val question = combine(allQuestions, questionIndex) { all, index ->
-        if (all.isEmpty()) Question.EMPTY else all[index]
+        if (all.isEmpty()) Question.EMPTY else all.getOrNull(index) ?: Question.EMPTY
     }
 
     fun getRandomQuestions() {

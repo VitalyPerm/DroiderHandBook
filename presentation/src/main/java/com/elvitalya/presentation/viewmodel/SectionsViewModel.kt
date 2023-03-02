@@ -10,9 +10,11 @@ import com.elvitalya.domain.usecases.LoadAllUseCase
 import com.elvitalya.domain.usecases.UpdateQuestionUseCase
 import com.elvitalya.presentation.core.ViewState
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+@OptIn(FlowPreview::class)
 class SectionsViewModel(
     private val toastDispatcher: ToastDispatcher,
     getAllUseCase: GetAllUseCase,
@@ -33,8 +35,10 @@ class SectionsViewModel(
         .stateIn(viewModelScope, started = SharingStarted.Eagerly, initialValue = emptyList())
 
     init {
-        if (allQuestions.value.isEmpty()) reloadQuestions()
-        else _viewState.value = ViewState.Content
+        viewModelScope.launch {
+            val needInitialLoad = allQuestions.debounce(300).first().isEmpty()
+            if (needInitialLoad) reloadQuestions() else _viewState.value = ViewState.Content
+        }
     }
 
     val javaQuestions
