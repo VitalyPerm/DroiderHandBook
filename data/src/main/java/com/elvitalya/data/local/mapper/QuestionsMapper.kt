@@ -23,7 +23,8 @@ private fun map(question: Question) = QuestionEntity(
     title = question.title,
     text = question.text,
     picUrl = question.picUrl,
-    isFavorite = question.isFavorite
+    isFavorite = question.isFavorite,
+    type = question.type
 )
 
 fun Question.toEntity() = map(this)
