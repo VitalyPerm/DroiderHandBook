@@ -24,7 +24,7 @@ class TestViewModel(
         if (all.isEmpty()) Question.EMPTY else all.getOrNull(index) ?: Question.EMPTY
     }
 
-    fun getRandomQuestions() {
+    fun getRandomQuestion() {
         val lastIndex = allQuestions.value.lastIndex
         if (lastIndex == -1) return
         questionIndex.value = Random.nextInt(lastIndex)

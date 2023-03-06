@@ -2,6 +2,7 @@ package com.elvitalya.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.elvitalya.domain.entity.Question
 import com.elvitalya.domain.toastdispatcher.ToastDispatcher
 import com.elvitalya.domain.usecases.GetAllUseCase
 import com.elvitalya.domain.usecases.UpdateQuestionUseCase
@@ -9,6 +10,7 @@ import com.elvitalya.presentation.core.ViewState
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.jetbrains.annotations.TestOnly
 
 class SearchViewModel(
     private val toastDispatcher: ToastDispatcher,
@@ -48,7 +50,7 @@ class SearchViewModel(
         searchInput.value = input
     }
 
-    fun onFavoriteClick(question: com.elvitalya.domain.entity.Question) {
+    fun onFavoriteClick(question: Question) {
         viewModelScope.launch(exceptionHandler) {
             _viewState.value = ViewState.Loading
             val new = question.copy(isFavorite = question.isFavorite.not())

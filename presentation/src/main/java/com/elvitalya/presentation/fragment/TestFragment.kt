@@ -34,7 +34,7 @@ class TestFragment : KeyedFragment() {
             val question by viewModel.question.collectAsState(initial = Question.EMPTY)
             TestScreen(
                 question = question,
-                onNextQuestionClick = viewModel::getRandomQuestions
+                onNextQuestionClick = viewModel::getRandomQuestion
             )
         }
     }
