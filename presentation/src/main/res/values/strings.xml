@@ -16,10 +16,11 @@
 
 
     <!--  SignInOrReg  -->
-    <string name="sign_in">Авторизация</string>
-    <string name="registration">Регистрация</string>
-    <string name="email">Почта</string>
-    <string name="pass">Пароль</string>
+    <string name="auth_sign_in">Авторизация</string>
+    <string name="auth_registration">Регистрация</string>
+    <string name="auth_email">Почта</string>
+    <string name="auth_pass">Пароль</string>
+    <string name="auth_title">Выберите способ входа</string>
 
     <string name="sections_alert_title">Хотите подгрузить данные с сервера?</string>
     <string name="sections_alert_yes">Хочу</string>

@@ -24,6 +24,6 @@ class RemoteDataSource(
 
     suspend fun registration(email: String, pass: String) = authApi.registration(email, pass)
 
-    fun isAuthorized(): Boolean = authApi.isAuthorized()
+    suspend fun isAuthorized(): Boolean = authApi.isAuthorized()
 
 }

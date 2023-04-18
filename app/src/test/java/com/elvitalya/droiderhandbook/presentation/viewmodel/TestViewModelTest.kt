@@ -5,7 +5,7 @@ import com.elvitalya.domain.entity.QuestionsType
 import com.elvitalya.domain.usecases.GetAllUseCase
 import com.elvitalya.droiderhandbook.MainCoroutineRule
 import com.elvitalya.droiderhandbook.data.repository.FakeQuestionsRepository
-import com.elvitalya.presentation.viewmodel.TestViewModel
+import com.elvitalya.presentation.ui.test.TestViewModel
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

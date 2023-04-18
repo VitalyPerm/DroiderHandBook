@@ -7,7 +7,7 @@ import com.elvitalya.domain.usecases.UpdateQuestionUseCase
 import com.elvitalya.droiderhandbook.MainCoroutineRule
 import com.elvitalya.droiderhandbook.data.FakeToastDispatcher
 import com.elvitalya.droiderhandbook.data.repository.FakeQuestionsRepository
-import com.elvitalya.presentation.viewmodel.SearchViewModel
+import com.elvitalya.presentation.ui.search.SearchViewModel
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
