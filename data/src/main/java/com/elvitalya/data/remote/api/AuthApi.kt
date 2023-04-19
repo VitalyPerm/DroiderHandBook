@@ -7,5 +7,5 @@ interface AuthApi {
 
     suspend fun registration(email: String, pass: String): AuthResult
 
-    fun isAuthorized(): Boolean
+    suspend fun isAuthorized(): Boolean
 }

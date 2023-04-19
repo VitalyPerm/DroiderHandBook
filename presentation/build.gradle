@@ -23,19 +23,18 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
 
     buildFeatures {
-        viewBinding true
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.0-alpha02"
+        kotlinCompilerExtensionVersion = "1.4.4"
     }
 }
 
@@ -49,7 +48,8 @@ dependencies {
     implementation "dev.chrisbanes.insetter:insetter:0.6.0"
 
     // koin
-    implementation 'io.insert-koin:koin-android:3.3.3'
+    implementation "io.insert-koin:koin-androidx-compose:3.4.0"
+
 
     //compose
     def composeBom = platform('androidx.compose:compose-bom:2022.10.00')
@@ -63,9 +63,8 @@ dependencies {
     implementation 'androidx.compose.foundation:foundation'
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.material3:material3'
-    implementation 'com.google.accompanist:accompanist-insets:0.28.0'
 
-    //simple stack navigation
-    implementation 'com.github.Zhuinden:simple-stack:2.6.4'
-    implementation 'com.github.Zhuinden:simple-stack-extensions:2.2.4'
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.1"
+    implementation("androidx.navigation:navigation-compose:2.6.0-alpha09")
+
 }
