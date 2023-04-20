@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,7 +28,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RegistrationScreen(
-    viewModel: RegistrationViewModel = koinViewModel()
+    viewModel: RegistrationViewModel = koinViewModel(),
+    navigateToHomeScreen: () -> Unit
 ) {
     Screen(
         viewState = viewModel.viewState,
@@ -39,6 +41,10 @@ fun RegistrationScreen(
         onAuthClick = viewModel::registration,
         authButtonEnabled = viewModel.authButtonEnabled
     )
+
+    LaunchedEffect(key1 = viewModel.navigateToMainScreen, block = {
+        if(viewModel.navigateToMainScreen) navigateToHomeScreen()
+    })
 }
 
 

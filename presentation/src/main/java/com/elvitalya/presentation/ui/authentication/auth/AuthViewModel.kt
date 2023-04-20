@@ -58,8 +58,8 @@ class AuthViewModel(
             val result = loginUseCase.run(email, password)
             if (result.isSuccess) {
                 Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+                navigateToMainScreen = true
             }
-            navigateToMainScreen = true
         }
     }
 }

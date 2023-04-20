@@ -41,7 +41,12 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
         }
 
         composable(route = AuthGraph.Registration.route) {
-            RegistrationScreen()
+            RegistrationScreen(
+                navigateToHomeScreen = {
+                    navController.popBackStack()
+                    navController.navigate(RootGraph.MAIN)
+                }
+            )
         }
     }
 }

@@ -21,6 +21,10 @@ class RegistrationViewModel(
         errorMessage = throwable.message ?: ""
         viewState = ViewState.Error
     }
+
+    var navigateToMainScreen by mutableStateOf(false)
+        private set
+
     var email by mutableStateOf("")
         private set
 
@@ -54,7 +58,9 @@ class RegistrationViewModel(
             val result = registrationUseCase.run(email, password)
             if (result.isSuccess) {
                 Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+                navigateToMainScreen = true
             }
+
         }
     }
 }
