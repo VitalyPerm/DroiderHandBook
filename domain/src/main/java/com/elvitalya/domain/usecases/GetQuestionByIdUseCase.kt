@@ -2,10 +2,8 @@ package com.elvitalya.domain.usecases
 
 import com.elvitalya.domain.repository.QuestionsRepository
 
-class GetByIdUseCase(
+class GetQuestionByIdUseCase(
     private val questionsRepository: QuestionsRepository
 ) {
-
-    suspend fun run(id: Long) = questionsRepository.getById(id)
-
+    suspend operator fun invoke(id: Long) = questionsRepository.getById(id)
 }

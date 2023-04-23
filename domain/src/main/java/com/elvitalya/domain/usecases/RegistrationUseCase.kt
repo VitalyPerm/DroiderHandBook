@@ -5,7 +5,5 @@ import com.elvitalya.domain.repository.AuthRepository
 class RegistrationUseCase(
     private val authRepository: AuthRepository
 ) {
-
-    suspend fun run(email: String, pass: String) = authRepository.registration(email, pass)
-
+    suspend operator fun invoke(email: String, pass: String) = authRepository.registration(email, pass)
 }

@@ -43,33 +43,12 @@ fun SectionsScreen(
     viewModel: SectionsViewModel = koinViewModel(),
     onQuestionClick: (Long) -> Unit
 ) {
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-
-    val javaQuestions by viewModel.javaQuestions.collectAsStateWithLifecycle(
-        initialValue = emptyList(),
-        lifecycle = lifecycle
-    )
-
-    val androidQuestions by viewModel.androidQuestions.collectAsStateWithLifecycle(
-        initialValue = emptyList(),
-        lifecycle = lifecycle
-    )
-
-    val kotlinQuestions by viewModel.kotlinQuestions.collectAsStateWithLifecycle(
-        initialValue = emptyList(),
-        lifecycle = lifecycle
-    )
-
-    val coroutinesQuestions by viewModel.coroutineQuestions.collectAsStateWithLifecycle(
-        initialValue = emptyList(),
-        lifecycle = lifecycle
-    )
 
     Screen(
-        javaQuestions = javaQuestions,
-        androidQuestions = androidQuestions,
-        kotlinQuestions = kotlinQuestions,
-        coroutinesQuestions = coroutinesQuestions,
+        javaQuestions = viewModel.javaQuestions,
+        androidQuestions = viewModel.androidQuestions,
+        kotlinQuestions = viewModel.kotlinQuestions,
+        coroutinesQuestions = viewModel.coroutineQuestions,
         viewState = viewModel.viewState,
         onQuestionClick = onQuestionClick,
         onFavoriteClick = viewModel::updateQuestion,

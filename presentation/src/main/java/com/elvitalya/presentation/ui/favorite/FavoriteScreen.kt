@@ -8,12 +8,9 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.elvitalya.domain.entity.Question
 import com.elvitalya.presentation.core.EmptyBanner
 import com.elvitalya.presentation.core.ErrorBanner
@@ -28,14 +25,8 @@ fun FavoriteScreen(
     onQuestionClick: (Long) -> Unit
 ) {
 
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val questions by viewModel.questions.collectAsStateWithLifecycle(
-        initialValue = emptyList(),
-        lifecycle = lifecycle
-    )
-
     Screen(
-        questions = questions,
+        questions = viewModel.questions,
         onFavoriteClick = viewModel::onFavoriteClick,
         onQuestionClick = onQuestionClick,
         viewState = viewModel.viewState

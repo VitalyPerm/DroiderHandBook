@@ -1,5 +1,6 @@
 package com.elvitalya.presentation.ui.test
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -26,6 +27,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.elvitalya.domain.entity.Question
 import com.elvitalya.presentation.R
 import com.elvitalya.presentation.core.AppBar
+import com.elvitalya.presentation.core.EmptyBanner
+import com.elvitalya.presentation.core.ErrorBanner
+import com.elvitalya.presentation.core.LoadingBanner
+import com.elvitalya.presentation.core.ViewState
 import com.elvitalya.presentation.core.noRippleClickable
 import com.elvitalya.presentation.core.rippleClickable
 import com.elvitalya.presentation.theme.accent
@@ -38,16 +43,11 @@ import org.koin.androidx.compose.koinViewModel
 fun TestScreen(
     viewModel: TestViewModel = koinViewModel()
 ) {
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-
-    val question by viewModel.question.collectAsStateWithLifecycle(
-        initialValue = Question.EMPTY,
-        lifecycle = lifecycle
-    )
 
     Screen(
-        question = question,
-        onNextQuestionClick = viewModel::getRandomQuestion
+        question = viewModel.question,
+        onNextQuestionClick = viewModel::getRandomQuestion,
+        viewState = viewModel.viewState
     )
 }
 
@@ -55,84 +55,89 @@ fun TestScreen(
 @Composable
 private fun Screen(
     question: Question,
-    onNextQuestionClick: () -> Unit
+    onNextQuestionClick: () -> Unit,
+    viewState: ViewState
 ) {
-
-    LaunchedEffect(key1 = Unit) {
-        delay(1000)
-        onNextQuestionClick()
-    }
 
     var questionExpanded by remember { mutableStateOf(false) }
     var instructionsDialogState by remember { mutableStateOf(false) }
     val text = if (questionExpanded) question.text else question.title
 
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .statusBarsPadding()
-        ) {
-
-            AppBar(
-                title = stringResource(id = R.string.test_title),
-                icon = Icons.Default.Help,
-                onIconClick = { instructionsDialogState = instructionsDialogState.not() }
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .shadow(6.dp, shape = RoundedCornerShape(16.dp), clip = true)
-                    .background(white, RoundedCornerShape(16.dp))
-                    .noRippleClickable { questionExpanded = questionExpanded.not() }
-                    .verticalScroll(rememberScrollState())
-                    .animateContentSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = text,
+    Crossfade(targetState = viewState, label = "") { state ->
+        when (state) {
+            ViewState.Content -> {
+                Column(
                     modifier = Modifier
-                        .padding(16.dp),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = black,
-                    textAlign = TextAlign.Center
-                )
+                        .fillMaxSize()
+                        .statusBarsPadding()
+                ) {
+
+                    AppBar(
+                        title = stringResource(id = R.string.test_title),
+                        icon = Icons.Default.Help,
+                        onIconClick = { instructionsDialogState = instructionsDialogState.not() }
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .shadow(6.dp, shape = RoundedCornerShape(16.dp), clip = true)
+                            .background(white, RoundedCornerShape(16.dp))
+                            .noRippleClickable { questionExpanded = questionExpanded.not() }
+                            .verticalScroll(rememberScrollState())
+                            .animateContentSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = text,
+                            modifier = Modifier
+                                .padding(16.dp),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = black,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .rippleClickable(onClick = {
+                                questionExpanded = false
+                                onNextQuestionClick()
+                            })
+                            .background(accent),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.next_question),
+                            modifier = Modifier
+                                .padding(16.dp),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = white
+                        )
+                    }
+                }
+
+                if (instructionsDialogState) {
+                    InstructionDialog(onClose = { instructionsDialogState = false })
+                }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .rippleClickable(onClick = {
-                        questionExpanded = false
-                        onNextQuestionClick()
-                    })
-                    .background(accent),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(id = R.string.next_question),
-                    modifier = Modifier
-                        .padding(16.dp),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = white
-                )
-            }
+            ViewState.Error -> ErrorBanner()
+            ViewState.Loading -> LoadingBanner()
+            ViewState.Empty -> EmptyBanner()
         }
-
-        if (instructionsDialogState) {
-            InstructionDialog(onClose = { instructionsDialogState = false })
-        }
+    }
 }
 
 @Composable

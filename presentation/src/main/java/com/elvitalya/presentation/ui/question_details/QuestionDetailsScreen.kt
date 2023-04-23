@@ -32,16 +32,16 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun QuestionDetailsScreen(
     viewModel: QuestionDetailViewModel = koinViewModel(),
-    questionId: String?
+    questionId: String?,
+    onCloseClick: () -> Unit
 ) {
-    val question by viewModel.question.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = Unit, block = { viewModel.getQuestionById(questionId) })
 
     Screen(
-        question = question,
+        question = viewModel.question,
         viewState = viewModel.viewState,
-        onCloseClick = {}
+        onCloseClick = onCloseClick
     )
 }
 

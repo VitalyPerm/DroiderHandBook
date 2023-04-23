@@ -61,7 +61,7 @@ class SearchViewModel(
         viewModelScope.launch(exceptionHandler) {
             viewState = ViewState.Loading
             val new = question.copy(isFavorite = question.isFavorite.not())
-            updateQuestionUseCase.run(new)
+            updateQuestionUseCase(new)
             viewState = ViewState.Content
         }
     }

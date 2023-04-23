@@ -6,7 +6,5 @@ import com.elvitalya.domain.repository.QuestionsRepository
 class UpdateQuestionUseCase(
     private val questionsRepository: QuestionsRepository
 ) {
-
-    suspend fun run(question: Question) = questionsRepository.updateQuestion(question)
-
+    suspend operator fun invoke(question: Question) = questionsRepository.updateQuestion(question)
 }

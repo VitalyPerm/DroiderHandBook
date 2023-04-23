@@ -1,37 +1,44 @@
 package com.elvitalya.presentation.ui.test
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elvitalya.domain.entity.Question
 import com.elvitalya.domain.usecases.GetAllUseCase
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.WhileSubscribed
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
-import kotlin.random.Random
-import kotlin.time.Duration.Companion.milliseconds
+import com.elvitalya.presentation.core.ViewState
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 class TestViewModel(
     getAllUseCase: GetAllUseCase
 ) : ViewModel() {
 
-    private val allQuestions = getAllUseCase()
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(5.milliseconds),
-            initialValue = emptyList()
-        )
+    private var allQuestions = emptyList<Question>()
 
-    private val questionIndex = MutableStateFlow(0)
+    var question by mutableStateOf(Question.EMPTY)
+        private set
 
-    val question = combine(allQuestions, questionIndex) { all, index ->
-        if (all.isEmpty()) Question.EMPTY else all.getOrNull(index) ?: Question.EMPTY
+    var viewState by mutableStateOf<ViewState>(ViewState.Loading)
+        private set
+
+    init {
+        viewModelScope.launch {
+            getAllUseCase()
+                .onEach { questions ->
+                    if (questions.isEmpty()) viewState = ViewState.Empty
+                    else {
+                        allQuestions = questions
+                        getRandomQuestion()
+                        viewState = ViewState.Content
+                    }
+                }.launchIn(viewModelScope)
+        }
     }
 
     fun getRandomQuestion() {
-        val lastIndex = allQuestions.value.lastIndex
-        if (lastIndex == -1) return
-        questionIndex.value = Random.nextInt(lastIndex)
+        allQuestions.run { if (isNotEmpty()) question = random() }
     }
 }

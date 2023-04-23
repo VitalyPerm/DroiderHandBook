@@ -55,7 +55,7 @@ class AuthViewModel(
     fun auth() {
         viewModelScope.launch(exceptionHandler) {
             viewState = ViewState.Loading
-            val result = loginUseCase.run(email, password)
+            val result = loginUseCase(email, password)
             if (result.isSuccess) {
                 Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
                 navigateToMainScreen = true

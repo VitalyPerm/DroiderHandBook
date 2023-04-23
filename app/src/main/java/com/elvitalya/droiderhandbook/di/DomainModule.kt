@@ -2,7 +2,7 @@ package com.elvitalya.droiderhandbook.di
 
 
 import com.elvitalya.domain.usecases.GetAllUseCase
-import com.elvitalya.domain.usecases.GetByIdUseCase
+import com.elvitalya.domain.usecases.GetQuestionByIdUseCase
 import com.elvitalya.domain.usecases.LoadAllUseCase
 import com.elvitalya.domain.usecases.UpdateQuestionUseCase
 import com.elvitalya.domain.usecases.LoginUseCase
@@ -11,7 +11,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 private val modules = module {
-    singleOf(::GetByIdUseCase)
+    singleOf(::GetQuestionByIdUseCase)
     singleOf(::GetAllUseCase)
     singleOf(::LoadAllUseCase)
     singleOf(::UpdateQuestionUseCase)

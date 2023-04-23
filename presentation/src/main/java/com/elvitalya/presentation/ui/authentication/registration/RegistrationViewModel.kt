@@ -55,7 +55,7 @@ class RegistrationViewModel(
     fun registration() {
         viewModelScope.launch(exceptionHandler) {
             viewState = ViewState.Loading
-            val result = registrationUseCase.run(email, password)
+            val result = registrationUseCase(email, password)
             if (result.isSuccess) {
                 Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
                 navigateToMainScreen = true

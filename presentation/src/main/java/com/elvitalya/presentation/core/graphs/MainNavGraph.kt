@@ -55,7 +55,9 @@ fun MainNavGraph(
         }
 
         composable(route = "details/{id}") { backStackEntry ->
-            QuestionDetailsScreen(questionId = backStackEntry.arguments?.getString("id"))
+            QuestionDetailsScreen(questionId = backStackEntry.arguments?.getString("id")) {
+                navController.popBackStack()
+            }
         }
     }
 }

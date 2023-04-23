@@ -5,7 +5,5 @@ import com.elvitalya.domain.repository.QuestionsRepository
 class LoadAllUseCase(
     private val questionsRepository: QuestionsRepository
 ) {
-
-    suspend fun run() = questionsRepository.loadAll()
-
+    suspend operator fun invoke() = questionsRepository.loadAll()
 }
