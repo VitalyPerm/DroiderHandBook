@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(FlowPreview::class)
 class SectionsViewModel(
@@ -33,8 +34,12 @@ class SectionsViewModel(
         private set
 
 
-    private val allQuestions = getAllUseCase.run()
-        .stateIn(viewModelScope, started = SharingStarted.Eagerly, initialValue = emptyList())
+    private val allQuestions = getAllUseCase()
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(5.milliseconds),
+            initialValue = emptyList()
+        )
 
     init {
         viewModelScope.launch {

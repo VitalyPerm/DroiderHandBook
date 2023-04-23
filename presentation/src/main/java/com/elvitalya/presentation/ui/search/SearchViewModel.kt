@@ -13,6 +13,7 @@ import com.elvitalya.presentation.core.ViewState
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 class SearchViewModel(
     private val toastDispatcher: ToastDispatcher,
@@ -20,8 +21,12 @@ class SearchViewModel(
     private val updateQuestionUseCase: UpdateQuestionUseCase
 ) : ViewModel() {
 
-    private val allQuestions = getAllUseCase.run()
-        .stateIn(viewModelScope, started = SharingStarted.Eagerly, initialValue = emptyList())
+    private val allQuestions = getAllUseCase()
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(5.milliseconds),
+            initialValue = emptyList()
+        )
 
     val searchInput = MutableStateFlow("")
 

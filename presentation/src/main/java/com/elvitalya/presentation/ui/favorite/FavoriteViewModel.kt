@@ -13,12 +13,12 @@ import com.elvitalya.presentation.core.ViewState
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 class FavoriteViewModel(
     getAllUseCase: GetAllUseCase,
     private val updateQuestionUseCase: UpdateQuestionUseCase,
-    private val toastDispatcher: ToastDispatcher,
-    private val questionsRepository: QuestionsRepository
+    private val toastDispatcher: ToastDispatcher
 ) : ViewModel() {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -26,8 +26,12 @@ class FavoriteViewModel(
         viewState = ViewState.Error
     }
 
-    private val allQuestions = getAllUseCase.run()
-        .stateIn(viewModelScope, started = SharingStarted.Eagerly, initialValue = emptyList())
+    private val allQuestions = getAllUseCase()
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(5.milliseconds),
+            initialValue = emptyList()
+        )
 
     val questions
         get() = allQuestions.map { list ->

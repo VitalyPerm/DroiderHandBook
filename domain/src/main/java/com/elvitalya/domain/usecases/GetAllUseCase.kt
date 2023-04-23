@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.Flow
 class GetAllUseCase(
     private val questionsRepository: QuestionsRepository
 ) {
-
-    fun run(): Flow<List<Question>> = questionsRepository.getAll()
+    operator fun invoke(): Flow<List<Question>> = questionsRepository.getAll()
 
 }
