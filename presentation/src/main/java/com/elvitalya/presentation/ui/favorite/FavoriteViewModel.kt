@@ -35,7 +35,7 @@ class FavoriteViewModel(
     init {
         getAllUseCase()
             .onEach { questions ->
-                val filtered = questions.filter { questions -> questions.isFavorite }
+                val filtered = questions.filter { it.isFavorite }
                 if (filtered.isEmpty()) viewState = ViewState.Empty
                 else {
                     this.questions = filtered
