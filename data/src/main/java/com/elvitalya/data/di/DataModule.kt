@@ -15,7 +15,7 @@ import com.elvitalya.domain.repository.QuestionsRepository
 import com.elvitalya.domain.toastdispatcher.ToastDispatcher
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -63,10 +63,10 @@ private val networkModule = module {
 private val repositoryModule = module {
     singleOf(::LocalDataSource)
     singleOf(::RemoteDataSource)
-    single<AuthRepository> { AuthRepositoryImpl(get()) }
-    single<QuestionsRepository> { QuestionsRepositoryImpl(get(), get()) }
-    single<AuthApi> { AuthApiImpl() }
-    single<ToastDispatcher> { ToastDispatcherImpl(androidContext()) }
+    singleOf(::AuthRepositoryImpl) { bind<AuthRepository>() }
+    singleOf(::QuestionsRepositoryImpl) { bind<QuestionsRepository>() }
+    singleOf(::AuthApiImpl) { bind<AuthApi>() }
+    singleOf(::ToastDispatcherImpl) { bind<ToastDispatcher>() }
 }
 
 val dataModules = databaseModule + repositoryModule + networkModule
